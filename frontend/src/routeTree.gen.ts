@@ -13,7 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EditorSiteIdRouteImport } from './routes/editor/$siteId'
+import { Route as EditorSiteIdNewRouteImport } from './routes/editor/$siteId.new'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -35,9 +35,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EditorSiteIdRoute = EditorSiteIdRouteImport.update({
-  id: '/editor/$siteId',
-  path: '/editor/$siteId',
+const EditorSiteIdNewRoute = EditorSiteIdNewRouteImport.update({
+  id: '/editor/$siteId/new',
+  path: '/editor/$siteId/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -46,14 +46,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/editor/$siteId': typeof EditorSiteIdRoute
+  '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/editor/$siteId': typeof EditorSiteIdRoute
+  '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,20 +61,20 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/editor/$siteId': typeof EditorSiteIdRoute
+  '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/register' | '/editor/$siteId'
+  fullPaths: '/' | '/dashboard' | '/login' | '/register' | '/editor/$siteId/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/register' | '/editor/$siteId'
+  to: '/' | '/dashboard' | '/login' | '/register' | '/editor/$siteId/new'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/login'
     | '/register'
-    | '/editor/$siteId'
+    | '/editor/$siteId/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -82,7 +82,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
-  EditorSiteIdRoute: typeof EditorSiteIdRoute
+  EditorSiteIdNewRoute: typeof EditorSiteIdNewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -115,11 +115,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/editor/$siteId': {
-      id: '/editor/$siteId'
-      path: '/editor/$siteId'
-      fullPath: '/editor/$siteId'
-      preLoaderRoute: typeof EditorSiteIdRouteImport
+    '/editor/$siteId/new': {
+      id: '/editor/$siteId/new'
+      path: '/editor/$siteId/new'
+      fullPath: '/editor/$siteId/new'
+      preLoaderRoute: typeof EditorSiteIdNewRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -130,7 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-  EditorSiteIdRoute: EditorSiteIdRoute,
+  EditorSiteIdNewRoute: EditorSiteIdNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
