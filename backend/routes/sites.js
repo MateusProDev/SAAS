@@ -67,6 +67,73 @@ router.post('/', verifyToken, async (req, res) => {
   try {
     const { name, template, slug } = req.body;
 
+
+    // Buscar perfil do usuário para saber o plano e limite
+    let userDoc = await admin.firestore()
+      .collection('users')
+      .doc(req.user.uid)
+      .get();
+
+    let userProfile;
+    if (!userDoc.exists) {
+      // Procurar por qualquer documento de usuário com o mesmo email
+      const email = req.user.email;
+      const userQuery = await admin.firestore().collection('users').where('email', '==', email).get();
+      if (!userQuery.empty) {
+        // Copiar dados do documento antigo para o correto
+        const oldDoc = userQuery.docs[0];
+        const oldData = oldDoc.data();
+        // Atualizar/corrigir o campo uid
+        oldData.uid = req.user.uid;
+        await admin.firestore().collection('users').doc(req.user.uid).set(oldData, { merge: true });
+        // Copiar subcoleção 'sites' se existir
+        const oldSitesSnap = await admin.firestore().collection('users').doc(oldDoc.id).collection('sites').get();
+        for (const siteDoc of oldSitesSnap.docs) {
+          await admin.firestore().collection('users').doc(req.user.uid).collection('sites').doc(siteDoc.id).set(siteDoc.data());
+        }
+        // Opcional: deletar documento antigo (não obrigatório)
+        // await admin.firestore().collection('users').doc(oldDoc.id).delete();
+        userDoc = await admin.firestore().collection('users').doc(req.user.uid).get();
+        userProfile = userDoc.data();
+      } else {
+        // Criar perfil mínimo
+        const newProfile = {
+          uid: req.user.uid,
+          email: req.user.email,
+          displayName: req.user.name || req.user.displayName || '',
+          plan: 'free',
+          maxSites: 2,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        };
+        await admin.firestore().collection('users').doc(req.user.uid).set(newProfile);
+        userProfile = newProfile;
+      }
+    } else {
+      userProfile = userDoc.data();
+      // Corrigir campo uid se necessário
+      if (userProfile.uid !== req.user.uid) {
+        await admin.firestore().collection('users').doc(req.user.uid).update({ uid: req.user.uid });
+        userProfile.uid = req.user.uid;
+      }
+    }
+
+    const plan = userProfile.plan || 'free';
+    const maxSites = typeof userProfile.maxSites === 'number' ? userProfile.maxSites : 2;
+
+    // Contar sites atuais
+    const sitesSnapshot = await admin.firestore()
+      .collection('users')
+      .doc(req.user.uid)
+      .collection('sites')
+      .get();
+    const currentSites = sitesSnapshot.size;
+
+    // Checar limite de sites
+    if (plan === 'free' && currentSites >= maxSites) {
+      return res.status(403).json({ error: `Limite de ${maxSites} sites atingido no plano FREE. Faça upgrade para PRO para criar mais sites.` });
+    }
+
     // Verificar se o slug já existe
     const existingSlug = await admin.firestore()
       .collection('sites')
