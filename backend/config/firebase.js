@@ -38,31 +38,42 @@ const serviceAccount = {
 
 // Inicializar Firebase Admin apenas se ainda não foi inicializado
 if (!admin.apps.length) {
-  try {
-    // Método 1: Usar as variáveis individuais
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com`
-    });
-    console.log('✅ Firebase inicializado com sucesso usando variáveis individuais');
-  } catch (error) {
-    console.error('❌ Erro ao inicializar com variáveis individuais:', error.message);
-    
+  // Tentar método JSON primeiro (mais confiável)
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
     try {
-      // Método 2: Tentar usando JSON completo se disponível
-      if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-        const serviceAccountFromJSON = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      console.log('🔄 Tentando inicializar com JSON completo...');
+      const serviceAccountFromJSON = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccountFromJSON),
+        databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com`
+      });
+      console.log('✅ Firebase inicializado com sucesso usando JSON completo');
+    } catch (jsonError) {
+      console.error('❌ Erro com JSON:', jsonError.message);
+      console.log('🔄 Tentando com variáveis individuais...');
+      
+      try {
         admin.initializeApp({
-          credential: admin.credential.cert(serviceAccountFromJSON),
+          credential: admin.credential.cert(serviceAccount),
           databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com`
         });
-        console.log('✅ Firebase inicializado com sucesso usando JSON completo');
-      } else {
-        throw new Error('Nenhum método de autenticação funcionou');
+        console.log('✅ Firebase inicializado com sucesso usando variáveis individuais');
+      } catch (individualError) {
+        console.error('❌ Erro final com variáveis individuais:', individualError.message);
+        throw individualError;
       }
-    } catch (jsonError) {
-      console.error('❌ Erro final ao inicializar Firebase:', jsonError.message);
-      throw jsonError;
+    }
+  } else {
+    console.log('❌ FIREBASE_SERVICE_ACCOUNT_JSON não encontrada, usando variáveis individuais...');
+    try {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}-default-rtdb.firebaseio.com`
+      });
+      console.log('✅ Firebase inicializado com sucesso usando variáveis individuais');
+    } catch (error) {
+      console.error('❌ Erro final:', error.message);
+      throw error;
     }
   }
 }
