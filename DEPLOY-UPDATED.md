@@ -163,16 +163,72 @@ service cloud.firestore {
 
 ## 🐛 **7. Troubleshooting**
 
-### ⚠️ **Erro: Environment Variable references Secret that does not exist**
+### 🚨 **ERRO CRÍTICO: Environment Variable references Secret that does not exist**
 
 **Problema**: `Environment Variable "VITE_FIREBASE_API_KEY" references Secret "vite_firebase_api_key", which does not exist.`
 
-**Solução**:
-1. Vá em **Settings** > **Environment Variables** no Vercel
-2. **Exclua** todas as variáveis que estão referenciando secrets
-3. **Adicione novamente** cada variável como **Environment Variable normal**:
-   - ✅ **Correto**: Nome: `VITE_FIREBASE_API_KEY`, Valor: `AIzaSyD...`
-   - ❌ **Errado**: Referenciar um secret
+## 🔧 **SOLUÇÃO COMPLETA - Siga EXATAMENTE estes passos:**
+
+### **Passo 1: DELETAR TODAS as Environment Variables problemáticas**
+1. Acesse **Vercel Dashboard** → Seu projeto
+2. Clique em **Settings** (menu lateral)
+3. Clique em **Environment Variables**
+4. **DELETE/REMOVA** uma por uma todas essas variáveis:
+   - `VITE_FIREBASE_API_KEY`
+   - `VITE_FIREBASE_AUTH_DOMAIN`
+   - `VITE_FIREBASE_PROJECT_ID`
+   - `VITE_FIREBASE_STORAGE_BUCKET`
+   - `VITE_FIREBASE_MESSAGING_SENDER_ID`
+   - `VITE_FIREBASE_APP_ID`
+   - `VITE_FIREBASE_MEASUREMENT_ID`
+
+### **Passo 2: ADICIONAR uma por vez - MÉTODO CORRETO**
+
+**Para CADA variável, faça EXATAMENTE assim:**
+
+1. Clique **"Add New"**
+2. **Name**: `VITE_FIREBASE_API_KEY` (cole exato, sem aspas)
+3. **Value**: `AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og` (cole exato, sem aspas)
+4. **Environments**: Marque TODOS (Production, Preview, Development)
+5. **NÃO** marque "Sensitive"
+6. **NÃO** selecione nenhum "Secret"
+7. Clique **"Save"**
+
+**Repita para todas:**
+- `VITE_FIREBASE_AUTH_DOMAIN` = `turflow.firebaseapp.com`
+- `VITE_FIREBASE_PROJECT_ID` = `turflow`
+- `VITE_FIREBASE_STORAGE_BUCKET` = `turflow.firebasestorage.app`
+- `VITE_FIREBASE_MESSAGING_SENDER_ID` = `283639909947`
+- `VITE_FIREBASE_APP_ID` = `1:283639909947:web:52506c5b1df8b18889d61e`
+- `VITE_FIREBASE_MEASUREMENT_ID` = `G-1HMMH0L3QH`
+
+### **Passo 3: VERIFICAR se não há referência a Secrets**
+- Cada variável deve mostrar o valor diretamente
+- **NÃO** deve aparecer "references Secret xyz"
+- Se aparecer, DELETE e refaça
+
+### **Passo 4: FORCE REDEPLOY**
+1. Vá em **Deployments**
+2. Clique nos **3 pontos** do último deploy
+3. **"Redeploy"**
+4. Selecione **"Use existing Build Cache"**
+5. Confirme **"Redeploy"**
+
+## ⚠️ **SE AINDA DER ERRO:**
+
+### **Opção A: Limpar TUDO do projeto**
+1. Delete o projeto inteiro do Vercel
+2. Crie um novo projeto
+3. Conecte o GitHub novamente
+4. Configure Root Directory: `frontend`
+5. Adicione as variáveis do zero
+
+### **Opção B: Usar Vercel CLI**
+```bash
+npx vercel env add VITE_FIREBASE_API_KEY
+# Cole: AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og
+# Selecione: production, preview, development
+```
 
 ### Problemas comuns:
 1. **CORS Error**: Verifique `FRONTEND_URL` no backend
