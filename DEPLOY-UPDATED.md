@@ -40,19 +40,30 @@
    - **Output Directory**: `dist`
 
 ### 2.2 Configurar Environment Variables
-```bash
-# Firebase Configuration
-VITE_FIREBASE_API_KEY=AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og
-VITE_FIREBASE_AUTH_DOMAIN=turflow.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=turflow
-VITE_FIREBASE_STORAGE_BUCKET=turflow.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=283639909947
-VITE_FIREBASE_APP_ID=1:283639909947:web:52506c5b1df8b18889d61e
-VITE_FIREBASE_MEASUREMENT_ID=G-1HMMH0L3QH
 
-# Backend API URL (atualize após deploy do backend)
-VITE_API_URL=https://seu-backend.onrender.com/api
-```
+**⚠️ IMPORTANTE**: No Vercel, vá em **Settings** > **Environment Variables** e adicione cada variável individualmente:
+
+| Variável | Valor |
+|----------|-------|
+| `VITE_FIREBASE_API_KEY` | `AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og` |
+| `VITE_FIREBASE_AUTH_DOMAIN` | `turflow.firebaseapp.com` |
+| `VITE_FIREBASE_PROJECT_ID` | `turflow` |
+| `VITE_FIREBASE_STORAGE_BUCKET` | `turflow.firebasestorage.app` |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | `283639909947` |
+| `VITE_FIREBASE_APP_ID` | `1:283639909947:web:52506c5b1df8b18889d61e` |
+| `VITE_FIREBASE_MEASUREMENT_ID` | `G-1HMMH0L3QH` |
+| `VITE_API_URL` | `https://seu-backend.onrender.com/api` |
+
+**🔧 Passos no Vercel:**
+1. Acesse seu projeto na Vercel
+2. Vá em **Settings** > **Environment Variables**
+3. Para cada variável:
+   - Nome: Cole o nome exato (ex: `VITE_FIREBASE_API_KEY`)
+   - Valor: Cole o valor correspondente
+   - Environment: Selecione **Production**, **Preview** e **Development**
+   - Clique **Save**
+
+**❌ NÃO use "Secrets"** - apenas Environment Variables normais!
 
 ## 🛠️ **3. Deploy Backend (Render)**
 
@@ -151,6 +162,17 @@ service cloud.firestore {
 - **API Docs**: `https://seu-backend.onrender.com/api`
 
 ## 🐛 **7. Troubleshooting**
+
+### ⚠️ **Erro: Environment Variable references Secret that does not exist**
+
+**Problema**: `Environment Variable "VITE_FIREBASE_API_KEY" references Secret "vite_firebase_api_key", which does not exist.`
+
+**Solução**:
+1. Vá em **Settings** > **Environment Variables** no Vercel
+2. **Exclua** todas as variáveis que estão referenciando secrets
+3. **Adicione novamente** cada variável como **Environment Variable normal**:
+   - ✅ **Correto**: Nome: `VITE_FIREBASE_API_KEY`, Valor: `AIzaSyD...`
+   - ❌ **Errado**: Referenciar um secret
 
 ### Problemas comuns:
 1. **CORS Error**: Verifique `FRONTEND_URL` no backend
