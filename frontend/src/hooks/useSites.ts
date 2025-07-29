@@ -12,12 +12,16 @@ export interface Site {
   userId: string
   createdAt: string
   updatedAt: string
+  slug?: string
+  isPublished?: boolean
 }
 
 export interface CreateSiteData {
   title: string
   description: string
   content?: string
+  isPublished?: boolean
+  slug?: string
 }
 
 export function useSites() {

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { usePlan } from '../contexts/PlanContext'
-import { useDeleteSite, type Site } from '../hooks'
+import { useDeleteSite, useUpdateSite, type Site } from '../hooks'
 import { useSitesRealtimeFirestore } from '../hooks/useSitesRealtimeFirestore'
 import Layout from '../components/Layout'
 import CreateSiteModal from '../components/CreateSiteModal'
@@ -18,6 +18,8 @@ function DashboardComponent() {
   const { sites, loading } = useSitesRealtimeFirestore()
   const { userProfile, canCreateSite } = usePlan()
   const deleteSiteMutation = useDeleteSite()
+  const updateSiteMutation = useUpdateSite();
+  const [publishingId, setPublishingId] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false)
 
@@ -105,6 +107,32 @@ function DashboardComponent() {
                   >
                     Ver
                   </button>
+                  {site.isPublished ? (
+                    site.slug ? (
+                      <a
+                        href={`/api/sites/public/${site.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                      >
+                        Ver Publicado
+                      </a>
+                    ) : (
+                      <span className="text-xs text-red-600">Slug não encontrado</span>
+                    )
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        setPublishingId(site.id);
+                        await updateSiteMutation.mutateAsync({ siteId: site.id, data: { isPublished: true, slug: site.slug } });
+                        setPublishingId(null);
+                      }}
+                      disabled={publishingId === site.id || updateSiteMutation.isPending}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm transition-colors disabled:opacity-50"
+                    >
+                      {publishingId === site.id ? 'Publicando...' : 'Publicar'}
+                    </button>
+                  )}
                   <button
                     onClick={() => handleDeleteSite(site.id, site.title)}
                     disabled={deleteSiteMutation.isPending}

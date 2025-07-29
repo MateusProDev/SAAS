@@ -189,7 +189,7 @@ router.post('/', verifyToken, async (req, res) => {
 // PUT /api/sites/:siteId - Atualizar site
 router.put('/:siteId', verifyToken, async (req, res) => {
   try {
-    const { data, name, isPublished } = req.body;
+    const { data, name, isPublished, slug } = req.body;
 
     const updateData = {
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
@@ -197,6 +197,7 @@ router.put('/:siteId', verifyToken, async (req, res) => {
 
     if (data) updateData.data = data;
     if (name) updateData.name = name;
+    if (slug) updateData.slug = slug;
     if (typeof isPublished === 'boolean') updateData.isPublished = isPublished;
 
     await admin.firestore()
@@ -207,11 +208,14 @@ router.put('/:siteId', verifyToken, async (req, res) => {
       .update(updateData);
 
     // Atualizar também a referência global se necessário
-    if (typeof isPublished === 'boolean') {
+    const globalUpdate = {};
+    if (typeof isPublished === 'boolean') globalUpdate.isPublished = isPublished;
+    if (slug) globalUpdate.slug = slug;
+    if (Object.keys(globalUpdate).length > 0) {
       await admin.firestore()
         .collection('sites')
         .doc(req.params.siteId)
-        .update({ isPublished });
+        .update(globalUpdate);
     }
 
     res.json({ message: 'Site updated successfully' });
