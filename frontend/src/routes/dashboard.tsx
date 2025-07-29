@@ -2,7 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { usePlan } from '../contexts/PlanContext'
-import { useSites, useDeleteSite, type Site } from '../hooks'
+import { useDeleteSite, type Site } from '../hooks'
+import { useSitesRealtimeFirestore } from '../hooks/useSitesRealtimeFirestore'
 import Layout from '../components/Layout'
 import CreateSiteModal from '../components/CreateSiteModal'
 import UpgradeModal from '../components/UpgradeModal'
@@ -14,7 +15,7 @@ export const Route = createFileRoute('/dashboard')({
 
 function DashboardComponent() {
   const { user } = useAuth()
-  const { sites, loading } = useSites()
+  const { sites, loading } = useSitesRealtimeFirestore()
   const { userProfile, canCreateSite } = usePlan()
   const deleteSiteMutation = useDeleteSite()
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)

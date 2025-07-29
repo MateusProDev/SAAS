@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { useCreateSite } from '../hooks/useSites'
+import { useSitesFirestore } from '../hooks/useSitesFirestore'
+import { templates } from '../templates'
+// ...existing code...
 // ...existing code...
 
 interface CreateSiteModalProps {
@@ -10,30 +12,35 @@ interface CreateSiteModalProps {
 const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const createSiteMutation = useCreateSite()
+  const [templateId, setTemplateId] = useState(templates[0].id)
+  const [loading, setLoading] = useState(false)
+  const { createSite } = useSitesFirestore()
+  // ...existing code...
   // ...existing code...
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
     if (!title.trim() || !description.trim()) {
       alert('Por favor, preencha todos os campos')
       return
     }
-
+    setLoading(true)
     try {
-      await createSiteMutation.mutateAsync({
-        title: title.trim(),
-        description: description.trim()
-      })
-      
-      // Limpar o formulário e fechar o modal
+      const template = templates.find(t => t.id === templateId)
+      let html = template?.html || ''
+      html = html.replace(/\{\{title\}\}/g, title.trim())
+                 .replace(/\{\{description\}\}/g, description.trim())
+                 .replace(/\{\{year\}\}/g, new Date().getFullYear().toString())
+      await createSite(title.trim(), description.trim(), html)
       setTitle('')
       setDescription('')
+      setTemplateId(templates[0].id)
       onClose()
     } catch (error) {
-      console.error('Erro ao criar site:', error)
+      console.error('Erro ao criar site no Firestore:', error)
       alert('Erro ao criar site. Tente novamente.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -53,6 +60,22 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Template</label>
+            <div className="flex gap-3">
+              {templates.map(t => (
+                <button
+                  type="button"
+                  key={t.id}
+                  className={`border rounded p-2 flex flex-col items-center w-28 h-28 ${templateId === t.id ? 'border-blue-500 ring-2 ring-blue-300' : 'border-gray-300'}`}
+                  onClick={() => setTemplateId(t.id)}
+                >
+                  <img src={t.thumbnail} alt={t.name} className="w-10 h-10 mb-2" />
+                  <span className="text-xs text-center">{t.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
               Título do Site
@@ -93,10 +116,10 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
             </button>
             <button
               type="submit"
-              disabled={createSiteMutation.isPending}
+              disabled={loading}
               className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
             >
-              {createSiteMutation.isPending ? 'Criando...' : 'Criar Site'}
+              {loading ? 'Criando...' : 'Criar Site'}
             </button>
           </div>
         </form>
