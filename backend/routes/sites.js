@@ -33,7 +33,7 @@ router.get('/', verifyToken, async (req, res) => {
     snapshot.forEach(doc => {
       sites.push({ id: doc.id, ...doc.data() });
     });
-
+    console.log('🔍 [DEBUG] Sites lidos do Firestore:', JSON.stringify(sites, null, 2));
     res.json(sites);
   } catch (error) {
     console.error('Error fetching sites:', error);
@@ -54,7 +54,7 @@ router.get('/:siteId', verifyToken, async (req, res) => {
     if (!doc.exists) {
       return res.status(404).json({ error: 'Site not found' });
     }
-
+    console.log('🔍 [DEBUG] Site lido do Firestore:', { id: doc.id, ...doc.data() });
     res.json({ id: doc.id, ...doc.data() });
   } catch (error) {
     console.error('Error fetching site:', error);
@@ -66,7 +66,7 @@ router.get('/:siteId', verifyToken, async (req, res) => {
 router.post('/', verifyToken, async (req, res) => {
   try {
     const { name, template, slug } = req.body;
-
+    console.log('🔍 [DEBUG] Dados recebidos para criar site:', { name, template, slug });
 
     // Buscar perfil do usuário para saber o plano e limite
     let userDoc = await admin.firestore()
@@ -160,6 +160,7 @@ router.post('/', verifyToken, async (req, res) => {
       .doc(req.user.uid)
       .collection('sites')
       .add(siteData);
+    console.log('✅ [DEBUG] Site criado no Firestore:', { id: siteRef.id, ...siteData });
 
     // Também criar uma referência global para slugs únicos
     await admin.firestore()
@@ -172,6 +173,7 @@ router.post('/', verifyToken, async (req, res) => {
         template,
         isPublished: false
       });
+    console.log('✅ [DEBUG] Referência global criada para slug:', { id: siteRef.id, slug });
 
     res.status(201).json({ 
       id: siteRef.id, 
