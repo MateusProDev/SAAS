@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useCreateSite } from '../hooks/useSites'
-import { usePlan } from '../contexts/PlanContext'
+// ...existing code...
 
 interface CreateSiteModalProps {
   isOpen: boolean
@@ -11,7 +11,7 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const createSiteMutation = useCreateSite()
-  const { userProfile } = usePlan()
+  // ...existing code...
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
