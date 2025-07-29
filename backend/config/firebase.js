@@ -3,6 +3,12 @@ const admin = require('firebase-admin');
 // Configuração do Firebase Admin
 let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
+console.log('🔍 DEBUG - Variáveis Firebase disponíveis:');
+console.log('- FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID ? '✅ Existe' : '❌ Não existe');
+console.log('- FIREBASE_PRIVATE_KEY:', process.env.FIREBASE_PRIVATE_KEY ? '✅ Existe' : '❌ Não existe');
+console.log('- FIREBASE_SERVICE_ACCOUNT_JSON:', process.env.FIREBASE_SERVICE_ACCOUNT_JSON ? '✅ Existe' : '❌ Não existe');
+console.log('- FIREBASE_CLIENT_EMAIL:', process.env.FIREBASE_CLIENT_EMAIL ? '✅ Existe' : '❌ Não existe');
+
 // Tentar diferentes formatações da chave privada
 if (privateKey) {
   // Remover escapes duplos e simples
@@ -12,6 +18,8 @@ if (privateKey) {
   if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
     console.error('❌ Chave privada não parece estar no formato correto');
     console.log('🔍 Primeiros 100 caracteres:', privateKey.substring(0, 100));
+  } else {
+    console.log('✅ Chave privada parece estar no formato correto');
   }
 }
 
