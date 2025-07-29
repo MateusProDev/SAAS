@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../contexts/AuthContext'
+import { usePlan } from '../contexts/PlanContext'
 import api from '../lib/api'
 
 export interface Site {
@@ -73,11 +74,17 @@ export function useSite(siteId: string) {
 
 export function useCreateSite() {
   const { user } = useAuth()
+  const { canCreateSite, userProfile, refreshUserProfile } = usePlan()
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (data: CreateSiteData) => {
       if (!user) throw new Error('User not authenticated')
+      
+      // Verificar se pode criar site
+      if (!canCreateSite) {
+        throw new Error(`Limite de sites atingido. Seu plano ${userProfile?.plan} permite até ${userProfile?.maxSites} sites.`)
+      }
       
       const response = await api.post('/sites', {
         title: data.title,
@@ -109,6 +116,48 @@ export function useCreateSite() {
     onSuccess: () => {
       // Invalidar e refetch a lista de sites
       queryClient.invalidateQueries({ queryKey: ['sites', user?.uid] })
+      // Atualizar perfil do usuário para refletir novo número de sites
+      refreshUserProfile()
+    },
+  })
+}
+
+export function useUpdateSite() {
+  const { user } = useAuth()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ siteId, data }: { siteId: string; data: Partial<CreateSiteData> }) => {
+      if (!user) throw new Error('User not authenticated')
+      
+      const response = await api.put(`/sites/${siteId}`, data)
+      return response.data
+    },
+    onSuccess: (_, variables) => {
+      // Invalidar e refetch a lista de sites e o site específico
+      queryClient.invalidateQueries({ queryKey: ['sites', user?.uid] })
+      queryClient.invalidateQueries({ queryKey: ['site', variables.siteId] })
+    },
+  })
+}
+
+export function useDeleteSite() {
+  const { user } = useAuth()
+  const { refreshUserProfile } = usePlan()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (siteId: string) => {
+      if (!user) throw new Error('User not authenticated')
+      
+      const response = await api.delete(`/sites/${siteId}`)
+      return response.data
+    },
+    onSuccess: () => {
+      // Invalidar e refetch a lista de sites
+      queryClient.invalidateQueries({ queryKey: ['sites', user?.uid] })
+      // Atualizar perfil do usuário para refletir novo número de sites
+      refreshUserProfile()
     },
   })
 }

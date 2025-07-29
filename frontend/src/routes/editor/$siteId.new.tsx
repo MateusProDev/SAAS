@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { useSite } from '../../hooks'
+import { useSite, useUpdateSite } from '../../hooks'
 import Layout from '../../components/Layout'
 
 export const Route = createFileRoute('/editor/$siteId/new')({
@@ -10,9 +10,11 @@ export const Route = createFileRoute('/editor/$siteId/new')({
 function EditorComponent() {
   const { siteId } = Route.useParams()
   const { site, loading } = useSite(siteId as string)
+  const updateSiteMutation = useUpdateSite()
   const [content, setContent] = useState('')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [published, setPublished] = useState(false)
 
   // Atualizar estado quando o site carregar
   useEffect(() => {
@@ -20,6 +22,7 @@ function EditorComponent() {
       setContent(site.content || '')
       setTitle(site.title || '')
       setDescription(site.description || '')
+      setPublished(site.published || false)
     }
   }, [site])
 
@@ -56,8 +59,14 @@ function EditorComponent() {
 
   const handleSave = async () => {
     try {
-      // TODO: Implementar lógica de salvamento
-      console.log('Salvando site:', { title, description, content })
+      await updateSiteMutation.mutateAsync({
+        siteId: siteId as string,
+        data: {
+          title,
+          description,
+          content
+        }
+      })
       alert('Site salvo com sucesso!')
     } catch (error) {
       console.error('Erro ao salvar:', error)
@@ -66,9 +75,9 @@ function EditorComponent() {
   }
 
   const handlePreview = () => {
-    // TODO: Implementar preview em nova aba
-    console.log('Preview do site:', site)
-    alert('Preview em desenvolvimento')
+    if (site?.id) {
+      window.open(`/preview/${site.id}`, '_blank')
+    }
   }
 
   return (
@@ -89,9 +98,10 @@ function EditorComponent() {
               </button>
               <button
                 onClick={handleSave}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+                disabled={updateSiteMutation.isPending}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors disabled:opacity-50"
               >
-                Salvar
+                {updateSiteMutation.isPending ? 'Salvando...' : 'Salvar'}
               </button>
             </div>
           </div>
@@ -132,7 +142,11 @@ function EditorComponent() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Status
                   </label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <select 
+                    value={published ? 'published' : 'draft'}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setPublished(e.target.value === 'published')}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
                     <option value="draft">Rascunho</option>
                     <option value="published">Publicado</option>
                   </select>

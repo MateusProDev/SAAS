@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from '@tanstack/react-router';
+import PlanBadge from './PlanBadge';
 
 interface LayoutProps {
   children: ReactNode;
@@ -34,6 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <UserMenu>
             <UserInfo>
               <span>{user.displayName || user.email}</span>
+              <PlanBadge />
             </UserInfo>
             <LogoutButton onClick={handleLogout}>
               Sair

@@ -1,9 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { useSites, type Site } from '../hooks'
+import { usePlan } from '../contexts/PlanContext'
+import { useSites, useDeleteSite, type Site } from '../hooks'
 import Layout from '../components/Layout'
 import CreateSiteModal from '../components/CreateSiteModal'
+import UpgradeModal from '../components/UpgradeModal'
+import PlanBadge from '../components/PlanBadge'
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardComponent,
@@ -12,7 +15,30 @@ export const Route = createFileRoute('/dashboard')({
 function DashboardComponent() {
   const { user } = useAuth()
   const { sites, loading } = useSites()
+  const { userProfile, canCreateSite } = usePlan()
+  const deleteSiteMutation = useDeleteSite()
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false)
+
+  const handleCreateSite = () => {
+    if (!canCreateSite) {
+      setIsUpgradeModalOpen(true)
+      return
+    }
+    setIsCreateModalOpen(true)
+  }
+
+  const handleDeleteSite = async (siteId: string, siteTitle: string) => {
+    if (window.confirm(`Tem certeza que deseja deletar o site "${siteTitle}"? Esta ação não pode ser desfeita.`)) {
+      try {
+        await deleteSiteMutation.mutateAsync(siteId)
+        alert('Site deletado com sucesso!')
+      } catch (error) {
+        console.error('Erro ao deletar site:', error)
+        alert('Erro ao deletar o site')
+      }
+    }
+  }
 
   if (loading) {
     return (
@@ -36,12 +62,19 @@ function DashboardComponent() {
               <p className="text-gray-600 mt-2">
                 Gerencie seus sites de forma fácil e rápida
               </p>
+              <div className="mt-2">
+                <PlanBadge showDetails={true} />
+              </div>
             </div>
             <button
-              onClick={() => setIsCreateModalOpen(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors"
+              onClick={handleCreateSite}
+              className={`px-6 py-3 rounded-lg transition-colors ${
+                canCreateSite 
+                  ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                  : 'bg-orange-500 hover:bg-orange-600 text-white'
+              }`}
             >
-              + Criar Site
+              {canCreateSite ? '+ Criar Site' : '⚡ Upgrade para criar mais sites'}
             </button>
           </div>
         </div>
@@ -58,12 +91,27 @@ function DashboardComponent() {
                 <span className="text-sm text-gray-500">
                   Criado em {new Date(site.createdAt).toLocaleDateString()}
                 </span>
-                <button
-                  onClick={() => window.open(`/editor/${site.id}`, '_blank')}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
-                >
-                  Editar
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => window.open(`/editor/${site.id}/new`, '_blank')}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition-colors"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => window.open(`/preview/${site.id}`, '_blank')}
+                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm transition-colors"
+                  >
+                    Ver
+                  </button>
+                  <button
+                    onClick={() => handleDeleteSite(site.id, site.title)}
+                    disabled={deleteSiteMutation.isPending}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition-colors disabled:opacity-50"
+                  >
+                    Excluir
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -75,13 +123,20 @@ function DashboardComponent() {
               Nenhum site encontrado
             </h3>
             <p className="text-gray-500 mb-6">
-              Comece criando seu primeiro site
+              {canCreateSite 
+                ? 'Comece criando seu primeiro site' 
+                : `Você atingiu o limite de ${userProfile?.maxSites} sites do plano ${userProfile?.plan?.toUpperCase()}`
+              }
             </p>
             <button 
-              onClick={() => setIsCreateModalOpen(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors"
+              onClick={handleCreateSite}
+              className={`px-6 py-3 rounded-lg transition-colors ${
+                canCreateSite 
+                  ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                  : 'bg-orange-500 hover:bg-orange-600 text-white'
+              }`}
             >
-              Criar Novo Site
+              {canCreateSite ? 'Criar Novo Site' : 'Fazer Upgrade para PRO'}
             </button>
           </div>
         )}
@@ -90,6 +145,11 @@ function DashboardComponent() {
       <CreateSiteModal 
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
+      />
+
+      <UpgradeModal 
+        isOpen={isUpgradeModalOpen}
+        onClose={() => setIsUpgradeModalOpen(false)}
       />
     </Layout>
   )

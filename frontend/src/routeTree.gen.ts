@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PreviewSiteIdRouteImport } from './routes/preview/$siteId'
 import { Route as EditorSiteIdNewRouteImport } from './routes/editor/$siteId.new'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreviewSiteIdRoute = PreviewSiteIdRouteImport.update({
+  id: '/preview/$siteId',
+  path: '/preview/$siteId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EditorSiteIdNewRoute = EditorSiteIdNewRouteImport.update({
   id: '/editor/$siteId/new',
   path: '/editor/$siteId/new',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/preview/$siteId': typeof PreviewSiteIdRoute
   '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/preview/$siteId': typeof PreviewSiteIdRoute
   '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRoutesById {
@@ -61,19 +69,33 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/preview/$siteId': typeof PreviewSiteIdRoute
   '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/register' | '/editor/$siteId/new'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+    | '/preview/$siteId'
+    | '/editor/$siteId/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/register' | '/editor/$siteId/new'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+    | '/preview/$siteId'
+    | '/editor/$siteId/new'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/preview/$siteId'
     | '/editor/$siteId/new'
   fileRoutesById: FileRoutesById
 }
@@ -82,6 +104,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  PreviewSiteIdRoute: typeof PreviewSiteIdRoute
   EditorSiteIdNewRoute: typeof EditorSiteIdNewRoute
 }
 
@@ -115,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/preview/$siteId': {
+      id: '/preview/$siteId'
+      path: '/preview/$siteId'
+      fullPath: '/preview/$siteId'
+      preLoaderRoute: typeof PreviewSiteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/editor/$siteId/new': {
       id: '/editor/$siteId/new'
       path: '/editor/$siteId/new'
@@ -130,6 +160,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  PreviewSiteIdRoute: PreviewSiteIdRoute,
   EditorSiteIdNewRoute: EditorSiteIdNewRoute,
 }
 export const routeTree = rootRouteImport

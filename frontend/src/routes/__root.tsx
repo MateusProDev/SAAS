@@ -3,6 +3,7 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthProvider } from '../contexts/AuthContext'
+import { PlanProvider } from '../contexts/PlanContext'
 
 // Criar instância do Query Client
 const queryClient = new QueryClient({
@@ -22,13 +23,15 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Outlet />
-        {import.meta.env.DEV && (
-          <>
-            <TanStackRouterDevtools />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </>
-        )}
+        <PlanProvider>
+          <Outlet />
+          {import.meta.env.DEV && (
+            <>
+              <TanStackRouterDevtools />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </>
+          )}
+        </PlanProvider>
       </AuthProvider>
     </QueryClientProvider>
   )
