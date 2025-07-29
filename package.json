@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:frontend": "cd frontend && npm run build",
+    "start:backend": "cd backend && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "test": "echo \"No tests specified yet\"",
+    "setup": "npm run install:all && echo \"Setup completed! Check DEPLOY.md for next steps.\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "name": "saas-website-builder",
+  "version": "1.0.0",
+  "description": "SaaS platform for building commercial websites",
+  "main": "index.js",
+  "keywords": ["saas", "website", "builder", "react", "firebase"],
+  "author": "Your Name",
+  "license": "MIT"
+}
