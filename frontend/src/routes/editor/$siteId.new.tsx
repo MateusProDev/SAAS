@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { useSite } from '../hooks'
-import Layout from '../components/Layout'
+import { useSite } from '../../hooks'
+import Layout from '../../components/Layout'
 
 export const Route = createFileRoute('/editor/$siteId')({
   component: EditorComponent,
