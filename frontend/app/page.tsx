@@ -10,7 +10,7 @@ export default function Home() {
         Ir para o Dashboard
       </Link>
     </div>
-  );
+  ); 
 }
 // ...código limpo acima...
 // Removeu todo o código residual e erros. Página inicial pronta para SaaS.
