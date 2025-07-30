@@ -1,12 +1,20 @@
+
 import { useEffect, useState } from 'react';
 import api from '../../utils/api';
 
 export interface Site {
   id: string;
-  name: string;
+  name?: string;
+  title?: string;
+  description?: string;
   [key: string]: any;
 }
 
+/**
+ * Hook para buscar sites do usuário autenticado.
+ * Envia o token JWT se existir (exemplo usando localStorage).
+ * Ajuste conforme seu fluxo de autenticação.
+ */
 export function useSites() {
   const [sites, setSites] = useState<Site[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,8 +25,11 @@ export function useSites() {
       setLoading(true);
       setError(null);
       try {
-        // Adapte para incluir token se necessário
-        const res = await api.get('/api/sites');
+        // Exemplo: buscar token salvo após login
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const res = await api.get('/api/sites', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         setSites(res.data);
       } catch (err: any) {
         setError(err.message || 'Erro ao buscar sites');
@@ -31,8 +42,3 @@ export function useSites() {
 
   return { sites, loading, error };
 }
-
-// Para rodar o backend, execute os comandos abaixo no terminal:
-// cd ../backend
-// npm install
-// npm start
