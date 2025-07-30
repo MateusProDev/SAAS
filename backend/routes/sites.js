@@ -56,11 +56,20 @@ router.get('/:siteId', verifyToken, async (req, res) => {
     if (!doc.exists) {
       return res.status(404).json({ error: 'Site not found' });
     }
-    console.log('🔍 [DEBUG] Site lido do Firestore:', { id: doc.id, ...doc.data() });
-    res.json({ id: doc.id, ...doc.data() });
+    const data = doc.data();
+    // Garantir que sempre retorna name, title e slug
+    const result = {
+      id: doc.id,
+      name: data.name || data.title || '',
+      title: data.title || data.name || '',
+      slug: data.slug || '',
+      ...data
+    };
+    console.log('🔍 [DEBUG] Site lido do Firestore:', result);
+    res.json(result);
   } catch (error) {
     console.error('Error fetching site:', error);
-    res.status(500).json({ error: 'Failed to fetch site' });
+    res.status(500).json({ error: 'Failed to fetch site', details: error.message });
   }
 });
 
@@ -393,8 +402,10 @@ router.patch('/fix-missing-slugs', verifyToken, async (req, res) => {
 
     for (const doc of snapshot.docs) {
       const data = doc.data();
-      if ((!data.slug || data.slug === '') && data.title) {
-        const newSlug = slugify(data.title) + '-' + doc.id.slice(-6);
+      // Usa name OU title para gerar slug
+      const base = data.name || data.title;
+      if ((!data.slug || data.slug === '') && base) {
+        const newSlug = slugify(base) + '-' + doc.id.slice(-6);
         console.log(`[SLUG PATCH] Atualizando site ${doc.id} com slug: ${newSlug}`);
         batch.update(doc.ref, { slug: newSlug });
         // Atualiza também na coleção global
@@ -402,7 +413,7 @@ router.patch('/fix-missing-slugs', verifyToken, async (req, res) => {
         updated++;
       } else {
         skipped++;
-        console.log(`[SLUG PATCH] Pulando site ${doc.id} (slug já existe ou sem title)`);
+        console.log(`[SLUG PATCH] Pulando site ${doc.id} (slug já existe ou sem name/title)`);
       }
     }
     if (updated > 0) {
@@ -414,7 +425,7 @@ router.patch('/fix-missing-slugs', verifyToken, async (req, res) => {
     res.json({ message: `Slugs atualizados para ${updated} site(s), pulados ${skipped}` });
   } catch (error) {
     console.error('Erro ao atualizar slugs:', error);
-    res.status(500).json({ error: 'Falha ao atualizar slugs' });
+    res.status(500).json({ error: 'Falha ao atualizar slugs', details: error.message });
   }
 });
 
