@@ -188,7 +188,14 @@ router.post('/', verifyToken, async (req, res) => {
       data: getDefaultTemplateData(template),
       isPublished: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      // Novos campos padrão
+      active: true,
+      content: '',
+      publishedAt: null,
+      siteId: '',
+      userId: req.user.uid,
+      views: 0
     };
 
     // Criar o site na coleção do usuário
@@ -199,7 +206,7 @@ router.post('/', verifyToken, async (req, res) => {
       .add(siteData);
     console.log('✅ [DEBUG] Site criado no Firestore:', { id: siteRef.id, ...siteData });
 
-    // Também criar uma referência global para slugs únicos
+    // Também criar uma referência global para slugs únicos, com todos os campos relevantes
     await admin.firestore()
       .collection('sites')
       .doc(siteRef.id)
@@ -208,7 +215,12 @@ router.post('/', verifyToken, async (req, res) => {
         slug,
         name,
         template,
-        isPublished: false
+        isPublished: false,
+        active: true,
+        content: '',
+        publishedAt: null,
+        siteId: '',
+        views: 0
       });
     console.log('✅ [DEBUG] Referência global criada para slug:', { id: siteRef.id, slug });
 
@@ -295,25 +307,27 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
 // GET /api/sites/public/:slug - Retorna HTML publicado de published_sites
 router.get('/public/:slug', async (req, res) => {
   try {
-    const publishedSnap = await admin.firestore()
-      .collection('published_sites')
+    // Buscar apenas na coleção 'sites' (global)
+    const sitesSnap = await admin.firestore()
+      .collection('sites')
       .where('slug', '==', req.params.slug)
       .limit(1)
       .get();
-    if (!publishedSnap.empty) {
-      const doc = publishedSnap.docs[0];
-      const data = doc.data();
+    if (!sitesSnap.empty) {
+      const siteDoc = sitesSnap.docs[0];
+      const siteData = siteDoc.data();
+      // Retornar todos os campos relevantes, incluindo content
       return res.json({
-        id: doc.id,
-        ...data,
-        slug: data.slug,
-        content: data.content || ''
+        id: siteDoc.id,
+        ...siteData,
+        slug: siteData.slug,
+        content: siteData.content || ''
       });
     }
     return res.status(404).json({ error: 'Site not found or not published' });
   } catch (error) {
     console.error('Error fetching public site:', error);
-    res.status(500).json({ error: 'Failed to fetch site' });
+    res.status(500).json({ error: 'Failed to fetch site', details: error.message });
   }
 });
 
@@ -348,6 +362,15 @@ router.post('/:siteId/publish', verifyToken, async (req, res) => {
       content,
       publishedAt: admin.firestore.FieldValue.serverTimestamp()
     }, { merge: true });
+
+    // Salvar/atualizar o campo 'content' também na coleção global 'sites'
+    const globalSiteRef = admin.firestore().collection('sites').doc(req.params.siteId);
+    await globalSiteRef.set({
+      content,
+      isPublished: true,
+      publishedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
     res.json({ message: 'Site published successfully', slug: siteData.slug });
   } catch (error) {
     console.error('Error publishing site:', error);
