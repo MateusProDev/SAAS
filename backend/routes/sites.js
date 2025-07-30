@@ -181,6 +181,18 @@ router.post('/', verifyToken, async (req, res) => {
       }
     }
 
+    // Buscar HTML base do template, se existir
+    let templateContent = '';
+    try {
+      const templateDoc = await admin.firestore().collection('templates').doc(template).get();
+      if (templateDoc.exists) {
+        const tpl = templateDoc.data();
+        if (tpl.content) templateContent = tpl.content;
+      }
+    } catch (e) {
+      console.warn('Não foi possível buscar template do Firestore:', e);
+    }
+
     const siteData = {
       name,
       template,
@@ -189,9 +201,8 @@ router.post('/', verifyToken, async (req, res) => {
       isPublished: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      // Novos campos padrão
       active: true,
-      content: '',
+      content: templateContent,
       publishedAt: null,
       siteId: '',
       userId: req.user.uid,
@@ -217,7 +228,7 @@ router.post('/', verifyToken, async (req, res) => {
         template,
         isPublished: false,
         active: true,
-        content: '',
+        content: templateContent,
         publishedAt: null,
         siteId: '',
         views: 0
