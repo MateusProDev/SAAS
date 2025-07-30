@@ -66,7 +66,7 @@ export default function NewSitePage() {
           <label>Descrição</label>
           <textarea value={description} onChange={e => setDescription(e.target.value)} required style={{ width: '100%' }} />
         </div>
-        <div>
+        <div> 
           <label>Template</label>
           <select value={template} onChange={e => setTemplate(e.target.value)} style={{ width: '100%' }}>
             <option value="barbearia">Barbearia</option>
