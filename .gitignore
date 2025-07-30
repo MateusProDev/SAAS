@@ -1,3 +1,5 @@
+# Firebase service account (NUNCA versionar)
+serviceAccountKey.json
 # Dependencies
 node_modules/
 */node_modules/

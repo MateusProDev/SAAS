@@ -16,7 +16,16 @@
   "version": "1.0.0",
   "description": "SaaS platform for building commercial websites",
   "main": "index.js",
-  "keywords": ["saas", "website", "builder", "react", "firebase"],
+  "keywords": [
+    "saas",
+    "website",
+    "builder",
+    "react",
+    "firebase"
+  ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^13.4.0"
+  }
 }
