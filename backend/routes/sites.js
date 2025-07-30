@@ -292,9 +292,9 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
 });
 
 // GET /site/:slug - Endpoint público para visualizar sites publicados
+// GET /api/sites/public/:slug - Retorna HTML publicado de published_sites
 router.get('/public/:slug', async (req, res) => {
   try {
-    // 1. Buscar em published_sites (prioridade)
     const publishedSnap = await admin.firestore()
       .collection('published_sites')
       .where('slug', '==', req.params.slug)
@@ -310,42 +310,48 @@ router.get('/public/:slug', async (req, res) => {
         content: data.content || ''
       });
     }
-
-    // 2. Fallback: buscar em sites padrão
-    const snapshot = await admin.firestore()
-      .collection('sites')
-      .where('slug', '==', req.params.slug)
-      .where('isPublished', '==', true)
-      .get();
-
-    if (snapshot.empty) {
-      return res.status(404).json({ error: 'Site not found or not published' });
-    }
-
-    const siteDoc = snapshot.docs[0];
-    const siteGlobal = siteDoc.data();
-
-    // Buscar dados completos do site
-    const siteData = await admin.firestore()
-      .collection('users')
-      .doc(siteGlobal.userId)
-      .collection('sites')
-      .doc(siteDoc.id)
-      .get();
-
-    if (!siteData.exists) {
-      return res.status(404).json({ error: 'Site data not found' });
-    }
-
-    res.json({
-      id: siteData.id,
-      ...siteData.data(),
-      slug: siteGlobal.slug,
-      content: siteData.data().content || ''
-    });
+    return res.status(404).json({ error: 'Site not found or not published' });
   } catch (error) {
     console.error('Error fetching public site:', error);
     res.status(500).json({ error: 'Failed to fetch site' });
+  }
+});
+
+// POST /api/sites/:siteId/publish - Publica o site (salva HTML em published_sites)
+router.post('/:siteId/publish', verifyToken, async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content || typeof content !== 'string') {
+      return res.status(400).json({ error: 'Content (HTML) is required' });
+    }
+    // Buscar dados do site para pegar slug e userId
+    const siteDoc = await admin.firestore()
+      .collection('users')
+      .doc(req.user.uid)
+      .collection('sites')
+      .doc(req.params.siteId)
+      .get();
+    if (!siteDoc.exists) {
+      return res.status(404).json({ error: 'Site not found' });
+    }
+    const siteData = siteDoc.data();
+    if (!siteData.slug) {
+      return res.status(400).json({ error: 'Site slug is missing' });
+    }
+    // Salvar/atualizar published_sites
+    const publishedRef = admin.firestore()
+      .collection('published_sites')
+      .doc(req.params.siteId);
+    await publishedRef.set({
+      slug: siteData.slug,
+      userId: req.user.uid,
+      content,
+      publishedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    res.json({ message: 'Site published successfully', slug: siteData.slug });
+  } catch (error) {
+    console.error('Error publishing site:', error);
+    res.status(500).json({ error: 'Failed to publish site' });
   }
 });
 
