@@ -1,3 +1,5 @@
+// (MOVER PARA O FINAL DO ARQUIVO) PATCH /api/sites/fix-missing-slugs - Atualiza todos os sites do usuário e gera slug se faltar
+
 const express = require('express');
 const router = express.Router();
 const admin = require('../config/firebase');
@@ -366,5 +368,54 @@ function getDefaultTemplateData(template) {
 
   return defaultData[template] || defaultData.commercial;
 }
+
+// PATCH /api/sites/fix-missing-slugs - Atualiza todos os sites do usuário e gera slug se faltar
+router.patch('/fix-missing-slugs', verifyToken, async (req, res) => {
+  try {
+    const userSitesRef = admin.firestore()
+      .collection('users')
+      .doc(req.user.uid)
+      .collection('sites');
+    const snapshot = await userSitesRef.get();
+    const batch = admin.firestore().batch();
+    let updated = 0;
+    let skipped = 0;
+
+    function slugify(text) {
+      return text
+        .toString()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
+    }
+
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+      if ((!data.slug || data.slug === '') && data.title) {
+        const newSlug = slugify(data.title) + '-' + doc.id.slice(-6);
+        console.log(`[SLUG PATCH] Atualizando site ${doc.id} com slug: ${newSlug}`);
+        batch.update(doc.ref, { slug: newSlug });
+        // Atualiza também na coleção global
+        batch.update(admin.firestore().collection('sites').doc(doc.id), { slug: newSlug });
+        updated++;
+      } else {
+        skipped++;
+        console.log(`[SLUG PATCH] Pulando site ${doc.id} (slug já existe ou sem title)`);
+      }
+    }
+    if (updated > 0) {
+      await batch.commit();
+      console.log(`[SLUG PATCH] Batch commit realizado para ${updated} sites.`);
+    } else {
+      console.log('[SLUG PATCH] Nenhum site para atualizar.');
+    }
+    res.json({ message: `Slugs atualizados para ${updated} site(s), pulados ${skipped}` });
+  } catch (error) {
+    console.error('Erro ao atualizar slugs:', error);
+    res.status(500).json({ error: 'Falha ao atualizar slugs' });
+  }
+});
 
 module.exports = router;
