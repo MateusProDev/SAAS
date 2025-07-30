@@ -76,7 +76,7 @@ router.get('/:siteId', verifyToken, async (req, res) => {
 // POST /api/sites - Criar novo site
 router.post('/', verifyToken, async (req, res) => {
   try {
-    const { name, template, slug } = req.body;
+    let { name, template, slug } = req.body;
     console.log('🔍 [DEBUG] Dados recebidos para criar site:', { name, template, slug });
 
     // Buscar perfil do usuário para saber o plano e limite
@@ -145,14 +145,40 @@ router.post('/', verifyToken, async (req, res) => {
       return res.status(403).json({ error: `Limite de ${maxSites} sites atingido no plano FREE. Faça upgrade para PRO para criar mais sites.` });
     }
 
-    // Verificar se o slug já existe
-    const existingSlug = await admin.firestore()
-      .collection('sites')
-      .where('slug', '==', slug)
-      .get();
-
-    if (!existingSlug.empty) {
-      return res.status(400).json({ error: 'Slug already exists' });
+    // Gerar slug automaticamente se não enviado
+    function slugify(text) {
+      return text
+        .toString()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '');
+    }
+    if (!slug || slug.trim() === '') {
+      let base = name || '';
+      slug = slugify(base);
+      // Garante unicidade
+      let trySlug = slug;
+      let i = 1;
+      while (true) {
+        const exists = await admin.firestore().collection('sites').where('slug', '==', trySlug).get();
+        if (exists.empty) {
+          slug = trySlug;
+          break;
+        }
+        trySlug = `${slug}-${i}`;
+        i++;
+      }
+    } else {
+      // Verificar se o slug já existe
+      const existingSlug = await admin.firestore()
+        .collection('sites')
+        .where('slug', '==', slug)
+        .get();
+      if (!existingSlug.empty) {
+        return res.status(400).json({ error: 'Slug already exists' });
+      }
     }
 
     const siteData = {
