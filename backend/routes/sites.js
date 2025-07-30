@@ -223,16 +223,21 @@ router.put('/:siteId', verifyToken, async (req, res) => {
     if (typeof isPublished === 'boolean') globalUpdate.isPublished = isPublished;
     if (slug) globalUpdate.slug = slug;
     if (Object.keys(globalUpdate).length > 0) {
-      await admin.firestore()
-        .collection('sites')
-        .doc(req.params.siteId)
-        .update(globalUpdate);
+      const globalDocRef = admin.firestore().collection('sites').doc(req.params.siteId);
+      const globalDoc = await globalDocRef.get();
+      if (globalDoc.exists) {
+        await globalDocRef.update(globalUpdate);
+        console.log(`[PUT] Global doc atualizado: ${req.params.siteId}`, globalUpdate);
+      } else {
+        await globalDocRef.set(globalUpdate, { merge: true });
+        console.log(`[PUT] Global doc criado (merge): ${req.params.siteId}`, globalUpdate);
+      }
     }
 
     res.json({ message: 'Site updated successfully' });
   } catch (error) {
     console.error('Error updating site:', error);
-    res.status(500).json({ error: 'Failed to update site' });
+    res.status(500).json({ error: 'Failed to update site', details: error.message });
   }
 });
 
