@@ -14,7 +14,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://your-domain.vercel.app',
   'https://saas-msjn.onrender.com',
-  'https://frontend-peach-ten-86.vercel.app'
+  'https://frontend-peach-ten-86.vercel.app' 
 ];
 app.use(cors({
   origin: function (origin, callback) {
