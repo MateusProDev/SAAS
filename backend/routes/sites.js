@@ -257,7 +257,7 @@ router.put('/:siteId', verifyToken, async (req, res) => {
       } else {
         await globalDocRef.set(globalUpdate, { merge: true });
         console.log(`[PUT] Global doc criado (merge): ${req.params.siteId}`, globalUpdate);
-      }
+      } 
     }
 
     res.json({ message: 'Site updated successfully' });
@@ -294,6 +294,24 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
 // GET /site/:slug - Endpoint público para visualizar sites publicados
 router.get('/public/:slug', async (req, res) => {
   try {
+    // 1. Buscar em published_sites (prioridade)
+    const publishedSnap = await admin.firestore()
+      .collection('published_sites')
+      .where('slug', '==', req.params.slug)
+      .limit(1)
+      .get();
+    if (!publishedSnap.empty) {
+      const doc = publishedSnap.docs[0];
+      const data = doc.data();
+      return res.json({
+        id: doc.id,
+        ...data,
+        slug: data.slug,
+        content: data.content || ''
+      });
+    }
+
+    // 2. Fallback: buscar em sites padrão
     const snapshot = await admin.firestore()
       .collection('sites')
       .where('slug', '==', req.params.slug)
@@ -322,7 +340,8 @@ router.get('/public/:slug', async (req, res) => {
     res.json({
       id: siteData.id,
       ...siteData.data(),
-      slug: siteGlobal.slug
+      slug: siteGlobal.slug,
+      content: siteData.data().content || ''
     });
   } catch (error) {
     console.error('Error fetching public site:', error);

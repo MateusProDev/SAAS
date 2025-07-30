@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSitesFirestore } from '../hooks/useSitesFirestore'
+import api from '../lib/api'
 import { templates } from '../templates'
 // ...existing code...
 // ...existing code...
@@ -14,7 +14,8 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
   const [description, setDescription] = useState('')
   const [templateId, setTemplateId] = useState(templates[0].id)
   const [loading, setLoading] = useState(false)
-  const { createSite } = useSitesFirestore()
+  const [successSlug, setSuccessSlug] = useState<string | null>(null)
+  // Removido createSite não utilizado
   // ...existing code...
   // ...existing code...
 
@@ -31,20 +32,56 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
       html = html.replace(/\{\{title\}\}/g, title.trim())
                  .replace(/\{\{description\}\}/g, description.trim())
                  .replace(/\{\{year\}\}/g, new Date().getFullYear().toString())
-      await createSite(title.trim(), description.trim(), html)
+      // Chama API diretamente para pegar slug na resposta
+      const res = await api.post('/sites', {
+        name: title.trim(),
+        template: templateId,
+        description: description.trim(),
+        content: html
+      })
+      setSuccessSlug(res.data.slug)
       setTitle('')
       setDescription('')
       setTemplateId(templates[0].id)
-      onClose()
-    } catch (error) {
+      // onClose() será chamado após fechar modal de sucesso
+    } catch (error: any) {
       console.error('Erro ao criar site no Firestore:', error)
-      alert('Erro ao criar site. Tente novamente.')
+      alert(error?.response?.data?.error || 'Erro ao criar site. Tente novamente.')
     } finally {
       setLoading(false)
     }
   }
 
   if (!isOpen) return null
+
+  // Modal de sucesso com link público
+  if (successSlug) {
+    const publicUrl = `${window.location.origin}/site/${successSlug}`
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 text-center">
+          <h2 className="text-xl font-bold mb-4 text-green-700">Site criado com sucesso!</h2>
+          <div className="mb-2">Seu link público:</div>
+          <div className="mb-4">
+            <input
+              className="w-full border px-2 py-1 rounded text-center"
+              value={publicUrl}
+              readOnly
+              onClick={e => (e.target as HTMLInputElement).select()}
+            />
+            <button
+              className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+              onClick={() => {navigator.clipboard.writeText(publicUrl)}}
+            >Copiar link</button>
+          </div>
+          <button
+            className="mt-2 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-900"
+            onClick={() => { setSuccessSlug(null); onClose(); }}
+          >Fechar</button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -69,6 +106,7 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
                   key={t.id}
                   className={`border rounded p-2 flex flex-col items-center w-28 h-28 ${templateId === t.id ? 'border-blue-500 ring-2 ring-blue-300' : 'border-gray-300'}`}
                   onClick={() => setTemplateId(t.id)}
+                  disabled={loading}
                 >
                   <img src={t.thumbnail} alt={t.name} className="w-10 h-10 mb-2" />
                   <span className="text-xs text-center">{t.name}</span>
@@ -88,6 +126,7 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ex: Minha Empresa"
               maxLength={100}
+              disabled={loading}
             />
           </div>
 
@@ -103,6 +142,7 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
               placeholder="Descreva sobre o que é seu site"
               rows={3}
               maxLength={500}
+              disabled={loading}
             />
           </div>
 
@@ -111,6 +151,7 @@ const CreateSiteModal: React.FC<CreateSiteModalProps> = ({ isOpen, onClose }) =>
               type="button"
               onClick={onClose}
               className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+              disabled={loading}
             >
               Cancelar
             </button>

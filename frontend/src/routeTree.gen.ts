@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SiteSlugRouteImport } from './routes/site/$slug'
 import { Route as PreviewSiteIdRouteImport } from './routes/preview/$siteId'
 import { Route as EditorSiteIdNewRouteImport } from './routes/editor/$siteId.new'
 
@@ -36,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SiteSlugRoute = SiteSlugRouteImport.update({
+  id: '/site/$slug',
+  path: '/site/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PreviewSiteIdRoute = PreviewSiteIdRouteImport.update({
   id: '/preview/$siteId',
   path: '/preview/$siteId',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/preview/$siteId': typeof PreviewSiteIdRoute
+  '/site/$slug': typeof SiteSlugRoute
   '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/preview/$siteId': typeof PreviewSiteIdRoute
+  '/site/$slug': typeof SiteSlugRoute
   '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/preview/$siteId': typeof PreviewSiteIdRoute
+  '/site/$slug': typeof SiteSlugRoute
   '/editor/$siteId/new': typeof EditorSiteIdNewRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/preview/$siteId'
+    | '/site/$slug'
     | '/editor/$siteId/new'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/preview/$siteId'
+    | '/site/$slug'
     | '/editor/$siteId/new'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/preview/$siteId'
+    | '/site/$slug'
     | '/editor/$siteId/new'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   PreviewSiteIdRoute: typeof PreviewSiteIdRoute
+  SiteSlugRoute: typeof SiteSlugRoute
   EditorSiteIdNewRoute: typeof EditorSiteIdNewRoute
 }
 
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/site/$slug': {
+      id: '/site/$slug'
+      path: '/site/$slug'
+      fullPath: '/site/$slug'
+      preLoaderRoute: typeof SiteSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/preview/$siteId': {
       id: '/preview/$siteId'
       path: '/preview/$siteId'
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   PreviewSiteIdRoute: PreviewSiteIdRoute,
+  SiteSlugRoute: SiteSlugRoute,
   EditorSiteIdNewRoute: EditorSiteIdNewRoute,
 }
 export const routeTree = rootRouteImport

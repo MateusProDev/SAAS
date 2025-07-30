@@ -109,14 +109,22 @@ function DashboardComponent() {
                   </button>
                   {site.isPublished ? (
                     site.slug ? (
-                      <a
-                        href={`/api/sites/public/${site.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded text-sm transition-colors"
-                      >
-                        Ver Publicado
-                      </a>
+                      <div className="flex flex-col items-start gap-1">
+                        <a
+                          href={`/site/${site.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                        >
+                          Ver Publicado
+                        </a>
+                        <button
+                          className="text-xs text-gray-600 underline hover:text-blue-700 text-left"
+                          onClick={() => navigator.clipboard.writeText(`${window.location.origin}/site/${site.slug}`)}
+                        >
+                          Copiar link público
+                        </button>
+                      </div>
                     ) : (
                       <span className="text-xs text-red-600">Slug não encontrado</span>
                     )
