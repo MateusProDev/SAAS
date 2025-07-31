@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
+// Update the import path below to the correct location of useRefreshSitesContext
+import { useRefreshSites } from '../../../src/hooks/useRefreshSitesContext';
 import { useRouter } from 'next/navigation';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
@@ -15,6 +17,7 @@ export default function NewSitePage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const refreshSites = useRefreshSites();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -46,6 +49,7 @@ export default function NewSitePage() {
         updatedAt: serverTimestamp(),
         userId: user.uid
       });
+      if (refreshSites) await refreshSites();
       router.push('/dashboard');
     } catch (err: any) {
       setError('Erro ao criar site.');

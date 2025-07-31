@@ -9,7 +9,7 @@ import { deleteSite } from '../../src/hooks/deleteSite';
 
 export default function DashboardPage() {
   const { user, loading: loadingUser } = useFirebaseAuthUser();
-  const { sites, loading: loadingSites } = useUserSitesFirestore(user?.uid || "");
+  const { sites, loading: loadingSites, refreshSites } = useUserSitesFirestore(user?.uid || "");
 
   const [deleting, setDeleting] = useState<string | null>(null);
 
@@ -19,7 +19,7 @@ export default function DashboardPage() {
     setDeleting(siteId);
     await deleteSite(user.uid, siteId);
     setDeleting(null);
-    window.location.reload();
+    await refreshSites(); // Atualiza cache e UI sem reload
   }
 
   return (
