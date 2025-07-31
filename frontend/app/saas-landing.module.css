@@ -1,0 +1,425 @@
+
+/* =====================
+   LANDING PAGE CSS PRO
+   ===================== */
+
+.home-root {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #f5f6fa 0%, #e0e7ff 100%);
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* NAVBAR */
+.home-navbar {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0 24px;
+  background: transparent;
+  position: relative;
+  z-index: 10;
+}
+.home-navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.home-navbar-title {
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: #4a4e69;
+  letter-spacing: 1px;
+}
+.home-navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  margin-left: 12px;
+  z-index: 30;
+}
+.home-navbar-toggle-bar {
+  display: block;
+  width: 28px;
+  height: 4px;
+  margin: 5px 0;
+  background: #4a4e69;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.home-navbar-links {
+  display: flex;
+  gap: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  align-items: center;
+}
+.home-navbar-links a {
+  color: #4a4e69;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+  font-weight: 600;
+}
+.home-navbar-links a:hover,
+.home-navbar-links a:focus {
+  background: #e0e7ff;
+  color: #9f86c0;
+  outline: none;
+}
+.home-navbar-links-open {
+  display: flex !important;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 4px 24px #0001;
+  z-index: 20;
+  gap: 0;
+  padding: 24px 0;
+  animation: navbarFadeIn 0.3s;
+}
+
+/* HERO */
+.home-hero-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 0 0 0;
+  gap: 48px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.home-hero-text {
+  max-width: 540px;
+  flex: 1 1 340px;
+  padding: 0 12px;
+}
+.home-hero-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #4a4e69;
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+.home-hero-sub {
+  color: #22223b;
+  font-size: 1.18rem;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.home-hero-benefits {
+  color: #4a4e69;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 28px;
+  padding-left: 0;
+  list-style: none;
+}
+.home-hero-benefits li {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+.home-hero-cta {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.home-hero-cta a {
+  background: linear-gradient(90deg, #4a4e69 0%, #9f86c0 100%);
+  color: #fff;
+  padding: 14px 36px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 1px 4px #0001;
+  text-decoration: none;
+  transition: opacity 0.2s, box-shadow 0.2s;
+  border: none;
+  outline: none;
+  position: relative;
+  z-index: 1;
+}
+.home-hero-cta a.secondary {
+  background: linear-gradient(90deg, #9f86c0 0%, #4a4e69 100%);
+}
+.home-hero-cta a:focus {
+  outline: 2px solid #9f86c0;
+  outline-offset: 2px;
+}
+.home-hero-cta a:hover {
+  opacity: 0.85;
+  box-shadow: 0 4px 16px #9f86c055;
+}
+.home-hero-img {
+  flex: 1 1 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 260px;
+  padding: 0 12px;
+}
+
+/* SECTION */
+.home-section {
+  margin: 64px auto 0 auto;
+  max-width: 1200px;
+  padding: 0 16px;
+  width: 100%;
+}
+.home-section-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #4a4e69;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.home-carousel {
+  margin-bottom: 32px;
+}
+.home-templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  justify-items: center;
+  align-items: stretch;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.home-template-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 32px 24px;
+  min-width: 220px;
+  max-width: 340px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e0e7ff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+.home-template-card:hover {
+  box-shadow: 0 6px 32px #9f86c055;
+  transform: translateY(-4px) scale(1.03);
+  border-color: #9f86c0;
+}
+.home-section-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+.home-section-cta a {
+  background: linear-gradient(90deg, #9f86c0 0%, #4a4e69 100%);
+  color: #fff;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 1px 4px #0001;
+  text-decoration: none;
+  transition: opacity 0.2s, box-shadow 0.2s;
+  border: none;
+  outline: none;
+  position: relative;
+  z-index: 1;
+}
+.home-section-cta a:focus {
+  outline: 2px solid #9f86c0;
+  outline-offset: 2px;
+}
+.home-section-cta a:hover {
+  opacity: 0.85;
+  box-shadow: 0 4px 16px #9f86c055;
+}
+
+/* BENEFITS */
+.home-benefits-section {
+  margin: 64px auto 0 auto;
+  max-width: 1200px;
+  padding: 0 24px;
+}
+.home-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  justify-items: center;
+  align-items: stretch;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.home-benefit-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 32px 24px;
+  min-width: 180px;
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+  border: 1px solid #e0e7ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+.home-benefit-card:hover {
+  box-shadow: 0 6px 32px #9f86c055;
+  transform: translateY(-4px) scale(1.03);
+  border-color: #9f86c0;
+}
+
+/* FOOTER */
+.home-footer {
+  margin-top: 64px;
+  padding: 32px 0 16px 0;
+  background: #f5f6fa;
+  text-align: center;
+  color: #4a4e69;
+  border-top: 1px solid #e0e7ff;
+}
+.home-footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+.home-footer-social-whatsapp {
+  color: #25d366;
+  font-size: 2rem;
+  transition: color 0.2s;
+}
+.home-footer-social-instagram {
+  color: #e1306c;
+  font-size: 2rem;
+  transition: color 0.2s;
+}
+.home-footer-social-facebook {
+  color: #1877f3;
+  font-size: 2rem;
+  transition: color 0.2s;
+}
+.home-footer-social-whatsapp:hover {
+  color: #128c7e;
+}
+.home-footer-social-instagram:hover {
+  color: #c13584;
+}
+.home-footer-social-facebook:hover {
+  color: #0e5aab;
+}
+
+/* ICONS */
+.icon-left {
+  margin-right: 8px;
+  vertical-align: -2px;
+}
+.icon-right {
+  margin-left: 8px;
+  vertical-align: -2px;
+}
+.icon-title {
+  margin-right: 10px;
+  color: #9f86c0;
+  vertical-align: -3px;
+}
+.icon-hero {
+  color: #9f86c0;
+  margin-right: 12px;
+  font-size: 1.2em;
+  vertical-align: -3px;
+}
+.icon-check {
+  color: #4a4e69;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+.icon-benefit {
+  color: #9f86c0;
+  margin-bottom: 8px;
+  font-size: 32px;
+  display: inline-block;
+}
+
+/* RESPONSIVE NAVBAR & LAYOUT */
+@media (max-width: 900px) {
+  .home-navbar {
+    padding: 12px 8px 0 8px;
+  }
+  .home-navbar-toggle {
+    display: block;
+  }
+  .home-navbar-links {
+    display: none;
+  }
+  .home-navbar-links-open {
+    display: flex !important;
+  }
+  .home-hero-content {
+    flex-direction: column;
+    gap: 32px;
+    padding: 32px 0 0 0;
+  }
+  .home-hero-img {
+    margin-top: 12px;
+  }
+}
+@media (max-width: 700px) {
+  .home-section, .home-benefits-section {
+    padding: 0 2px;
+  }
+  .home-section-title {
+    font-size: 1.2rem;
+  }
+}
+@media (max-width: 500px) {
+  .home-navbar-title {
+    font-size: 1rem;
+  }
+  .home-hero-title {
+    font-size: 1.1rem;
+  }
+  .home-section-title {
+    font-size: 1rem;
+  }
+  .home-template-card, .home-benefit-card {
+    padding: 14px 4px;
+    min-width: 120px;
+    max-width: 98vw;
+  }
+  .home-navbar-toggle {
+    padding: 4px 6px;
+  }
+  .home-navbar-toggle-bar {
+    width: 22px;
+    height: 3px;
+    margin: 3px 0;
+  }
+}
+@keyframes navbarFadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,18 +1,28 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { useUserSitesFirestore } from '../../src/hooks/useUserSitesFirestore';
 import { useFirebaseAuthUser } from '../../src/hooks/useFirebaseAuthUser';
 import { deleteSite } from '../../src/hooks/deleteSite';
 
+import { useRouter } from 'next/navigation';
+
 export default function DashboardPage() {
   const { user, loading: loadingUser } = useFirebaseAuthUser();
+  const router = useRouter();
   const { sites, loading: loadingSites, refreshSites } = useUserSitesFirestore(user?.uid || "");
   const [deleting, setDeleting] = useState<string | null>(null);
   const [logoutLoading, setLogoutLoading] = useState(false);
+
+  // Protege a rota: se não autenticado e não carregando, redireciona para login
+  useEffect(() => {
+    if (!loadingUser && !user) {
+      router.replace('/login');
+    }
+  }, [user, loadingUser, router]);
 
   async function handleDelete(siteId: string) {
     if (!user?.uid) return;

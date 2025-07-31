@@ -11,11 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pt-BR">
       <body>
-        <nav style={{ padding: 16, background: '#f5f5f5', marginBottom: 24 }}>
-          <Link href="/dashboard" style={{ marginRight: 16 }}>Dashboard</Link>
-          <Link href="/sites" style={{ marginRight: 16 }}>Sites</Link>
-          <Link href="/sites/new">Novo Site</Link>
-        </nav>
+        {/* Navbar removida do layout global. Navegação só aparece no dashboard. */}
         <main>{children}</main>
       </body>
     </html>
