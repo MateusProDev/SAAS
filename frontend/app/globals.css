@@ -1,6 +1,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Cores principais */
+  --primary: #2ecc71;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,14 +28,23 @@ body {
 }
 
 * {
-  box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 a {
-  color: inherit;
   text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+ul {
+  list-style: none;
 }
 
 @media (prefers-color-scheme: dark) {
