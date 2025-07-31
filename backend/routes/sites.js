@@ -222,7 +222,7 @@ router.post('/', verifyToken, async (req, res) => {
       .collection('sites')
       .doc(siteRef.id)
       .set({
-        userId: req.user.uid,
+        userId: req.user.uid, 
         slug,
         name,
         template,
