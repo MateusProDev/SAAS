@@ -106,7 +106,7 @@ export default function Home() {
       <nav className={styles["home-navbar"]}>
         <div className={styles["home-navbar-logo"]}>
           <img src="/window.svg" alt="Logo" style={{ height: 32 }} />
-          <span className={styles["home-navbar-title"]}>SaaS Website Builder</span>
+          <span className={styles["home-navbar-title"]}>MabelSoftware</span>
         </div>
         <button
           className={openMenu ? styles["home-navbar-toggle"] + " open" : styles["home-navbar-toggle"]}
@@ -145,7 +145,7 @@ export default function Home() {
               Monte seu site profissional em minutos
             </h1>
             <p className={styles["home-hero-sub"]}>
-              O <b>SaaS Website Builder</b> é a plataforma mais rápida e fácil para criar sites incríveis para negócios, barbearias, agências e muito mais.<br />
+              A <b>MabelSoftware</b> é a plataforma mais rápida e fácil para criar sites incríveis para negócios, barbearias, agências e muito mais.<br />
               <span style={{ color: "#9f86c0", fontWeight: 600 }}>Sem código. Sem complicação. 100% responsivo.</span>
             </p>
             <ul className={styles["home-hero-benefits"]}>
@@ -295,14 +295,80 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
+      {/* Footer Moderno */}
       <footer className={styles["home-footer"]}>
-        <div className={styles["home-footer-social"]}>
-          <a href="https://wa.me/5599999999999" target="_blank" rel="noopener" aria-label="WhatsApp" className={styles["home-footer-social-whatsapp"]} tabIndex={0}><FaWhatsapp /></a>
-          <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" className={styles["home-footer-social-instagram"]} tabIndex={0}><FaInstagram /></a>
-          <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" className={styles["home-footer-social-facebook"]} tabIndex={0}><FaFacebookF /></a>
+        <div className={styles["home-footer-content"]}>
+          <div className={styles["home-footer-main"]}>
+            <div className={styles["home-footer-brand"]}>
+              <div className={styles["home-footer-logo"]}>
+                <img src="/window.svg" alt="MabelSoftware Logo" style={{ height: 40 }} />
+                <span className={styles["home-footer-brand-name"]}>MabelSoftware</span>
+              </div>
+              <p className={styles["home-footer-description"]}>
+                Crie sites profissionais em minutos com nossa plataforma inovadora. 
+                Sem código, sem complicação. Transforme sua ideia em realidade.
+              </p>
+              <div className={styles["home-footer-social"]}>
+                <a href="https://wa.me/5599999999999" target="_blank" rel="noopener" aria-label="WhatsApp" className={styles["home-footer-social-whatsapp"]} tabIndex={0}><FaWhatsapp /></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" className={styles["home-footer-social-instagram"]} tabIndex={0}><FaInstagram /></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" className={styles["home-footer-social-facebook"]} tabIndex={0}><FaFacebookF /></a>
+              </div>
+            </div>
+            
+            <div className={styles["home-footer-links"]}>
+              <div className={styles["home-footer-column"]}>
+                <h4>Produto</h4>
+                <ul>
+                  <li><Link href="#templates">Templates</Link></li>
+                  <li><Link href="#planos">Planos</Link></li>
+                  <li><Link href="/register">Começar Grátis</Link></li>
+                  <li><Link href="/login">Entrar</Link></li>
+                </ul>
+              </div>
+              
+              <div className={styles["home-footer-column"]}>
+                <h4>Suporte</h4>
+                <ul>
+                  <li><Link href="#faq">FAQ</Link></li>
+                  <li><a href="mailto:suporte@mabelsoftware.com">Email</a></li>
+                  <li><a href="https://wa.me/5599999999999">WhatsApp</a></li>
+                  <li><Link href="/help">Central de Ajuda</Link></li>
+                </ul>
+              </div>
+              
+              <div className={styles["home-footer-column"]}>
+                <h4>Empresa</h4>
+                <ul>
+                  <li><Link href="/about">Sobre</Link></li>
+                  <li><Link href="/blog">Blog</Link></li>
+                  <li><Link href="/careers">Carreiras</Link></li>
+                  <li><Link href="/contact">Contato</Link></li>
+                </ul>
+              </div>
+              
+              <div className={styles["home-footer-column"]}>
+                <h4>Legal</h4>
+                <ul>
+                  <li><Link href="/privacy">Privacidade</Link></li>
+                  <li><Link href="/terms">Termos</Link></li>
+                  <li><Link href="/cookies">Cookies</Link></li>
+                  <li><Link href="/gdpr">LGPD</Link></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div className={styles["home-footer-bottom"]}>
+            <div className={styles["home-footer-copyright"]}>
+              <p>&copy; {new Date().getFullYear()} MabelSoftware. Todos os direitos reservados.</p>
+            </div>
+            <div className={styles["home-footer-badges"]}>
+              <span className={styles["home-footer-badge"]}>🔒 SSL Seguro</span>
+              <span className={styles["home-footer-badge"]}>⚡ 99.9% Uptime</span>
+              <span className={styles["home-footer-badge"]}>🌍 CDN Global</span>
+            </div>
+          </div>
         </div>
-        &copy; {new Date().getFullYear()} SaaS Website Builder. Todos os direitos reservados.
       </footer>
     </div>
   );
