@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import styles from "./saas-landing.module.css";
+import styles from "./saas-landing-improved.module.css";
 import { FaRocket, FaMagic, FaMobileAlt, FaUserShield, FaRegSmile, FaCheckCircle, FaRegLightbulb, FaRegStar, FaArrowRight, FaWhatsapp, FaInstagram, FaFacebookF } from "react-icons/fa";
 import { MdOutlineDesignServices, MdOutlineSupportAgent } from "react-icons/md";
 import CarouselClient from "../src/components/CarouselClient";
+import FAQSection from "../src/components/FAQSection";
 
 export default function Home() {
   const [openMenu, setOpenMenu] = useState(false);
@@ -157,24 +158,27 @@ export default function Home() {
         {/* FAQ Section */}
         <section className={styles["home-section"]} id="faq">
           <h2 className={styles["home-section-title"]}><span className={styles["icon-title"]}><FaRegLightbulb /></span>Dúvidas Frequentes</h2>
-          <div style={{ maxWidth: 800, margin: "0 auto", color: "#4a4e69", fontSize: 18, lineHeight: 1.7 }}>
-            <details style={{ marginBottom: 12 }}>
-              <summary style={{ cursor: "pointer", fontWeight: 700 }}>Preciso saber programar?</summary>
-              <div>Não! O editor é 100% visual e intuitivo.</div>
-            </details>
-            <details style={{ marginBottom: 12 }}>
-              <summary style={{ cursor: "pointer", fontWeight: 700 }}>Posso usar domínio próprio?</summary>
-              <div>Sim, planos pagos permitem domínio personalizado.</div>
-            </details>
-            <details style={{ marginBottom: 12 }}>
-              <summary style={{ cursor: "pointer", fontWeight: 700 }}>Tem suporte?</summary>
-              <div>Sim, suporte por email, chat e WhatsApp para todos os planos.</div>
-            </details>
-            <details style={{ marginBottom: 12 }}>
-              <summary style={{ cursor: "pointer", fontWeight: 700 }}>Posso migrar de plano?</summary>
-              <div>Pode mudar de plano a qualquer momento, sem burocracia.</div>
-            </details>
-          </div>
+          <FAQSection 
+            faqItems={[
+              {
+                question: "Preciso saber programar?",
+                answer: "Não! O editor é 100% visual e intuitivo."
+              },
+              {
+                question: "Posso usar domínio próprio?",
+                answer: "Sim, planos pagos permitem domínio personalizado."
+              },
+              {
+                question: "Tem suporte?",
+                answer: "Sim, suporte por email, chat e WhatsApp para todos os planos."
+              },
+              {
+                question: "Posso migrar de plano?",
+                answer: "Pode mudar de plano a qualquer momento, sem burocracia."
+              }
+            ]}
+            itemClassName={styles["home-faq-item"]}
+          />
         </section>
       </main>
 
