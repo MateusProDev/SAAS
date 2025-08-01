@@ -4,7 +4,6 @@ import Link from "next/link";
 import styles from "./saas-landing-improved.module.css";
 import { FaRocket, FaMagic, FaMobileAlt, FaUserShield, FaRegSmile, FaCheckCircle, FaRegLightbulb, FaRegStar, FaArrowRight, FaWhatsapp, FaInstagram, FaFacebookF } from "react-icons/fa";
 import { MdOutlineDesignServices, MdOutlineSupportAgent } from "react-icons/md";
-import CarouselClient from "../src/components/CarouselClient";
 import FAQSection from "../src/components/FAQSection";
 
 export default function Home() {
@@ -76,10 +75,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Carrossel de Templates */}
+        {/* Templates Responsivos - Nova Implementação */}
         <section className={styles["home-section"]} id="templates">
           <h2 className={styles["home-section-title"]}><span className={styles["icon-title"]}><FaMagic /></span>Templates Profissionais</h2>
-          <CarouselClient>
+          <div className={styles["templates-container"]}>
             <div className={styles["home-template-card"] + " " + styles["home-template-card-agencia"]}>
               <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Agência de Turismo" style={{ borderRadius: 12, marginBottom: 12 }} />
               <h3><span className={styles["icon-left"]}><MdOutlineDesignServices /></span>Agência de Turismo</h3>
@@ -100,7 +99,7 @@ export default function Home() {
               <h3><span className={styles["icon-left"]}><MdOutlineDesignServices /></span>Landing Page</h3>
               <p>Capte leads e promova produtos ou eventos com páginas de alta conversão.</p>
             </div>
-          </CarouselClient>
+          </div>
           <div className={styles["home-section-cta"]}>
             <Link href="/register">Quero meu site agora <span className={styles["icon-right"]}><FaArrowRight /></span></Link>
           </div>
