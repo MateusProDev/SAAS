@@ -1,0 +1,1523 @@
+/* Site Edit Page - Premium Design */
+
+.editRoot {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f6fa 0%, #e0e7ff 100%);
+  color: #374151;
+}
+
+/* === HEADER === */
+.editHeader {
+  background: #111827;
+  color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.editHeaderContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.editTitle {
+  font-size: 1.75rem;
+  font-weight: 900;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.editActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.editBackLink,
+.editPreviewLink {
+  color: #d1d5db;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editBackLink:hover,
+.editPreviewLink:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* === MAIN CONTENT === */
+.editMain {
+  max-width: 1400px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 3rem;
+  align-items: start;
+}
+
+.editFormSection {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.editFormTitle {
+  color: #111827;
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.editFormTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 2px;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.editFieldGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.editField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.editFieldFull {
+  grid-column: 1 / -1;
+}
+
+.editLabel {
+  color: #111827;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.editInput,
+.editTextarea {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  font-size: 1rem;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  outline: none;
+}
+
+.editInput:focus,
+.editTextarea:focus {
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  transform: translateY(-1px);
+}
+
+.editTextarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* === TEMPLATES === */
+.editTemplateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.editTemplateCard {
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.editTemplateCard:hover {
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+  transform: translateY(-2px);
+}
+
+.editTemplateCardActive {
+  border-color: #6366f1 !important;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.3) !important;
+  transform: translateY(-3px) !important;
+}
+
+.editTemplateCardActive .editTemplateName,
+.editTemplateCardActive .editTemplateDescription,
+.editTemplateCardActive .editTemplateFeature {
+  color: #ffffff !important;
+}
+
+.editTemplateIcon {
+  font-size: 2.5rem;
+  min-width: 60px;
+  height: 60px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.editTemplateCardActive .editTemplateIcon {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.editTemplateInfo {
+  flex: 1;
+}
+
+.editTemplateName {
+  color: #111827;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.editTemplateDescription {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem 0;
+}
+
+.editTemplateFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.editTemplateFeature {
+  color: #059669;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.editTemplateCardActive .editTemplateFeature {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* === SERVICES === */
+.editServicesSection {
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 3px solid #f3f4f6;
+}
+
+.editServicesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+}
+
+.editServicesHeaderInfo {
+  flex: 1;
+}
+
+.editServicesTitle {
+  color: #111827;
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.editServicesSubtitle {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.editAddServiceBtn,
+.editAddFirstServiceBtn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.editAddServiceBtn:hover,
+.editAddFirstServiceBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.editServicesList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.editServiceItem {
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.editServiceItem:hover {
+  border-color: #6366f1;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+  transform: translateY(-2px);
+}
+
+.editServiceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.editServiceBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.editServiceNumber {
+  background: rgba(255, 255, 255, 0.2);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.editServiceLabel {
+  font-size: 0.95rem;
+}
+
+.editRemoveServiceBtn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #ffffff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.editRemoveServiceBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+}
+
+.editServiceFields {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.editServiceFieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.editServiceFieldLabel {
+  color: #111827;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.editServiceInput,
+.editServiceTextarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  outline: none;
+}
+
+.editServiceInput:focus,
+.editServiceTextarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  transform: translateY(-1px);
+}
+
+.editServiceTextarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.editServicePreview {
+  background: #f8fafc;
+  border: 2px dashed #d1d5db;
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: sticky;
+  top: 20px;
+}
+
+.editServicePreviewHeader {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.editServicePreviewCard {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.editServicePreviewIcon {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.editServicePreviewContent {
+  flex: 1;
+}
+
+.editServicePreviewTitle {
+  color: #111827;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.editServicePreviewDesc {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* === EMPTY STATE === */
+.editServicesEmpty {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 2px dashed #cbd5e1;
+  border-radius: 20px;
+  margin: 1rem 0;
+}
+
+.editServicesEmptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.editServicesEmptyTitle {
+  color: #374151;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem 0;
+}
+
+.editServicesEmptyDesc {
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin: 0 0 2rem 0;
+}
+
+/* === SIDEBAR === */
+.editSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 120px;
+}
+
+.editSaveSection {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+}
+
+.editSaveTitle {
+  color: #111827;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editSaveBtn {
+  width: 100%;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #ffffff;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  margin-bottom: 1rem;
+}
+
+.editSaveBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.editSaveBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.editDeleteBtn {
+  width: 100%;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #ffffff;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.editDeleteBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.editInfoSection {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.editInfoTitle {
+  color: #111827;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editInfoItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.9rem;
+}
+
+.editInfoItem:last-child {
+  border-bottom: none;
+}
+
+.editInfoLabel {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.editInfoValue {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* === LOADING === */
+.editLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: #6b7280;
+  font-size: 1.2rem;
+  font-weight: 500;
+  gap: 0.75rem;
+}
+
+.editError {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin: 1rem 0;
+  font-weight: 500;
+}
+
+.editSuccess {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin: 1rem 0;
+  font-weight: 500;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 1024px) {
+  .editMain {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 0 1.5rem;
+  }
+  
+  .editSidebar {
+    position: static;
+    order: -1;
+  }
+  
+  .editFieldGroup {
+    grid-template-columns: 1fr;
+  }
+  
+  .editTemplateGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .editServiceFields {
+    grid-template-columns: 1fr;
+  }
+  
+  .editServicePreview {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .editHeaderContent {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 1rem;
+  }
+  
+  .editActions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .editMain {
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  .editFormSection,
+  .editSaveSection,
+  .editInfoSection {
+    padding: 2rem 1.5rem;
+  }
+  
+  .editTemplateCard {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .editTemplateIcon {
+    align-self: center;
+  }
+  
+  .editServicesHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .editServicesHeaderInfo {
+    text-align: center;
+  }
+  
+  .editServiceItem {
+    padding: 1.5rem 1rem;
+  }
+  
+  .editServiceHeader {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .editServiceBadge {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .editMain {
+    padding: 0 0.75rem;
+  }
+  
+  .editFormSection,
+  .editSaveSection,
+  .editInfoSection {
+    padding: 1.5rem 1rem;
+  }
+  
+  .editTemplateCard {
+    padding: 1.25rem;
+  }
+  
+  .editServiceItem {
+    padding: 1.25rem 0.875rem;
+  }
+}
+
+/* === SIDEBAR === */
+.edit-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 120px;
+}
+
+.edit-save-section {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+}
+
+.edit-save-title {
+  color: #111827;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-save-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #ffffff;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.edit-save-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.edit-save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.edit-save-btn:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.edit-save-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.edit-delete-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #ffffff;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.edit-delete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.edit-info-section {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.edit-info-title {
+  color: #111827;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.9rem;
+}
+
+.edit-info-item:last-child {
+  border-bottom: none;
+}
+
+.edit-info-label {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.edit-info-value {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* === LOADING E ESTADOS === */
+.edit-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: #6b7280;
+  font-size: 1.2rem;
+  font-weight: 500;
+  gap: 0.75rem;
+}
+
+.edit-error {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin: 1rem 0;
+  font-weight: 500;
+}
+
+.edit-success {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin: 1rem 0;
+  font-weight: 500;
+}
+
+/* === RESPONSIVIDADE TABLET === */
+@media (max-width: 1024px) {
+  .edit-header-content {
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .edit-title {
+    font-size: 1.6rem;
+  }
+  
+  .edit-main {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 2.5rem auto;
+    padding: 0 1.5rem;
+  }
+  
+  .edit-sidebar {
+    position: static;
+    order: -1;
+  }
+  
+  .edit-field-group {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* Template responsivo */
+  .edit-template-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  
+  .edit-template-card {
+    min-height: auto;
+    padding: 1.25rem;
+  }
+  
+  .edit-template-icon {
+    font-size: 2rem;
+    min-width: 50px;
+    height: 50px;
+  }
+  
+  /* Serviços responsivo */
+  .edit-service-fields {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .edit-service-preview {
+    position: static;
+    margin-top: 1rem;
+  }
+  
+  .edit-services-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+}
+
+/* === RESPONSIVIDADE MOBILE === */
+@media (max-width: 768px) {
+  .edit-header-content {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+    text-align: center;
+  }
+  
+  .edit-title {
+    font-size: 1.4rem;
+  }
+  
+  .edit-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .edit-back-link,
+  .edit-preview-link {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .edit-main {
+    margin: 2rem auto;
+    padding: 0 1rem;
+    gap: 1.5rem;
+  }
+  
+  .edit-form-section,
+  .edit-save-section,
+  .edit-info-section {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+  
+  .edit-form-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .edit-form {
+    gap: 1.5rem;
+  }
+  
+  /* Template mobile */
+  .edit-template-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .edit-template-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    min-height: auto;
+  }
+  
+  .edit-template-icon {
+    align-self: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .edit-template-selector {
+    align-self: center;
+    margin-top: 1rem;
+  }
+  
+  .edit-template-features {
+    align-items: center;
+  }
+  
+  /* Serviços mobile */
+  .edit-services-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .edit-services-header-info {
+    text-align: center;
+  }
+  
+  .edit-add-service-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .edit-service-item {
+    padding: 1.5rem 1rem;
+  }
+  
+  .edit-service-header {
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .edit-service-badge {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .edit-service-fields {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .edit-service-preview {
+    order: -1;
+    margin-bottom: 1rem;
+    margin-top: 0;
+  }
+}
+
+/* === RESPONSIVIDADE MOBILE PEQUENO === */
+@media (max-width: 480px) {
+  .edit-header-content {
+    padding: 1.25rem 0.75rem;
+  }
+  
+  .edit-title {
+    font-size: 1.3rem;
+  }
+  
+  .edit-main {
+    margin: 1.5rem auto;
+    padding: 0 0.75rem;
+  }
+  
+  .edit-form-section,
+  .edit-save-section,
+  .edit-info-section {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+  }
+  
+  .edit-form-title {
+    font-size: 1.3rem;
+  }
+  
+  .edit-input,
+  .edit-textarea,
+  .edit-select {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+  
+  /* Template mobile pequeno */
+  .edit-template-card {
+    padding: 1.25rem 0.875rem;
+  }
+  
+  .edit-template-icon {
+    font-size: 1.8rem;
+    min-width: 45px;
+    height: 45px;
+  }
+  
+  .edit-template-name {
+    font-size: 1.1rem;
+  }
+  
+  .edit-template-description {
+    font-size: 0.85rem;
+  }
+  
+  .edit-template-feature {
+    font-size: 0.75rem;
+  }
+  
+  /* Serviços mobile pequeno */
+  .edit-service-item {
+    padding: 1.25rem 0.875rem;
+    border-radius: 16px;
+  }
+  
+  .edit-service-badge {
+    padding: 0.625rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .edit-service-number {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+  }
+  
+  .edit-service-input,
+  .edit-service-textarea {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .edit-service-preview-card {
+    padding: 1rem;
+  }
+  
+  .edit-service-preview-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+  
+  .edit-service-preview-title {
+    font-size: 1rem;
+  }
+  
+  .edit-service-preview-desc {
+    font-size: 0.85rem;
+  }
+  
+  .edit-services-empty {
+    padding: 2rem 1rem;
+  }
+  
+  .edit-services-empty-icon {
+    font-size: 3rem;
+  }
+  
+  .edit-services-empty-title {
+    font-size: 1.3rem;
+  }
+  
+  .edit-services-empty-desc {
+    font-size: 1rem;
+  }
+  
+  .edit-save-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .edit-delete-btn {
+    padding: 0.8rem 1.25rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* === RESPONSIVIDADE MUITO PEQUENA === */
+@media (max-width: 360px) {
+  .edit-header-content {
+    padding: 1rem 0.5rem;
+  }
+  
+  .edit-main {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+  
+  .edit-form-section,
+  .edit-save-section,
+  .edit-info-section {
+    padding: 1.25rem 0.75rem;
+  }
+  
+  .edit-title {
+    font-size: 1.2rem;
+  }
+  
+  .edit-form-title {
+    font-size: 1.2rem;
+  }
+  
+  /* Template muito pequeno */
+  .edit-template-card {
+    padding: 1rem 0.75rem;
+  }
+  
+  .edit-template-icon {
+    font-size: 1.5rem;
+    min-width: 40px;
+    height: 40px;
+  }
+  
+  .edit-template-name {
+    font-size: 1rem;
+  }
+  
+  .edit-template-description {
+    font-size: 0.8rem;
+  }
+  
+  .edit-template-feature {
+    font-size: 0.7rem;
+  }
+  
+  /* Serviços muito pequeno */
+  .edit-service-item {
+    padding: 1rem 0.75rem;
+  }
+  
+  .edit-service-badge {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.85rem;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: center;
+  }
+  
+  .edit-service-number {
+    width: 22px;
+    height: 22px;
+    font-size: 0.75rem;
+  }
+  
+  .edit-service-label {
+    font-size: 0.8rem;
+  }
+  
+  .edit-service-preview {
+    padding: 1rem 0.75rem;
+  }
+  
+  .edit-service-preview-card {
+    padding: 0.875rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+  
+  .edit-service-preview-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    align-self: center;
+  }
+  
+  .edit-services-empty {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .edit-services-empty-icon {
+    font-size: 2.5rem;
+  }
+  
+  .edit-services-empty-title {
+    font-size: 1.2rem;
+  }
+  
+  .edit-services-empty-desc {
+    font-size: 0.9rem;
+  }
+  
+  .edit-add-service-btn,
+  .edit-add-first-service-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* === MELHORIAS DE PERFORMANCE === */
+.edit-form-section,
+.edit-save-btn,
+.edit-delete-btn,
+.edit-add-service-btn {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* === ACESSIBILIDADE === */
+@media (prefers-reduced-motion: reduce) {
+  .edit-root * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.edit-input:focus-visible,
+.edit-textarea:focus-visible,
+.edit-select:focus-visible,
+.edit-save-btn:focus-visible,
+.edit-delete-btn:focus-visible,
+.edit-add-service-btn:focus-visible {
+  outline: 3px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* === ANIMAÇÕES === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.edit-form-section,
+.edit-sidebar > * {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.edit-service-item {
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.edit-service-item:nth-child(1) { animation-delay: 0.1s; }
+.edit-service-item:nth-child(2) { animation-delay: 0.2s; }
+.edit-service-item:nth-child(3) { animation-delay: 0.3s; }
+.edit-service-item:nth-child(4) { animation-delay: 0.4s; }
+.edit-service-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* Estilos para as novas seções expandidas */
+
+/* Estilos para os serviços expandidos */
+.editServiceFieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.editFieldGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.editServiceFieldLabel {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 0.875rem;
+}
+
+.editServiceInput,
+.editServiceTextarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.editServiceInput:focus,
+.editServiceTextarea:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.editServiceTextarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.editServiceOptions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.editCheckboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+}
+
+.editCheckboxLabel input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #4299e1;
+}
+
+/* Preview do serviço */
+.editServicePreviewDetails {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.editServicePrice {
+  background: #48bb78;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.editServiceDuration {
+  background: #4299e1;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.editPopularBadge {
+  background: #f56565;
+  color: white;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+/* Responsividade para campos de serviço */
+@media (max-width: 768px) {
+  .editFieldGroup {
+    grid-template-columns: 1fr;
+  }
+  
+  .editServiceOptions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .editServicePreviewDetails {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

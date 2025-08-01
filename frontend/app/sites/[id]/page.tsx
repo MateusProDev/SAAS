@@ -3,10 +3,11 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-
+import Link from "next/link";
 import { BarbeariaTemplate } from "../../../src/templates/BarbeariaTemplate";
 import { ComercialTemplate } from "../../../src/templates/ComercialTemplate";
 import { AgenciaViagemTemplate } from "../../../src/templates/AgenciaViagemTemplate";
+import styles from './site-detail.module.css';
 
 export default function SiteDetailPage() {
   const { id } = useParams();
@@ -37,8 +38,25 @@ export default function SiteDetailPage() {
     if (id) fetchSite();
   }, [id]);
 
-  if (loading) return <div>Carregando...</div>;
-  if (!site) return <div>Site não encontrado.</div>;
+  if (loading) {
+    return (
+      <div className={styles['site-detail-loading']}>
+        ⏳ Carregando site...
+      </div>
+    );
+  }
+  
+  if (!site) {
+    return (
+      <div className={styles['site-detail-not-found']}>
+        <h1>❌ Site não encontrado</h1>
+        <p>O site que você está procurando não existe ou foi removido.</p>
+        <Link href="/sites" className={styles['site-detail-back-link']}>
+          ← Voltar aos Sites
+        </Link>
+      </div>
+    );
+  }
 
   // Se o template da barbearia existir e for o selecionado, renderize o HTML do template
 
@@ -53,21 +71,86 @@ export default function SiteDetailPage() {
     return <AgenciaViagemTemplate site={site} />;
   }
 
-  // Fallback: renderização padrão
+  // Fallback: renderização responsiva premium
   return (
-    <div style={{ padding: 32 }}>
-      <h1>{site.name || site.title}</h1>
-      <p>{site.description}</p>
-      <p><b>Endereço:</b> {site.address}</p>
-      <p><b>Email:</b> {site.email}</p>
-      <p><b>Telefone:</b> {site.phone}</p>
-      <p><b>Template:</b> {site.template}</p>
-      <h2>Serviços</h2>
-      <ul>
-        {site.services && site.services.map((srv: any, idx: number) => (
-          <li key={idx}><b>{srv.name}:</b> {srv.description}</li>
-        ))}
-      </ul>
+    <div className={styles['site-detail-root']}>
+      <div className={styles['site-detail-fallback']}>
+        <div className={styles['site-detail-header']}>
+          <h1 className={styles['site-detail-title']}>
+            {site.name || site.title}
+          </h1>
+          <p className={styles['site-detail-description']}>
+            {site.description}
+          </p>
+        </div>
+
+        <div className={styles['site-detail-info']}>
+          {site.address && (
+            <div className={styles['site-detail-info-card']}>
+              <div className={styles['site-detail-info-label']}>
+                📍 Endereço
+              </div>
+              <div className={styles['site-detail-info-value']}>
+                {site.address}
+              </div>
+            </div>
+          )}
+          
+          {site.email && (
+            <div className={styles['site-detail-info-card']}>
+              <div className={styles['site-detail-info-label']}>
+                📧 Email
+              </div>
+              <div className={styles['site-detail-info-value']}>
+                {site.email}
+              </div>
+            </div>
+          )}
+          
+          {site.phone && (
+            <div className={styles['site-detail-info-card']}>
+              <div className={styles['site-detail-info-label']}>
+                📞 Telefone
+              </div>
+              <div className={styles['site-detail-info-value']}>
+                {site.phone}
+              </div>
+            </div>
+          )}
+          
+          <div className={styles['site-detail-info-card']}>
+            <div className={styles['site-detail-info-label']}>
+              🎨 Template
+            </div>
+            <div className={styles['site-detail-info-value']}>
+              {site.template === 'barbearia' && '🪒 Barbearia'}
+              {site.template === 'comercial' && '🏢 Comercial'}
+              {site.template === 'agencia' && '✈️ Agência de Viagem'}
+              {!['barbearia', 'comercial', 'agencia'].includes(site.template) && site.template}
+            </div>
+          </div>
+        </div>
+
+        {site.services && site.services.length > 0 && (
+          <div className={styles['site-detail-services']}>
+            <h2 className={styles['site-detail-services-title']}>
+              🛠️ Serviços
+            </h2>
+            <div className={styles['site-detail-services-grid']}>
+              {site.services.map((srv: any, idx: number) => (
+                <div key={idx} className={styles['site-detail-service-item']}>
+                  <div className={styles['site-detail-service-name']}>
+                    {srv.name}
+                  </div>
+                  <div className={styles['site-detail-service-description']}>
+                    {srv.description}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
