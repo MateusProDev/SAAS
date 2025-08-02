@@ -17,6 +17,19 @@ export default function DashboardPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [logoutLoading, setLogoutLoading] = useState(false);
 
+  // Função para determinar a rota de edição baseada no template
+  const getEditRoute = (siteId: string, template: string) => {
+    switch (template) {
+      case 'portfolio':
+        return `/sites/${siteId}/portfolio`;
+      case 'barbearia':
+      case 'comercial':
+      case 'agencia':
+      default:
+        return `/sites/${siteId}/edit`;
+    }
+  };
+
   // Protege a rota: se não autenticado e não carregando, redireciona para login
   useEffect(() => {
     if (!loadingUser && !user) {
@@ -125,7 +138,7 @@ export default function DashboardPage() {
                     Visualizar
                   </Link>
                   <Link 
-                    href={`/sites/${site.id}/edit`} 
+                    href={getEditRoute(site.id, site.template)} 
                     className={`${styles['dashboard-site-btn']} ${styles['dashboard-site-btn-edit']}`}
                   >
                     Editar

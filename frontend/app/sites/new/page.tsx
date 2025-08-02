@@ -51,7 +51,13 @@ export default function NewSitePage() {
         userId: user.uid
       });
       if (refreshSites) await refreshSites();
-      router.push('/dashboard');
+      
+      // Redireciona para o editor específico baseado no template
+      if (template === 'portfolio') {
+        router.push(`/sites/${docRef.id}/portfolio`);
+      } else {
+        router.push(`/sites/${docRef.id}/edit`);
+      }
     } catch (err: any) {
       setError('Erro ao criar site.');
     } finally {
