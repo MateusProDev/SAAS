@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useState, useEffect } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../src/utils/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import '../../src/utils/firebase';
 import styles from './login.module.css';
 
 export default function LoginPage() {
@@ -17,12 +17,31 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    
     try {
-      const auth = getAuth();
       await signInWithEmailAndPassword(auth, email, password);
       router.replace('/dashboard');
     } catch (err: any) {
-      setError('Email ou senha inválidos.');
+      console.error('Erro de login:', err);
+      let errorMessage = 'Erro ao fazer login.';
+      
+      switch (err.code) {
+        case 'auth/user-not-found':
+          errorMessage = 'Usuário não encontrado.';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Senha incorreta.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Email inválido.';
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = 'Muitas tentativas. Tente novamente mais tarde.';
+          break;
+        default:
+          errorMessage = 'Email ou senha inválidos.';
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -1,10 +1,10 @@
 
 "use client";
 import React, { useState } from 'react';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../src/utils/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import '../../src/utils/firebase';
 import styles from './register.module.css';
 
 export default function RegisterPage() {
@@ -18,12 +18,34 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    
+    if (password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres.');
+      setLoading(false);
+      return;
+    }
+    
     try {
-      const auth = getAuth();
       await createUserWithEmailAndPassword(auth, email, password);
       router.replace('/dashboard');
     } catch (err: any) {
-      setError('Erro ao criar conta. Verifique o email.');
+      console.error('Erro de registro:', err);
+      let errorMessage = 'Erro ao criar conta.';
+      
+      switch (err.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = 'Este email já está em uso.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Email inválido.';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'Senha muito fraca. Use pelo menos 6 caracteres.';
+          break;
+        default:
+          errorMessage = 'Erro ao criar conta. Tente novamente.';
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

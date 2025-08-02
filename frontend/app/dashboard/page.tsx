@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { getAuth, signOut } from 'firebase/auth';
 import Link from 'next/link';
 import { useUserSitesFirestore } from '../../src/hooks/useUserSitesFirestore';
 import { useFirebaseAuthUser } from '../../src/hooks/useFirebaseAuthUser';
@@ -36,7 +35,8 @@ export default function DashboardPage() {
   async function handleLogout() {
     setLogoutLoading(true);
     try {
-      const auth = getAuth();
+      const { signOut } = await import('firebase/auth');
+      const { auth } = await import('../../src/utils/firebase');
       await signOut(auth);
       window.location.href = '/login';
     } catch {
