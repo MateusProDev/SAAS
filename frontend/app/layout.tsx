@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR"> 
       <body>
         {/* Navbar removida do layout global. Navegação só aparece no dashboard. */}
         <main>{children}</main>
