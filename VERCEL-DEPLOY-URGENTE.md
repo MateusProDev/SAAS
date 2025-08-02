@@ -19,8 +19,8 @@ Acesse: https://vercel.com/dashboard → Seu projeto → Settings → Environmen
 # API Backend (OBRIGATÓRIO)
 NEXT_PUBLIC_API_URL=https://seu-backend.onrender.com/api
 
-# Firebase (OBRIGATÓRIAS)
-NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og
+# Firebase (OBRIGATÓRIAS) - CHAVES ATUALIZADAS
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyCw2xYz9J_8v7LzQc6K5V3nN1mN2xP8rQ4
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=turflow.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=turflow
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=turflow.firebasestorage.app

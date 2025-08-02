@@ -60,7 +60,7 @@ export default function LoginPage() {
       <div className={styles['login-container']}>
         <img 
           src="/window.svg" 
-          alt="MabelSoftware Logo" 
+          alt="MabelSoft Logo" 
           className={styles['login-logo']} 
         />
         <h1 className={styles['login-title']}>Acesse sua conta</h1>

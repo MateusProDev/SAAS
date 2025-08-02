@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./saas-landing-improved.module.css";
 import { FaRocket, FaMagic, FaMobileAlt, FaUserShield, FaRegSmile, FaCheckCircle, FaRegLightbulb, FaRegStar, FaArrowRight, FaWhatsapp, FaInstagram, FaFacebookF, FaChartLine } from "react-icons/fa";
 import { MdOutlineDesignServices, MdOutlineSupportAgent } from "react-icons/md";
@@ -105,8 +106,8 @@ export default function Home() {
       {/* Navbar */}
       <nav className={styles["home-navbar"]}>
         <div className={styles["home-navbar-logo"]}>
-          <img src="/window.svg" alt="Logo" style={{ height: 32 }} />
-          <span className={styles["home-navbar-title"]}>MabelSoftware</span>
+          <Image src="/window.svg" alt="MabelSoft Logo" width={32} height={32} priority />
+          <span className={styles["home-navbar-title"]}>MabelSoft</span>
         </div>
         <button
           className={openMenu ? styles["home-navbar-toggle"] + " open" : styles["home-navbar-toggle"]}
@@ -145,7 +146,7 @@ export default function Home() {
               Monte seu site profissional em minutos
             </h1>
             <p className={styles["home-hero-sub"]}>
-              A <b>MabelSoftware</b> é a plataforma mais rápida e fácil para criar sites incríveis para negócios, barbearias, agências e muito mais.<br />
+              A <b>MabelSoft</b> é a plataforma mais rápida e fácil para criar sites incríveis para negócios, barbearias, agências e muito mais.<br />
               <span style={{ color: "#9f86c0", fontWeight: 600 }}>Sem código. Sem complicação. 100% responsivo.</span>
             </p>
             <ul className={styles["home-hero-benefits"]}>
@@ -301,8 +302,8 @@ export default function Home() {
           <div className={styles["home-footer-main"]}>
             <div className={styles["home-footer-brand"]}>
               <div className={styles["home-footer-logo"]}>
-                <img src="/window.svg" alt="MabelSoftware Logo" style={{ height: 40 }} />
-                <span className={styles["home-footer-brand-name"]}>MabelSoftware</span>
+                <Image src="/window.svg" alt="MabelSoft Logo" width={40} height={40} />
+                <span className={styles["home-footer-brand-name"]}>MabelSoft</span>
               </div>
               <p className={styles["home-footer-description"]}>
                 Crie sites profissionais em minutos com nossa plataforma inovadora. 
@@ -330,7 +331,7 @@ export default function Home() {
                 <h4>Suporte</h4>
                 <ul>
                   <li><Link href="#faq">FAQ</Link></li>
-                  <li><a href="mailto:suporte@mabelsoftware.com">Email</a></li>
+                  <li><a href="mailto:suporte@mabelsoft.com">Email</a></li>
                   <li><a href="https://wa.me/5599999999999">WhatsApp</a></li>
                   <li><Link href="/help">Central de Ajuda</Link></li>
                 </ul>
@@ -360,7 +361,7 @@ export default function Home() {
           
           <div className={styles["home-footer-bottom"]}>
             <div className={styles["home-footer-copyright"]}>
-              <p>&copy; {new Date().getFullYear()} MabelSoftware. Todos os direitos reservados.</p>
+              <p>&copy; {new Date().getFullYear()} MabelSoft. Todos os direitos reservados.</p>
             </div>
             <div className={styles["home-footer-badges"]}>
               <span className={styles["home-footer-badge"]}>🔒 SSL Seguro</span>

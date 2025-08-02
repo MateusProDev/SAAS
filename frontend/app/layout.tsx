@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'SaaS Website Builder',
-  description: 'Monte seu site profissional em minutos!',
+  title: 'MabelSoft - Website Builder',
+  description: 'Crie seu site profissional em minutos com MabelSoft!',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

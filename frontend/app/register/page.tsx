@@ -64,7 +64,7 @@ export default function RegisterPage() {
       <div className={styles['register-container']}>
         <img 
           src="/window.svg" 
-          alt="MabelSoftware Logo" 
+          alt="MabelSoft Logo" 
           className={styles['register-logo']} 
         />
         <h1 className={styles['register-title']}>Criar nova conta</h1>
