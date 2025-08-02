@@ -1,5 +1,9 @@
 # Firebase service account (NUNCA versionar)
 serviceAccountKey.json
+
+# Security files (NUNCA versionar)
+SECURITY-*.md
+
 # Dependencies
 node_modules/
 */node_modules/

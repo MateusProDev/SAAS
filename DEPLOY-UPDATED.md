@@ -45,7 +45,7 @@
 
 | Variável | Valor |
 |----------|-------|
-| `VITE_FIREBASE_API_KEY` | `AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og` |
+| `VITE_FIREBASE_API_KEY` | `SUA_NOVA_CHAVE_API_FIREBASE_AQUI` |
 | `VITE_FIREBASE_AUTH_DOMAIN` | `turflow.firebaseapp.com` |
 | `VITE_FIREBASE_PROJECT_ID` | `turflow` |
 | `VITE_FIREBASE_STORAGE_BUCKET` | `turflow.firebasestorage.app` |
@@ -188,7 +188,7 @@ service cloud.firestore {
 
 1. Clique **"Add New"**
 2. **Name**: `VITE_FIREBASE_API_KEY` (cole exato, sem aspas)
-3. **Value**: `AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og` (cole exato, sem aspas)
+3. **Value**: `SUA_NOVA_CHAVE_API_FIREBASE_AQUI` (cole exato, sem aspas)
 4. **Environments**: Marque TODOS (Production, Preview, Development)
 5. **NÃO** marque "Sensitive"
 6. **NÃO** selecione nenhum "Secret"
@@ -226,7 +226,7 @@ service cloud.firestore {
 ### **Opção B: Usar Vercel CLI**
 ```bash
 npx vercel env add VITE_FIREBASE_API_KEY
-# Cole: AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og
+# Cole: SUA_NOVA_CHAVE_API_FIREBASE_AQUI
 # Selecione: production, preview, development
 ```
 

@@ -25,7 +25,7 @@ vercel link
 ## 5. Adicionar environment variables uma por uma
 ```bash
 vercel env add VITE_FIREBASE_API_KEY
-# Cole: AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og
+# Cole: SUA_NOVA_CHAVE_API_FIREBASE_AQUI
 # Selecione: production, preview, development
 
 vercel env add VITE_FIREBASE_AUTH_DOMAIN
@@ -60,7 +60,7 @@ vercel --prod
 
 ## 📋 VALORES PARA COPIAR/COLAR:
 
-- **VITE_FIREBASE_API_KEY**: `AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og`
+- **VITE_FIREBASE_API_KEY**: `SUA_NOVA_CHAVE_API_FIREBASE_AQUI`
 - **VITE_FIREBASE_AUTH_DOMAIN**: `turflow.firebaseapp.com`
 - **VITE_FIREBASE_PROJECT_ID**: `turflow`
 - **VITE_FIREBASE_STORAGE_BUCKET**: `turflow.firebasestorage.app`

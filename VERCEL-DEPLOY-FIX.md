@@ -37,7 +37,7 @@ if (typeof window !== 'undefined') {
 **Configure estas variáveis no painel do Vercel:**
 
 ```bash
-NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyD89wDyY436a-BVrnzVLYZbDpR19gR91Og
+NEXT_PUBLIC_FIREBASE_API_KEY=SUA_NOVA_CHAVE_API_FIREBASE_AQUI
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=turflow.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=turflow
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=turflow.firebasestorage.app
