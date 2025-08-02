@@ -107,6 +107,7 @@ export default function NewSitePage() {
               <option value="barbearia">🪒 Barbearia</option>
               <option value="comercial">🏢 Comercial</option>
               <option value="agencia">✈️ Agência de Viagem</option>
+              <option value="portfolio">👨‍💻 Portfolio</option>
             </select>
           </div>
           

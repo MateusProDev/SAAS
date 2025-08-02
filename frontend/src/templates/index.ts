@@ -23,5 +23,19 @@ export const templates = [
     features: ['Pacotes de viagem', 'Galeria de fotos', 'Solicitação de orçamento'],
     previewImage: '',
     html: `<div style="font-family: Montserrat, Arial, sans-serif; background: linear-gradient(135deg, #00c3ff 0%, #ffff1c 100%); color: #222; min-height: 100vh; margin: 0"><header style="background: #00c3ff; color: #fff; padding: 32px 0; text-align: center; border-bottom: 4px solid #ffff1c"><h1 style="font-size: 44px">{{name}}</h1><p style="font-size: 20px">{{description}}</p></header><main style="max-width: 900px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 16px #0002; padding: 32px"><h2 style="color: #00c3ff">Destinos Populares</h2><div style="display: flex; flex-wrap: wrap; gap: 24px; margin-top: 24px">{{destinos}}</div><div style="margin-top: 40px"><h3 style="color: #00c3ff">Contato</h3><p><b>Endereço:</b> {{address}}</p><p><b>Email:</b> {{email}}</p><p><b>Telefone:</b> {{phone}}</p></div></main><footer style="background: #00c3ff; color: #fff; text-align: center; padding: 16px 0; margin-top: 40px">&copy; {{year}} {{name}} - Agência de Viagens</footer></div>`
+  },
+  {
+    id: 'portfolio',
+    name: 'Portfólio',
+    description: 'Template profissional para freelancers, desenvolvedores e profissionais criativos.',
+    features: ['Galeria de projetos', 'Seção sobre', 'Lista de serviços', 'Depoimentos', 'Linha do tempo de experiência'],
+    previewImage: '',
+    html: `<div style="font-family: Inter, sans-serif; background: #f8f9fa; color: #333; min-height: 100vh; margin: 0"><header style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 60px 0; text-align: center"><h1 style="font-size: 48px; margin-bottom: 16px">{{name}}</h1><p style="font-size: 20px; opacity: 0.9">{{description}}</p></header><main style="max-width: 1000px; margin: 40px auto; padding: 0 20px"><section style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 40px; margin-bottom: 40px"><h2 style="color: #667eea; margin-bottom: 20px">Sobre</h2><p style="line-height: 1.8">{{about}}</p></section><section style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 40px; margin-bottom: 40px"><h2 style="color: #667eea; margin-bottom: 20px">Portfólio</h2><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px">{{portfolio}}</div></section><section style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 40px"><h2 style="color: #667eea; margin-bottom: 20px">Contato</h2><p><b>Email:</b> {{email}}</p><p><b>Telefone:</b> {{phone}}</p></section></main><footer style="background: #667eea; color: #fff; text-align: center; padding: 24px 0; margin-top: 60px">&copy; {{year}} {{name}} - Todos os direitos reservados.</footer></div>`
   }
 ];
+
+// Export dos componentes de template
+export { BarbeariaTemplate } from './BarbeariaTemplate';
+export { ComercialTemplate } from './ComercialTemplate';
+export { AgenciaViagemTemplate } from './AgenciaViagemTemplate';
+export { PortfolioTemplate } from './PortfolioTemplate';

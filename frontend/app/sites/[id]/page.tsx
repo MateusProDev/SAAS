@@ -7,6 +7,7 @@ import Link from "next/link";
 import { BarbeariaTemplate } from "../../../src/templates/BarbeariaTemplate";
 import { ComercialTemplate } from "../../../src/templates/ComercialTemplate";
 import { AgenciaViagemTemplate } from "../../../src/templates/AgenciaViagemTemplate";
+import { PortfolioTemplate } from "../../../src/templates/PortfolioTemplate";
 import styles from './site-detail.module.css';
 
 export default function SiteDetailPage() {
@@ -69,6 +70,9 @@ export default function SiteDetailPage() {
   }
   if (templateId === "agencia") {
     return <AgenciaViagemTemplate site={site} />;
+  }
+  if (templateId === "portfolio") {
+    return <PortfolioTemplate site={site} />;
   }
 
   // Fallback: renderização responsiva premium

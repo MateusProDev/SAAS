@@ -113,7 +113,11 @@ export default function DashboardPage() {
               <div key={site.id} className={styles['dashboard-site-card']}>
                 <div className={styles['dashboard-site-info']}>
                   <h3>{site.name || site.title || site.id}</h3>
-                  <p className="description">{site.description}</p>
+                  <p className="description">
+                    {site.description && site.description.length > 100 
+                      ? `${site.description.substring(0, 100)}...` 
+                      : site.description || 'Sem descrição'}
+                  </p>
                   <p className="template">Template: <b>{site.template}</b></p>
                 </div>
                 <div className={styles['dashboard-site-actions']}>
