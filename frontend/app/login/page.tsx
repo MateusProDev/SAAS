@@ -14,7 +14,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true); 
-    setError(null);
+    setError(null); 
     
     try {
       // Importação dinâmica para evitar problemas de SSG
