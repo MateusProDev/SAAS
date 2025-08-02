@@ -48,7 +48,7 @@ const getMockSiteData = (siteId: string) => ({
   published: false
 });
 
-export default function EditPage({ params }: PageProps) {
+export default function EditSitePage({ params }: PageProps) {
   const [siteData, setSiteData] = useState(getMockSiteData(params.id));
   const [activeTab, setActiveTab] = useState('hero');
   const [saving, setSaving] = useState(false);
