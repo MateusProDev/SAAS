@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { FaCog } from 'react-icons/fa';
 import styles from './login.module.css';
 
 export default function LoginPage() {
@@ -58,11 +59,7 @@ export default function LoginPage() {
       <div className={styles['login-glow']} />
       
       <div className={styles['login-container']}>
-        <img 
-          src="/window.svg" 
-          alt="MabelSoft Logo" 
-          className={styles['login-logo']} 
-        />
+        <FaCog style={{ fontSize: 48, color: '#6366f1', marginBottom: '1rem' }} />
         <h1 className={styles['login-title']}>Acesse sua conta</h1>
         
         <form onSubmit={handleLogin} className={styles['login-form']}>

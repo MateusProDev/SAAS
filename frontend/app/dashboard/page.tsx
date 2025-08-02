@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { FaCog } from 'react-icons/fa';
 import { useUserSitesFirestore } from '../../src/hooks/useUserSitesFirestore';
 import { useFirebaseAuthUser } from '../../src/hooks/useFirebaseAuthUser';
 import { deleteSite } from '../../src/hooks/deleteSite';
@@ -51,13 +52,9 @@ export default function DashboardPage() {
       <header className={styles['dashboard-header']}>
         <div className={styles['dashboard-header-content']}>
           <div className={styles['dashboard-logo-section']}>
-            <img 
-              src="/window.svg" 
-              alt="MabelSoftware Logo" 
-              className={styles['dashboard-logo']} 
-            />
+            <FaCog style={{ fontSize: 40, color: '#6366f1' }} />
             <div className={styles['dashboard-title-group']}>
-              <h1>Dashboard MabelSoftware</h1>
+              <h1>Dashboard MabelSoft</h1>
               <p>Gerencie seus sites com facilidade e estilo</p>
             </div>
           </div>

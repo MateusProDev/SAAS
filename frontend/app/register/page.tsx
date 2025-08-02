@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { FaCog } from 'react-icons/fa';
 import styles from './register.module.css';
 
 export default function RegisterPage() {
@@ -62,11 +63,7 @@ export default function RegisterPage() {
       <div className={styles['register-glow']} />
       
       <div className={styles['register-container']}>
-        <img 
-          src="/window.svg" 
-          alt="MabelSoft Logo" 
-          className={styles['register-logo']} 
-        />
+        <FaCog style={{ fontSize: 48, color: '#8b5cf6', marginBottom: '1rem' }} />
         <h1 className={styles['register-title']}>Criar nova conta</h1>
         
         <form onSubmit={handleRegister} className={styles['register-form']}>
