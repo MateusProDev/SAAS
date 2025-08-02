@@ -221,7 +221,7 @@ router.post('/', verifyToken, async (req, res) => {
     await admin.firestore()
       .collection('sites')
       .doc(siteRef.id)
-      .set({
+      .set({ 
         userId: req.user.uid, 
         slug,
         name,
