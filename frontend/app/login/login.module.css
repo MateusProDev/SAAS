@@ -122,7 +122,8 @@
   border-radius: 12px;
   border: 2px solid #e5e7eb;
   font-size: 1rem;
-  background: #f9fafb;
+  background: #ffffff;
+  color: #111827;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   outline: none;
@@ -131,6 +132,7 @@
 .login-input:focus {
   border-color: #6366f1;
   background: #ffffff;
+  color: #111827;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   transform: translateY(-1px);
 }

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./saas-landing-improved.module.css";
-import { FaRocket, FaMagic, FaMobileAlt, FaUserShield, FaRegSmile, FaCheckCircle, FaRegLightbulb, FaRegStar, FaArrowRight, FaWhatsapp, FaInstagram, FaFacebookF, FaChartLine } from "react-icons/fa";
+import { FaRocket, FaMagic, FaMobileAlt, FaUserShield, FaRegSmile, FaCheckCircle, FaRegLightbulb, FaRegStar, FaArrowRight, FaWhatsapp, FaInstagram, FaFacebookF, FaChartLine, FaCog } from "react-icons/fa";
 import { MdOutlineDesignServices, MdOutlineSupportAgent } from "react-icons/md";
 import FAQSection from "../src/components/FAQSection";
 
@@ -106,7 +106,7 @@ export default function Home() {
       {/* Navbar */}
       <nav className={styles["home-navbar"]}>
         <div className={styles["home-navbar-logo"]}>
-          <Image src="/window.svg" alt="MabelSoft Logo" width={32} height={32} priority />
+          <FaCog style={{ fontSize: 32, color: '#6366f1' }} />
           <span className={styles["home-navbar-title"]}>MabelSoft</span>
         </div>
         <button
@@ -302,7 +302,7 @@ export default function Home() {
           <div className={styles["home-footer-main"]}>
             <div className={styles["home-footer-brand"]}>
               <div className={styles["home-footer-logo"]}>
-                <Image src="/window.svg" alt="MabelSoft Logo" width={40} height={40} />
+                <FaCog style={{ fontSize: 40, color: '#6366f1' }} />
                 <span className={styles["home-footer-brand-name"]}>MabelSoft</span>
               </div>
               <p className={styles["home-footer-description"]}>
