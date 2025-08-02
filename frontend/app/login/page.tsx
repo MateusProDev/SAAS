@@ -1,7 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../src/utils/firebase';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './login.module.css';
@@ -19,6 +17,14 @@ export default function LoginPage() {
     setError(null);
     
     try {
+      // Importação dinâmica para evitar problemas de SSG
+      const { signInWithEmailAndPassword } = await import('firebase/auth');
+      const { auth } = await import('../../src/utils/firebase');
+      
+      if (!auth) {
+        throw new Error('Firebase não inicializado');
+      }
+      
       await signInWithEmailAndPassword(auth, email, password);
       router.replace('/dashboard');
     } catch (err: any) {

@@ -1,8 +1,6 @@
 
 "use client";
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../src/utils/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './register.module.css';
@@ -26,6 +24,14 @@ export default function RegisterPage() {
     }
     
     try {
+      // Importação dinâmica para evitar problemas de SSG
+      const { createUserWithEmailAndPassword } = await import('firebase/auth');
+      const { auth } = await import('../../src/utils/firebase');
+      
+      if (!auth) {
+        throw new Error('Firebase não inicializado');
+      }
+      
       await createUserWithEmailAndPassword(auth, email, password);
       router.replace('/dashboard');
     } catch (err: any) {
