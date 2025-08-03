@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useFirebaseAuthUser } from '../../../../src/hooks/useFirebaseAuthUser';
 import { useSiteEditor, BarbeariaCustomization } from '../../../../src/hooks/useSiteEditor';
-import { usePortfolioEditor } from '../../../../src/hooks/usePortfolioEditor';
 
 interface PageProps {
   params: {
@@ -30,29 +29,20 @@ export default function EditSitePage({ params }: PageProps) {
     removeService: siteRemoveService,
   } = useSiteEditor(user?.uid || '', params.id);
   
-  // Hook específico para portfólio (ativo apenas se for portfolio)
-  const portfolioHook = usePortfolioEditor(
-    user?.uid || '', 
-    params.id
-  );
-
-  // Detecta se é portfolio e usa dados apropriados
-  const isPortfolio = (siteData as any)?.template === 'portfolio' || portfolioHook.data?.template === 'portfolio';
-  
-  const data = isPortfolio ? portfolioHook.data : siteData;
-  const loading = isPortfolio ? portfolioHook.loading : siteLoading;
-  const error = isPortfolio ? portfolioHook.error : siteError;
-  const saving = isPortfolio ? portfolioHook.saving : siteSaving;
+  const data = siteData;
+  const loading = siteLoading;
+  const error = siteError;
+  const saving = siteSaving;
   
   // Funções baseadas no template
-  const togglePublish = isPortfolio ? portfolioHook.togglePublish : siteTogglePublish;
-  const updateHero = isPortfolio ? portfolioHook.updatePersonalInfo : siteUpdateHero;
-  const updateAbout = isPortfolio ? portfolioHook.updateAbout : siteUpdateAbout;
-  const updateContact = isPortfolio ? portfolioHook.updatePersonalInfo : siteUpdateContact;
-  const updateTheme = isPortfolio ? portfolioHook.updateTheme : siteUpdateTheme;
-  const addService = isPortfolio ? portfolioHook.addService : siteAddService;
-  const updateService = isPortfolio ? portfolioHook.updateService : siteUpdateService;
-  const removeService = isPortfolio ? portfolioHook.removeService : siteRemoveService;
+  const togglePublish = siteTogglePublish;
+  const updateHero = siteUpdateHero;
+  const updateAbout = siteUpdateAbout;
+  const updateContact = siteUpdateContact;
+  const updateTheme = siteUpdateTheme;
+  const addService = siteAddService;
+  const updateService = siteUpdateService;
+  const removeService = siteRemoveService;
 
   const [activeTab, setActiveTab] = useState('hero');
 
@@ -120,17 +110,7 @@ export default function EditSitePage({ params }: PageProps) {
   };
 
   const handleAddService = async () => {
-    if (isPortfolio && portfolioHook.addService) {
-      const success = await portfolioHook.addService({
-        name: 'Novo Serviço',
-        description: 'Descrição do serviço',
-        price: 'A partir de R$ 100',
-        icon: '💼'
-      });
-      if (!success) {
-        alert('Erro ao adicionar serviço');
-      }
-    } else if (siteAddService) {
+    if (siteAddService) {
       const success = await siteAddService({
         name: 'Novo Serviço',
         price: 0,
@@ -303,10 +283,7 @@ export default function EditSitePage({ params }: PageProps) {
                   </label>
                   <input
                     type="text"
-                    value={isPortfolio 
-                      ? (data as any).personalInfo?.name || ''
-                      : (data as any).customization?.hero?.title || ''
-                    }
+                    value={(data as any).customization?.hero?.title || ''}
                     onChange={(e) => updateHero({ title: e.target.value })}
                     style={{
                       width: '100%',
@@ -325,10 +302,7 @@ export default function EditSitePage({ params }: PageProps) {
                     Subtítulo:
                   </label>
                   <textarea
-                    value={isPortfolio 
-                      ? (data as any).personalInfo?.tagline || ''
-                      : (data as any).customization?.hero?.subtitle || ''
-                    }
+                    value={(data as any).customization?.hero?.subtitle || ''}
                     onChange={(e) => updateHero({ subtitle: e.target.value })}
                     style={{
                       width: '100%',
@@ -362,10 +336,7 @@ export default function EditSitePage({ params }: PageProps) {
                   </label>
                   <input
                     type="text"
-                    value={isPortfolio 
-                      ? (data as any).about?.title || 'Sobre mim'
-                      : (data as any).customization?.about?.title || ''
-                    }
+                    value={(data as any).customization?.about?.title || ''}
                     onChange={(e) => updateAbout({ title: e.target.value })}
                     style={{
                       width: '100%',
@@ -384,10 +355,7 @@ export default function EditSitePage({ params }: PageProps) {
                     Conteúdo:
                   </label>
                   <textarea
-                    value={isPortfolio 
-                      ? (data as any).about?.content || ''
-                      : (data as any).customization?.about?.content || ''
-                    }
+                    value={(data as any).customization?.about?.content || ''}
                     onChange={(e) => updateAbout({ content: e.target.value })}
                     style={{
                       width: '100%',
@@ -522,10 +490,7 @@ export default function EditSitePage({ params }: PageProps) {
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Telefone:</label>
                   <input
                     type="text"
-                    value={isPortfolio 
-                      ? (data as any).personalInfo?.phone || ''
-                      : (data as any).customization?.contact?.phone || ''
-                    }
+                    value={(data as any).customization?.contact?.phone || ''}
                     onChange={(e) => updateContact({ phone: e.target.value })}
                     style={{
                       width: '100%',
@@ -543,10 +508,7 @@ export default function EditSitePage({ params }: PageProps) {
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Email:</label>
                   <input
                     type="email"
-                    value={isPortfolio 
-                      ? (data as any).personalInfo?.email || ''
-                      : (data as any).customization?.contact?.email || ''
-                    }
+                    value={(data as any).customization?.contact?.email || ''}
                     onChange={(e) => updateContact({ email: e.target.value })}
                     style={{
                       width: '100%',
@@ -630,10 +592,7 @@ export default function EditSitePage({ params }: PageProps) {
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     <input
                       type="color"
-                      value={isPortfolio 
-                        ? (data as any).theme?.primaryColor || '#007bff'
-                        : (data as any).customization?.theme?.primaryColor || '#007bff'
-                      }
+                      value={(data as any).customization?.theme?.primaryColor || '#007bff'}
                       onChange={(e) => updateTheme({ primaryColor: e.target.value })}
                       style={{
                         width: '60px',
@@ -645,10 +604,7 @@ export default function EditSitePage({ params }: PageProps) {
                     />
                     <input
                       type="text"
-                      value={isPortfolio 
-                        ? (data as any).theme?.primaryColor || '#007bff'
-                        : (data as any).customization?.theme?.primaryColor || '#007bff'
-                      }
+                      value={(data as any).customization?.theme?.primaryColor || '#007bff'}
                       onChange={(e) => updateTheme({ primaryColor: e.target.value })}
                       style={{
                         flex: 1,
@@ -668,10 +624,7 @@ export default function EditSitePage({ params }: PageProps) {
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     <input
                       type="color"
-                      value={isPortfolio 
-                        ? (data as any).theme?.secondaryColor || '#6c757d'
-                        : (data as any).customization?.theme?.secondaryColor || '#6c757d'
-                      }
+                      value={(data as any).customization?.theme?.secondaryColor || '#6c757d'}
                       onChange={(e) => updateTheme({ secondaryColor: e.target.value })}
                       style={{
                         width: '60px',
@@ -683,10 +636,7 @@ export default function EditSitePage({ params }: PageProps) {
                     />
                     <input
                       type="text"
-                      value={isPortfolio 
-                        ? (data as any).theme?.secondaryColor || '#6c757d'
-                        : (data as any).customization?.theme?.secondaryColor || '#6c757d'
-                      }
+                      value={(data as any).customization?.theme?.secondaryColor || '#6c757d'}
                       onChange={(e) => updateTheme({ secondaryColor: e.target.value })}
                       style={{
                         flex: 1,
@@ -707,9 +657,7 @@ export default function EditSitePage({ params }: PageProps) {
                     padding: '20px',
                     border: '2px solid #e0e0e0',
                     borderRadius: '8px',
-                    backgroundColor: isPortfolio 
-                      ? (data as any).theme?.primaryColor || '#007bff'
-                      : (data as any).customization?.theme?.primaryColor || '#007bff',
+                    backgroundColor: (data as any).customization?.theme?.primaryColor || '#007bff',
                     color: 'white',
                     textAlign: 'center'
                   }}>
@@ -717,9 +665,7 @@ export default function EditSitePage({ params }: PageProps) {
                     <div style={{
                       display: 'inline-block',
                       padding: '10px 20px',
-                      backgroundColor: isPortfolio 
-                        ? (data as any).theme?.secondaryColor || '#6c757d'
-                        : (data as any).customization?.theme?.secondaryColor || '#6c757d',
+                      backgroundColor: (data as any).customization?.theme?.secondaryColor || '#6c757d',
                       borderRadius: '4px',
                       color: 'white'
                     }}>

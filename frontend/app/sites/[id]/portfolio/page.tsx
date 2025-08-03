@@ -1,6 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
+import { 
+  FaFacebook, 
+  FaTwitter, 
+  FaInstagram, 
+  FaLinkedin, 
+  FaGithub, 
+  FaYoutube, 
+  FaTiktok, 
+  FaWhatsapp 
+} from 'react-icons/fa';
 import { useFirebaseAuthUser } from '../../../../src/hooks/useFirebaseAuthUser';
 import { usePortfolioEditor, PortfolioCustomization } from '../../../../src/hooks/usePortfolioEditor';
 
@@ -20,6 +30,9 @@ export default function EditPortfolioPage({ params }: PageProps) {
     togglePublish,
     updatePersonalInfo,
     updateAbout,
+    updateHero,
+    updateStats,
+    updateFooter,
     updateSkills,
     updateTheme,
     updateSettings,
@@ -105,12 +118,15 @@ export default function EditPortfolioPage({ params }: PageProps) {
   const tabs = [
     { id: 'personal', label: 'Informações Pessoais', icon: '👤' },
     { id: 'about', label: 'Sobre', icon: 'ℹ️' },
+    { id: 'hero', label: 'Hero Section', icon: '🌟' },
+    { id: 'stats', label: 'Estatísticas', icon: '📊' },
     { id: 'projects', label: 'Projetos', icon: '💼' },
     { id: 'experience', label: 'Experiência', icon: '👨‍💼' },
     { id: 'services', label: 'Serviços', icon: '🛠️' },
     { id: 'testimonials', label: 'Depoimentos', icon: '💬' },
     { id: 'education', label: 'Educação', icon: '🎓' },
     { id: 'certifications', label: 'Certificações', icon: '🏆' },
+    { id: 'footer', label: 'Footer', icon: '📱' },
     { id: 'theme', label: 'Tema', icon: '🎨' },
   ];
 
@@ -518,7 +534,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                     💡 Digite uma habilidade e pressione Enter ou clique em "Adicionar"
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
-                    {siteData.portfolioData.skills.technical.map((skill, index) => (
+                    {siteData.portfolioData.skills.technical.map((skill: string, index: number) => (
                       <span
                         key={index}
                         style={{
@@ -534,7 +550,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                           cursor: 'pointer'
                         }}
                         onClick={() => {
-                          const newSkills = siteData.portfolioData.skills.technical.filter((_, i) => i !== index);
+                          const newSkills = siteData.portfolioData.skills.technical.filter((_: string, i: number) => i !== index);
                           updateSkills({ technical: newSkills });
                         }}
                         title="Clique para remover"
@@ -610,7 +626,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                     💡 Digite uma ferramenta e pressione Enter ou clique em "Adicionar"
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
-                    {siteData.portfolioData.skills.tools.map((tool, index) => (
+                    {siteData.portfolioData.skills.tools.map((tool: string, index: number) => (
                       <span
                         key={index}
                         style={{
@@ -626,7 +642,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                           cursor: 'pointer'
                         }}
                         onClick={() => {
-                          const newTools = siteData.portfolioData.skills.tools.filter((_, i) => i !== index);
+                          const newTools = siteData.portfolioData.skills.tools.filter((_: string, i: number) => i !== index);
                           updateSkills({ tools: newTools });
                         }}
                         title="Clique para remover"
@@ -696,7 +712,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                         </button>
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                        {siteData.portfolioData.skills.languages.map((language, index) => (
+                        {siteData.portfolioData.skills.languages.map((language: string, index: number) => (
                           <span
                             key={index}
                             style={{
@@ -712,7 +728,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                               cursor: 'pointer'
                             }}
                             onClick={() => {
-                              const newLanguages = siteData.portfolioData.skills.languages.filter((_, i) => i !== index);
+                              const newLanguages = siteData.portfolioData.skills.languages.filter((_: string, i: number) => i !== index);
                               updateSkills({ languages: newLanguages });
                             }}
                             title="Clique para remover"
@@ -781,7 +797,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                         </button>
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                        {siteData.portfolioData.skills.soft.map((skill, index) => (
+                        {siteData.portfolioData.skills.soft.map((skill: string, index: number) => (
                           <span
                             key={index}
                             style={{
@@ -797,7 +813,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                               cursor: 'pointer'
                             }}
                             onClick={() => {
-                              const newSoftSkills = siteData.portfolioData.skills.soft.filter((_, i) => i !== index);
+                              const newSoftSkills = siteData.portfolioData.skills.soft.filter((_: string, i: number) => i !== index);
                               updateSkills({ soft: newSoftSkills });
                             }}
                             title="Clique para remover"
@@ -831,6 +847,466 @@ export default function EditPortfolioPage({ params }: PageProps) {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Hero Section Tab */}
+          {activeTab === 'hero' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🌟 Hero Section
+              </h2>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px' }}>
+                  <input
+                    type="checkbox"
+                    checked={siteData.portfolioData.hero.useStaticDescription}
+                    onChange={(e) => updateHero({ useStaticDescription: e.target.checked })}
+                    style={{ transform: 'scale(1.2)' }}
+                  />
+                  <span style={{ fontWeight: 'bold', color: '#555' }}>
+                    Usar descrição estática (quando desmarcado, a descrição dinâmica do "Sobre" será usada)
+                  </span>
+                </label>
+                
+                {siteData.portfolioData.hero.useStaticDescription && (
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                      Descrição Estática:
+                    </label>
+                    <textarea
+                      value={siteData.portfolioData.hero.staticDescription}
+                      onChange={(e) => updateHero({ staticDescription: e.target.value })}
+                      placeholder="Criando experiências digitais únicas através de código limpo e design inovador"
+                      style={{
+                        width: '100%',
+                        padding: '15px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        minHeight: '100px',
+                        resize: 'vertical',
+                        fontFamily: 'inherit',
+                        outline: 'none',
+                        backgroundColor: '#fff',
+                        color: '#333',
+                        lineHeight: '1.6'
+                      }}
+                    />
+                    <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+                      💡 Esta descrição aparecerá no hero quando ativada. Quando desativada, será usada a descrição da seção "Sobre".
+                    </div>
+                  </div>
+                )}
+                
+                {!siteData.portfolioData.hero.useStaticDescription && (
+                  <div style={{ 
+                    padding: '15px', 
+                    backgroundColor: '#e7f3ff', 
+                    border: '1px solid #b8daff', 
+                    borderRadius: '8px',
+                    color: '#004085'
+                  }}>
+                    <strong>Modo Dinâmico Ativo:</strong><br />
+                    A descrição será puxada automaticamente da seção "Sobre". 
+                    Quando você adicionar conteúdo dinâmico, a descrição estática desaparecerá.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Stats Section Tab */}
+          {activeTab === 'stats' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                📊 Estatísticas
+              </h2>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    Projetos Realizados:
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.portfolioData.stats.projects}
+                    onChange={(e) => updateStats({ projects: e.target.value })}
+                    placeholder="50+"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '16px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333',
+                      textAlign: 'center',
+                      fontWeight: 'bold'
+                    }}
+                  />
+                </div>
+                
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    Anos de Experiência:
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.portfolioData.stats.experience}
+                    onChange={(e) => updateStats({ experience: e.target.value })}
+                    placeholder="5+"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '16px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333',
+                      textAlign: 'center',
+                      fontWeight: 'bold'
+                    }}
+                  />
+                </div>
+                
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    Satisfação dos Clientes:
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.portfolioData.stats.satisfaction}
+                    onChange={(e) => updateStats({ satisfaction: e.target.value })}
+                    placeholder="100%"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '16px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333',
+                      textAlign: 'center',
+                      fontWeight: 'bold'
+                    }}
+                  />
+                </div>
+              </div>
+              
+              <div style={{ 
+                marginTop: '20px',
+                padding: '15px', 
+                backgroundColor: '#f8f9fa', 
+                border: '1px solid #dee2e6', 
+                borderRadius: '8px' 
+              }}>
+                <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>Preview das Estatísticas:</h4>
+                <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
+                  <div>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#667eea' }}>
+                      {siteData.portfolioData.stats.projects}
+                    </div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Projetos</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#667eea' }}>
+                      {siteData.portfolioData.stats.experience}
+                    </div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Anos</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#667eea' }}>
+                      {siteData.portfolioData.stats.satisfaction}
+                    </div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>Satisfação</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Footer Section Tab */}
+          {activeTab === 'footer' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                📱 Footer e Redes Sociais
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                  Descrição do Footer:
+                </label>
+                <textarea
+                  value={siteData.portfolioData.footer.description}
+                  onChange={(e) => updateFooter({ description: e.target.value })}
+                  placeholder="Desenvolvedor apaixonado por criar soluções inovadoras"
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    minHeight: '80px',
+                    resize: 'vertical',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    backgroundColor: '#fff',
+                    color: '#333'
+                  }}
+                />
+              </div>
+
+              <h3 style={{ color: '#333', marginBottom: '20px' }}>Redes Sociais:</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    <FaFacebook style={{ color: '#1877f2' }} />
+                    Facebook:
+                  </label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.footer.socialLinks.facebook || ''}
+                    onChange={(e) => updateFooter({ socialLinks: { ...siteData.portfolioData.footer.socialLinks, facebook: e.target.value } })}
+                    placeholder="https://facebook.com/seu-perfil"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    <FaTwitter style={{ color: '#1da1f2' }} />
+                    Twitter:
+                  </label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.footer.socialLinks.twitter || ''}
+                    onChange={(e) => updateFooter({ socialLinks: { ...siteData.portfolioData.footer.socialLinks, twitter: e.target.value } })}
+                    placeholder="https://twitter.com/seu-perfil"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    <FaInstagram style={{ color: '#e4405f' }} />
+                    Instagram:
+                  </label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.footer.socialLinks.instagram || ''}
+                    onChange={(e) => updateFooter({ socialLinks: { ...siteData.portfolioData.footer.socialLinks, instagram: e.target.value } })}
+                    placeholder="https://instagram.com/seu-perfil"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    <FaLinkedin style={{ color: '#0077b5' }} />
+                    LinkedIn:
+                  </label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.footer.socialLinks.linkedin || ''}
+                    onChange={(e) => updateFooter({ socialLinks: { ...siteData.portfolioData.footer.socialLinks, linkedin: e.target.value } })}
+                    placeholder="https://linkedin.com/in/seu-perfil"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    <FaGithub style={{ color: '#333' }} />
+                    GitHub:
+                  </label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.footer.socialLinks.github || ''}
+                    onChange={(e) => updateFooter({ socialLinks: { ...siteData.portfolioData.footer.socialLinks, github: e.target.value } })}
+                    placeholder="https://github.com/seu-usuario"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    <FaYoutube style={{ color: '#ff0000' }} />
+                    YouTube:
+                  </label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.footer.socialLinks.youtube || ''}
+                    onChange={(e) => updateFooter({ socialLinks: { ...siteData.portfolioData.footer.socialLinks, youtube: e.target.value } })}
+                    placeholder="https://youtube.com/c/seu-canal"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    <FaTiktok style={{ color: '#000' }} />
+                    TikTok:
+                  </label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.footer.socialLinks.tiktok || ''}
+                    onChange={(e) => updateFooter({ socialLinks: { ...siteData.portfolioData.footer.socialLinks, tiktok: e.target.value } })}
+                    placeholder="https://tiktok.com/@seu-usuario"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    <FaWhatsapp style={{ color: '#25d366' }} />
+                    WhatsApp:
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.portfolioData.footer.socialLinks.whatsapp || ''}
+                    onChange={(e) => updateFooter({ socialLinks: { ...siteData.portfolioData.footer.socialLinks, whatsapp: e.target.value } })}
+                    placeholder="5511999999999"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                  <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+                    💡 Insira apenas números (ex: 5511999999999)
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ 
+                marginTop: '30px',
+                padding: '20px', 
+                backgroundColor: '#f8f9fa', 
+                border: '1px solid #dee2e6', 
+                borderRadius: '8px' 
+              }}>
+                <h4 style={{ margin: '0 0 15px 0', color: '#333' }}>Preview das Redes Sociais:</h4>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', justifyContent: 'center' }}>
+                  {siteData.portfolioData.footer.socialLinks.facebook && (
+                    <a href={siteData.portfolioData.footer.socialLinks.facebook} target="_blank" rel="noopener noreferrer">
+                      <FaFacebook size={24} style={{ color: '#1877f2' }} />
+                    </a>
+                  )}
+                  {siteData.portfolioData.footer.socialLinks.twitter && (
+                    <a href={siteData.portfolioData.footer.socialLinks.twitter} target="_blank" rel="noopener noreferrer">
+                      <FaTwitter size={24} style={{ color: '#1da1f2' }} />
+                    </a>
+                  )}
+                  {siteData.portfolioData.footer.socialLinks.instagram && (
+                    <a href={siteData.portfolioData.footer.socialLinks.instagram} target="_blank" rel="noopener noreferrer">
+                      <FaInstagram size={24} style={{ color: '#e4405f' }} />
+                    </a>
+                  )}
+                  {siteData.portfolioData.footer.socialLinks.linkedin && (
+                    <a href={siteData.portfolioData.footer.socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
+                      <FaLinkedin size={24} style={{ color: '#0077b5' }} />
+                    </a>
+                  )}
+                  {siteData.portfolioData.footer.socialLinks.github && (
+                    <a href={siteData.portfolioData.footer.socialLinks.github} target="_blank" rel="noopener noreferrer">
+                      <FaGithub size={24} style={{ color: '#333' }} />
+                    </a>
+                  )}
+                  {siteData.portfolioData.footer.socialLinks.youtube && (
+                    <a href={siteData.portfolioData.footer.socialLinks.youtube} target="_blank" rel="noopener noreferrer">
+                      <FaYoutube size={24} style={{ color: '#ff0000' }} />
+                    </a>
+                  )}
+                  {siteData.portfolioData.footer.socialLinks.tiktok && (
+                    <a href={siteData.portfolioData.footer.socialLinks.tiktok} target="_blank" rel="noopener noreferrer">
+                      <FaTiktok size={24} style={{ color: '#000' }} />
+                    </a>
+                  )}
+                  {siteData.portfolioData.footer.socialLinks.whatsapp && (
+                    <a href={`https://wa.me/${siteData.portfolioData.footer.socialLinks.whatsapp}`} target="_blank" rel="noopener noreferrer">
+                      <FaWhatsapp size={24} style={{ color: '#25d366' }} />
+                    </a>
+                  )}
+                </div>
+                {Object.values(siteData.portfolioData.footer.socialLinks).every(link => !link) && (
+                  <p style={{ textAlign: 'center', color: '#666', margin: 0 }}>
+                    Nenhuma rede social configurada ainda
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -870,7 +1346,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
               </div>
 
               <div style={{ display: 'grid', gap: '30px' }}>
-                {siteData.portfolioData.projects.map((project, index) => (
+                {siteData.portfolioData.projects.map((project: any, index: number) => (
                   <div key={project.id} style={{
                     padding: '25px',
                     border: '2px solid #e0e0e0',
@@ -1027,7 +1503,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                         💡 Digite uma tecnologia e pressione Enter ou clique em "Adicionar"
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {project.technologies.map((tech, techIndex) => (
+                        {project.technologies.map((tech: string, techIndex: number) => (
                           <span
                             key={techIndex}
                             style={{
@@ -1044,7 +1520,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
                             }}
                             onClick={() => {
                               // Permitir remover clicando na tag
-                              const newTechs = project.technologies.filter((_, i) => i !== techIndex);
+                              const newTechs = project.technologies.filter((_: string, i: number) => i !== techIndex);
                               updateProject(project.id, { technologies: newTechs });
                             }}
                             title="Clique para remover"
@@ -1093,7 +1569,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
               </div>
 
               <div style={{ display: 'grid', gap: '30px' }}>
-                {siteData.portfolioData.experience.map((exp, index) => (
+                {siteData.portfolioData.experience.map((exp: any, index: number) => (
                   <div key={exp.id || index} style={{
                     padding: '25px',
                     border: '2px solid #e0e0e0',
@@ -1266,7 +1742,7 @@ export default function EditPortfolioPage({ params }: PageProps) {
               </div>
 
               <div style={{ display: 'grid', gap: '30px' }}>
-                {siteData.portfolioData.services.map((service, index) => (
+                {siteData.portfolioData.services.map((service: any, index: number) => (
                   <div key={service.id || index} style={{
                     padding: '25px',
                     border: '2px solid #e0e0e0',

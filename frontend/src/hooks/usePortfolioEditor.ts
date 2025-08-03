@@ -30,6 +30,28 @@ export interface PortfolioCustomization {
     description: string;
     resumeUrl?: string;
   };
+  hero: {
+    staticDescription: string;
+    useStaticDescription: boolean;
+  };
+  stats: {
+    projects: string;
+    experience: string;
+    satisfaction: string;
+  };
+  footer: {
+    description: string;
+    socialLinks: {
+      facebook?: string;
+      twitter?: string;
+      instagram?: string;
+      linkedin?: string;
+      github?: string;
+      youtube?: string;
+      tiktok?: string;
+      whatsapp?: string;
+    };
+  };
   skills: {
     technical: string[];
     tools: string[];
@@ -156,6 +178,28 @@ export const getDefaultPortfolioCustomization = (): PortfolioCustomization => ({
     description: 'Desenvolvedor apaixonado por tecnologia com experiência em criar soluções inovadoras e eficientes. Especializado em desenvolvimento web moderno com foco em experiência do usuário.',
     resumeUrl: '',
   },
+  hero: {
+    staticDescription: 'Criando experiências digitais únicas através de código limpo e design inovador',
+    useStaticDescription: false,
+  },
+  stats: {
+    projects: '50+',
+    experience: '5+',
+    satisfaction: '100%',
+  },
+  footer: {
+    description: 'Desenvolvedor apaixonado por criar soluções inovadoras',
+    socialLinks: {
+      facebook: '',
+      twitter: '',
+      instagram: '',
+      linkedin: '',
+      github: '',
+      youtube: '',
+      tiktok: '',
+      whatsapp: '',
+    },
+  },
   skills: {
     technical: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'SQL'],
     tools: ['Git', 'Docker', 'VS Code', 'Figma', 'AWS'],
@@ -255,172 +299,187 @@ export const getDefaultPortfolioCustomization = (): PortfolioCustomization => ({
   },
 });
 
-export function usePortfolioEditor(userId: string, siteId: string) {
+export const usePortfolioEditor = (userId: string, siteId: string) => {
   const [data, setData] = useState<PortfolioSiteData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  // Carregar dados do site com listener em tempo real
+  // Load site data
   useEffect(() => {
     if (!userId || !siteId) return;
 
-    let unsubscribe: Unsubscribe;
-
-    const initializeData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const docRef = doc(db, 'users', userId, 'sites', siteId);
-        
-        // Primeiro carregamento
-        const docSnap = await getDoc(docRef);
-        
-        if (docSnap.exists()) {
-          const siteData = docSnap.data();
+    const siteDocRef = doc(db, 'users', userId, 'sites', siteId);
+    
+    const unsubscribe: Unsubscribe = onSnapshot(
+      siteDocRef,
+      (doc) => {
+        if (doc.exists()) {
+          const siteData = { id: doc.id, ...doc.data() } as PortfolioSiteData;
           
-          // Se não tem portfolioData, cria com dados padrão
+          // Ensure portfolioData has default structure
           if (!siteData.portfolioData) {
-            const defaultPortfolioData = getDefaultPortfolioCustomization();
-            const updatedData = {
-              ...siteData,
-              portfolioData: defaultPortfolioData,
-            };
-            
-            await updateDoc(docRef, {
-              portfolioData: defaultPortfolioData,
-              updatedAt: serverTimestamp(),
-            });
-            
-            setData(updatedData as PortfolioSiteData);
+            siteData.portfolioData = getDefaultPortfolioCustomization();
           } else {
-            setData(siteData as PortfolioSiteData);
+            // Merge with defaults to ensure all fields exist
+            const defaults = getDefaultPortfolioCustomization();
+            siteData.portfolioData = {
+              ...defaults,
+              ...siteData.portfolioData,
+              personalInfo: { ...defaults.personalInfo, ...siteData.portfolioData.personalInfo },
+              about: { ...defaults.about, ...siteData.portfolioData.about },
+              hero: { ...defaults.hero, ...siteData.portfolioData.hero },
+              stats: { ...defaults.stats, ...siteData.portfolioData.stats },
+              footer: { 
+                ...defaults.footer, 
+                ...siteData.portfolioData.footer,
+                socialLinks: { ...defaults.footer.socialLinks, ...siteData.portfolioData.footer?.socialLinks }
+              },
+              skills: { ...defaults.skills, ...siteData.portfolioData.skills },
+              theme: { ...defaults.theme, ...siteData.portfolioData.theme },
+              seo: { ...defaults.seo, ...siteData.portfolioData.seo },
+              settings: { 
+                ...defaults.settings, 
+                ...siteData.portfolioData.settings,
+                showSections: { ...defaults.settings.showSections, ...siteData.portfolioData.settings?.showSections }
+              },
+              projects: siteData.portfolioData.projects || defaults.projects,
+              experience: siteData.portfolioData.experience || defaults.experience,
+              education: siteData.portfolioData.education || defaults.education,
+              certifications: siteData.portfolioData.certifications || defaults.certifications,
+              services: siteData.portfolioData.services || defaults.services,
+              testimonials: siteData.portfolioData.testimonials || defaults.testimonials,
+            };
           }
           
-          // Configura listener para atualizações em tempo real
-          unsubscribe = onSnapshot(docRef, (doc) => {
-            if (doc.exists()) {
-              setData(doc.data() as PortfolioSiteData);
-            }
-          });
-          
+          setData(siteData);
+          setError(null);
         } else {
           setError('Site não encontrado');
         }
-      } catch (err) {
-        console.error('Erro ao carregar dados do site:', err);
+        setLoading(false);
+      },
+      (error) => {
+        console.error('Error loading site data:', error);
         setError('Erro ao carregar dados do site');
-      } finally {
         setLoading(false);
       }
-    };
+    );
 
-    initializeData();
-
-    // Cleanup function
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
+    return () => unsubscribe();
   }, [userId, siteId]);
 
-  // Salvar dados no Firebase
-  const saveSiteData = useCallback(async (newData: Partial<PortfolioSiteData>) => {
-    if (!userId || !siteId || !data) return false;
+  // Update portfolio data
+  const updatePortfolioData = useCallback(async (updates: Partial<PortfolioCustomization>) => {
+    if (!data || !userId || !siteId) return false;
 
+    setSaving(true);
     try {
-      setSaving(true);
-      const docRef = doc(db, 'users', userId, 'sites', siteId);
-      
-      const updateData = {
-        ...newData,
-        updatedAt: serverTimestamp(),
-      };
-
-      await updateDoc(docRef, updateData);
+      const siteDocRef = doc(db, 'users', userId, 'sites', siteId);
+      await updateDoc(siteDocRef, {
+        portfolioData: { ...data.portfolioData, ...updates },
+        updatedAt: serverTimestamp()
+      });
       return true;
-    } catch (err) {
-      console.error('Erro ao salvar dados do site:', err);
-      setError('Erro ao salvar dados do site');
+    } catch (error) {
+      console.error('Error updating portfolio data:', error);
       return false;
     } finally {
       setSaving(false);
     }
-  }, [userId, siteId, data]);
+  }, [data, userId, siteId]);
 
-  // Atualizar portfolioData
-  const updatePortfolioData = useCallback(async (updates: Partial<PortfolioCustomization>) => {
-    if (!data) return false;
-
-    const newPortfolioData = {
-      ...data.portfolioData,
-      ...updates,
-    } as PortfolioCustomization;
-
-    return await saveSiteData({ portfolioData: newPortfolioData });
-  }, [data, saveSiteData]);
-
-  // Publicar/despublicar site
+  // Toggle publish status
   const togglePublish = useCallback(async () => {
     if (!data) return false;
 
-    const newPublishedState = !data.published;
-    const updateData: Partial<PortfolioSiteData> = {
-      published: newPublishedState,
-    };
-
-    if (newPublishedState) {
-      updateData.publishedAt = serverTimestamp();
+    setSaving(true);
+    try {
+      const siteDocRef = doc(db, 'users', userId, 'sites', siteId);
+      const newPublishedStatus = !data.published;
+      
+      await updateDoc(siteDocRef, {
+        published: newPublishedStatus,
+        publishedAt: newPublishedStatus ? serverTimestamp() : null,
+        updatedAt: serverTimestamp()
+      });
+      
+      return true;
+    } catch (error) {
+      console.error('Error toggling publish status:', error);
+      return false;
+    } finally {
+      setSaving(false);
     }
+  }, [data, userId, siteId]);
 
-    return await saveSiteData(updateData);
-  }, [data, saveSiteData]);
-
-  // Helpers para diferentes seções
+  // Update personal info
   const updatePersonalInfo = useCallback((updates: Partial<PortfolioCustomization['personalInfo']>) => {
-    if (!data) return Promise.resolve(false);
     return updatePortfolioData({
-      personalInfo: { ...data.portfolioData.personalInfo, ...updates }
+      personalInfo: { ...data!.portfolioData.personalInfo, ...updates }
     });
   }, [data, updatePortfolioData]);
 
+  // Update about section
   const updateAbout = useCallback((updates: Partial<PortfolioCustomization['about']>) => {
-    if (!data) return Promise.resolve(false);
     return updatePortfolioData({
-      about: { ...data.portfolioData.about, ...updates }
+      about: { ...data!.portfolioData.about, ...updates }
     });
   }, [data, updatePortfolioData]);
 
+  // Update hero section
+  const updateHero = useCallback((updates: Partial<PortfolioCustomization['hero']>) => {
+    return updatePortfolioData({
+      hero: { ...data!.portfolioData.hero, ...updates }
+    });
+  }, [data, updatePortfolioData]);
+
+  // Update stats section
+  const updateStats = useCallback((updates: Partial<PortfolioCustomization['stats']>) => {
+    return updatePortfolioData({
+      stats: { ...data!.portfolioData.stats, ...updates }
+    });
+  }, [data, updatePortfolioData]);
+
+  // Update footer section
+  const updateFooter = useCallback((updates: Partial<PortfolioCustomization['footer']>) => {
+    return updatePortfolioData({
+      footer: { 
+        ...data!.portfolioData.footer, 
+        ...updates,
+        socialLinks: { ...data!.portfolioData.footer.socialLinks, ...updates.socialLinks }
+      }
+    });
+  }, [data, updatePortfolioData]);
+
+  // Update skills
   const updateSkills = useCallback((updates: Partial<PortfolioCustomization['skills']>) => {
-    if (!data) return Promise.resolve(false);
     return updatePortfolioData({
-      skills: { ...data.portfolioData.skills, ...updates }
+      skills: { ...data!.portfolioData.skills, ...updates }
     });
   }, [data, updatePortfolioData]);
 
+  // Update theme
   const updateTheme = useCallback((updates: Partial<PortfolioCustomization['theme']>) => {
-    if (!data) return Promise.resolve(false);
     return updatePortfolioData({
-      theme: { ...data.portfolioData.theme, ...updates }
+      theme: { ...data!.portfolioData.theme, ...updates }
     });
   }, [data, updatePortfolioData]);
 
+  // Update settings
   const updateSettings = useCallback((updates: Partial<PortfolioCustomization['settings']>) => {
-    if (!data) return Promise.resolve(false);
     return updatePortfolioData({
-      settings: { ...data.portfolioData.settings, ...updates }
+      settings: { ...data!.portfolioData.settings, ...updates }
     });
   }, [data, updatePortfolioData]);
 
-  // CRUD para projetos
+  // Project management
   const addProject = useCallback((project: Omit<PortfolioCustomization['projects'][0], 'id'>) => {
     if (!data) return Promise.resolve(false);
     
     const newProject = {
       ...project,
-      id: Date.now().toString(),
+      id: Date.now().toString()
     };
     
     return updatePortfolioData({
@@ -446,13 +505,13 @@ export function usePortfolioEditor(userId: string, siteId: string) {
     return updatePortfolioData({ projects: filteredProjects });
   }, [data, updatePortfolioData]);
 
-  // CRUD para experiências
+  // Experience management
   const addExperience = useCallback((experience: Omit<PortfolioCustomization['experience'][0], 'id'>) => {
     if (!data) return Promise.resolve(false);
     
     const newExperience = {
       ...experience,
-      id: Date.now().toString(),
+      id: Date.now().toString()
     };
     
     return updatePortfolioData({
@@ -478,13 +537,13 @@ export function usePortfolioEditor(userId: string, siteId: string) {
     return updatePortfolioData({ experience: filteredExperience });
   }, [data, updatePortfolioData]);
 
-  // CRUD para serviços
+  // Service management
   const addService = useCallback((service: Omit<PortfolioCustomization['services'][0], 'id'>) => {
     if (!data) return Promise.resolve(false);
     
     const newService = {
       ...service,
-      id: Date.now().toString(),
+      id: Date.now().toString()
     };
     
     return updatePortfolioData({
@@ -510,23 +569,20 @@ export function usePortfolioEditor(userId: string, siteId: string) {
     return updatePortfolioData({ services: filteredServices });
   }, [data, updatePortfolioData]);
 
-  // Funções para gerenciar testimonials
+  // Testimonials management
   const updateTestimonials = useCallback((testimonials: PortfolioCustomization['testimonials']) => {
-    if (!data) return Promise.resolve(false);
     return updatePortfolioData({ testimonials });
-  }, [data, updatePortfolioData]);
+  }, [updatePortfolioData]);
 
-  // Funções para gerenciar education
+  // Education management
   const updateEducation = useCallback((education: PortfolioCustomization['education']) => {
-    if (!data) return Promise.resolve(false);
     return updatePortfolioData({ education });
-  }, [data, updatePortfolioData]);
+  }, [updatePortfolioData]);
 
-  // Funções para gerenciar certifications
+  // Certifications management
   const updateCertifications = useCallback((certifications: PortfolioCustomization['certifications']) => {
-    if (!data) return Promise.resolve(false);
     return updatePortfolioData({ certifications });
-  }, [data, updatePortfolioData]);
+  }, [updatePortfolioData]);
 
   return {
     data,
@@ -536,6 +592,9 @@ export function usePortfolioEditor(userId: string, siteId: string) {
     togglePublish,
     updatePersonalInfo,
     updateAbout,
+    updateHero,
+    updateStats,
+    updateFooter,
     updateSkills,
     updateTheme,
     updateSettings,
@@ -552,4 +611,4 @@ export function usePortfolioEditor(userId: string, siteId: string) {
     updateEducation,
     updateCertifications,
   };
-}
+};
