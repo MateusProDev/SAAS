@@ -32,6 +32,9 @@ export default function EditPortfolioPage({ params }: PageProps) {
     addService,
     updateService,
     removeService,
+    updateTestimonials,
+    updateEducation,
+    updateCertifications,
   } = usePortfolioEditor(user?.uid || '', params.id);
 
   const [activeTab, setActiveTab] = useState('personal');
@@ -103,6 +106,11 @@ export default function EditPortfolioPage({ params }: PageProps) {
     { id: 'personal', label: 'Informações Pessoais', icon: '👤' },
     { id: 'about', label: 'Sobre', icon: 'ℹ️' },
     { id: 'projects', label: 'Projetos', icon: '💼' },
+    { id: 'experience', label: 'Experiência', icon: '👨‍💼' },
+    { id: 'services', label: 'Serviços', icon: '🛠️' },
+    { id: 'testimonials', label: 'Depoimentos', icon: '💬' },
+    { id: 'education', label: 'Educação', icon: '🎓' },
+    { id: 'certifications', label: 'Certificações', icon: '🏆' },
     { id: 'theme', label: 'Tema', icon: '🎨' },
   ];
 
@@ -320,6 +328,84 @@ export default function EditPortfolioPage({ params }: PageProps) {
                     type="text"
                     value={siteData.portfolioData.personalInfo.phone}
                     onChange={(e) => updatePersonalInfo({ phone: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                    Endereço/Localização:
+                  </label>
+                  <input
+                    type="text"
+                    value={siteData.portfolioData.personalInfo.location || ''}
+                    onChange={(e) => updatePersonalInfo({ location: e.target.value })}
+                    placeholder="Cidade, Estado, País"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>LinkedIn:</label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.personalInfo.linkedin || ''}
+                    onChange={(e) => updatePersonalInfo({ linkedin: e.target.value })}
+                    placeholder="https://linkedin.com/in/seuperfil"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>GitHub:</label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.personalInfo.github || ''}
+                    onChange={(e) => updatePersonalInfo({ github: e.target.value })}
+                    placeholder="https://github.com/seuperfil"
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e0e0e0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Website Pessoal:</label>
+                  <input
+                    type="url"
+                    value={siteData.portfolioData.personalInfo.website || ''}
+                    onChange={(e) => updatePersonalInfo({ website: e.target.value })}
+                    placeholder="https://meusite.com"
                     style={{
                       width: '100%',
                       padding: '12px',
@@ -967,6 +1053,1495 @@ export default function EditPortfolioPage({ params }: PageProps) {
                             <span style={{ fontSize: '14px', opacity: 0.8 }}>×</span>
                           </span>
                         ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Experience Tab */}
+          {activeTab === 'experience' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                👨‍💼 Experiência Profissional
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => addExperience({
+                    title: 'Novo Cargo',
+                    company: 'Nome da Empresa',
+                    period: '2024 - Presente',
+                    description: 'Descrição das responsabilidades e conquistas...',
+                    current: true
+                  })}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Experiência
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {siteData.portfolioData.experience.map((exp, index) => (
+                  <div key={exp.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Experiência #{index + 1}</h3>
+                      <button
+                        onClick={() => removeExperience(exp.id || `exp-${index}`)}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Cargo:
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.title}
+                          onChange={(e) => updateExperience(exp.id || `exp-${index}`, { title: e.target.value })}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Empresa:
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.company}
+                          onChange={(e) => updateExperience(exp.id || `exp-${index}`, { company: e.target.value })}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Período:
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.period}
+                          onChange={(e) => updateExperience(exp.id || `exp-${index}`, { period: e.target.value })}
+                          placeholder="Ex: 2023 - Presente"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Localização:
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.location || ''}
+                          onChange={(e) => updateExperience(exp.id || `exp-${index}`, { location: e.target.value })}
+                          placeholder="Ex: São Paulo, SP"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                        Descrição:
+                      </label>
+                      <textarea
+                        value={exp.description}
+                        onChange={(e) => updateExperience(exp.id || `exp-${index}`, { description: e.target.value })}
+                        placeholder="Descreva suas responsabilidades, conquistas e impacto..."
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid #e0e0e0',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          minHeight: '120px',
+                          resize: 'vertical',
+                          fontFamily: 'inherit',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={exp.current || false}
+                          onChange={(e) => updateExperience(exp.id || `exp-${index}`, { current: e.target.checked })}
+                          style={{ transform: 'scale(1.2)' }}
+                        />
+                        <span style={{ fontWeight: 'bold', color: '#555' }}>Trabalho atual</span>
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Services Tab */}
+          {activeTab === 'services' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🛠️ Serviços
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => addService({
+                    name: 'Novo Serviço',
+                    description: 'Descrição do serviço oferecido...',
+                    price: 'A partir de R$ 1.000',
+                    icon: '💻'
+                  })}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Serviço
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {siteData.portfolioData.services.map((service, index) => (
+                  <div key={service.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Serviço #{index + 1}</h3>
+                      <button
+                        onClick={() => removeService(service.id || `service-${index}`)}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Nome do Serviço:
+                        </label>
+                        <input
+                          type="text"
+                          value={service.name}
+                          onChange={(e) => updateService(service.id || `service-${index}`, { name: e.target.value })}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Preço:
+                        </label>
+                        <input
+                          type="text"
+                          value={service.price || ''}
+                          onChange={(e) => updateService(service.id || `service-${index}`, { price: e.target.value })}
+                          placeholder="Ex: A partir de R$ 1.000"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Ícone:
+                        </label>
+                        <input
+                          type="text"
+                          value={service.icon || '💻'}
+                          onChange={(e) => updateService(service.id || `service-${index}`, { icon: e.target.value })}
+                          placeholder="Ex: 💻 🎨 📱"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                        Descrição:
+                      </label>
+                      <textarea
+                        value={service.description}
+                        onChange={(e) => updateService(service.id || `service-${index}`, { description: e.target.value })}
+                        placeholder="Descreva o serviço em detalhes..."
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid #e0e0e0',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          minHeight: '100px',
+                          resize: 'vertical',
+                          fontFamily: 'inherit',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Testimonials Tab */}
+          {activeTab === 'testimonials' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                💬 Depoimentos
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => {
+                    const newTestimonials = [...(siteData.portfolioData.testimonials || []), {
+                      id: Date.now().toString(),
+                      name: 'Nome do Cliente',
+                      content: 'Depoimento sobre o trabalho realizado...',
+                      rating: 5,
+                      position: 'CEO',
+                      company: 'Empresa do Cliente',
+                      imageUrl: ''
+                    }];
+                    updateTestimonials(newTestimonials);
+                  }}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Depoimento
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {(siteData.portfolioData.testimonials || []).map((testimonial, index) => (
+                  <div key={testimonial.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Depoimento #{index + 1}</h3>
+                      <button
+                        onClick={() => {
+                          const newTestimonials = siteData.portfolioData.testimonials.filter((_, i) => i !== index);
+                          updateTestimonials(newTestimonials);
+                        }}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Nome do Cliente:
+                        </label>
+                        <input
+                          type="text"
+                          value={testimonial.name}
+                          onChange={(e) => {
+                            const newTestimonials = [...siteData.portfolioData.testimonials];
+                            newTestimonials[index] = { ...testimonial, name: e.target.value };
+                            updateTestimonials(newTestimonials);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Cargo/Posição:
+                        </label>
+                        <input
+                          type="text"
+                          value={testimonial.position || ''}
+                          onChange={(e) => {
+                            const newTestimonials = [...siteData.portfolioData.testimonials];
+                            newTestimonials[index] = { ...testimonial, position: e.target.value };
+                            updateTestimonials(newTestimonials);
+                          }}
+                          placeholder="Ex: CEO, Diretor, etc."
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Empresa:
+                        </label>
+                        <input
+                          type="text"
+                          value={testimonial.company || ''}
+                          onChange={(e) => {
+                            const newTestimonials = [...siteData.portfolioData.testimonials];
+                            newTestimonials[index] = { ...testimonial, company: e.target.value };
+                            updateTestimonials(newTestimonials);
+                          }}
+                          placeholder="Nome da empresa"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Avaliação (1-5):
+                        </label>
+                        <select
+                          value={testimonial.rating}
+                          onChange={(e) => {
+                            const newTestimonials = [...siteData.portfolioData.testimonials];
+                            newTestimonials[index] = { ...testimonial, rating: parseInt(e.target.value) };
+                            updateTestimonials(newTestimonials);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        >
+                          <option value={5}>⭐⭐⭐⭐⭐ (5 estrelas)</option>
+                          <option value={4}>⭐⭐⭐⭐ (4 estrelas)</option>
+                          <option value={3}>⭐⭐⭐ (3 estrelas)</option>
+                          <option value={2}>⭐⭐ (2 estrelas)</option>
+                          <option value={1}>⭐ (1 estrela)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                        Depoimento:
+                      </label>
+                      <textarea
+                        value={testimonial.content}
+                        onChange={(e) => {
+                          const newTestimonials = [...siteData.portfolioData.testimonials];
+                          newTestimonials[index] = { ...testimonial, content: e.target.value };
+                          updateTestimonials(newTestimonials);
+                        }}
+                        placeholder="O que o cliente disse sobre o trabalho..."
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid #e0e0e0',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          minHeight: '120px',
+                          resize: 'vertical',
+                          fontFamily: 'inherit',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Education Tab */}
+          {activeTab === 'education' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🎓 Educação
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => {
+                    const newEducation = [...(siteData.portfolioData.education || []), {
+                      id: Date.now().toString(),
+                      institution: 'Nome da Instituição',
+                      degree: 'Grau/Curso',
+                      period: '2020 - 2024',
+                      description: 'Descrição da formação...'
+                    }];
+                    updateEducation(newEducation);
+                  }}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Formação
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {(siteData.portfolioData.education || []).map((edu, index) => (
+                  <div key={edu.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Formação #{index + 1}</h3>
+                      <button
+                        onClick={() => {
+                          const newEducation = siteData.portfolioData.education.filter((_, i) => i !== index);
+                          updateEducation(newEducation);
+                        }}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Instituição:
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.institution}
+                          onChange={(e) => {
+                            const newEducation = [...siteData.portfolioData.education];
+                            newEducation[index] = { ...edu, institution: e.target.value };
+                            updateEducation(newEducation);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Grau/Curso:
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.degree}
+                          onChange={(e) => {
+                            const newEducation = [...siteData.portfolioData.education];
+                            newEducation[index] = { ...edu, degree: e.target.value };
+                            updateEducation(newEducation);
+                          }}
+                          placeholder="Ex: Bacharelado, Tecnólogo, Curso Técnico"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Área de Estudo:
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.field || ''}
+                          onChange={(e) => {
+                            const newEducation = [...siteData.portfolioData.education];
+                            newEducation[index] = { ...edu, field: e.target.value };
+                            updateEducation(newEducation);
+                          }}
+                          placeholder="Ex: Ciência da Computação, Design"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Período:
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.period}
+                          onChange={(e) => {
+                            const newEducation = [...siteData.portfolioData.education];
+                            newEducation[index] = { ...edu, period: e.target.value };
+                            updateEducation(newEducation);
+                          }}
+                          placeholder="Ex: 2020 - 2024"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                        Descrição:
+                      </label>
+                      <textarea
+                        value={edu.description || ''}
+                        onChange={(e) => {
+                          const newEducation = [...siteData.portfolioData.education];
+                          newEducation[index] = { ...edu, description: e.target.value };
+                          updateEducation(newEducation);
+                        }}
+                        placeholder="Descreva a formação, projetos importantes, notas relevantes..."
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid #e0e0e0',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          minHeight: '100px',
+                          resize: 'vertical',
+                          fontFamily: 'inherit',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Certifications Tab */}
+          {activeTab === 'certifications' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🏆 Certificações
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => {
+                    const newCertifications = [...(siteData.portfolioData.certifications || []), {
+                      id: Date.now().toString(),
+                      name: 'Nome da Certificação',
+                      issuer: 'Organização Emissora',
+                      date: '2024',
+                      url: ''
+                    }];
+                    updateCertifications(newCertifications);
+                  }}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Certificação
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {(siteData.portfolioData.certifications || []).map((cert, index) => (
+                  <div key={cert.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Certificação #{index + 1}</h3>
+                      <button
+                        onClick={() => {
+                          const newCertifications = siteData.portfolioData.certifications.filter((_, i) => i !== index);
+                          updateCertifications(newCertifications);
+                        }}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Nome da Certificação:
+                        </label>
+                        <input
+                          type="text"
+                          value={cert.name}
+                          onChange={(e) => {
+                            const newCertifications = [...siteData.portfolioData.certifications];
+                            newCertifications[index] = { ...cert, name: e.target.value };
+                            updateCertifications(newCertifications);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Organização:
+                        </label>
+                        <input
+                          type="text"
+                          value={cert.issuer}
+                          onChange={(e) => {
+                            const newCertifications = [...siteData.portfolioData.certifications];
+                            newCertifications[index] = { ...cert, issuer: e.target.value };
+                            updateCertifications(newCertifications);
+                          }}
+                          placeholder="Ex: Google, Microsoft, AWS"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Data:
+                        </label>
+                        <input
+                          type="text"
+                          value={cert.date}
+                          onChange={(e) => {
+                            const newCertifications = [...siteData.portfolioData.certifications];
+                            newCertifications[index] = { ...cert, date: e.target.value };
+                            updateCertifications(newCertifications);
+                          }}
+                          placeholder="Ex: 2024, Janeiro 2024"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Link da Credencial:
+                        </label>
+                        <input
+                          type="url"
+                          value={cert.url || ''}
+                          onChange={(e) => {
+                            const newCertifications = [...siteData.portfolioData.certifications];
+                            newCertifications[index] = { ...cert, url: e.target.value };
+                            updateCertifications(newCertifications);
+                          }}
+                          placeholder="https://..."
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Experience Tab */}
+          {activeTab === 'experience' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                👨‍💼 Experiência Profissional
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => addExperience({
+                    title: 'Novo Cargo',
+                    company: 'Nome da Empresa',
+                    period: '2024 - Presente',
+                    description: 'Descrição das responsabilidades e conquistas...',
+                    current: true
+                  })}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Experiência
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {(siteData.portfolioData.experience || []).map((exp, index) => (
+                  <div key={exp.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Experiência #{index + 1}</h3>
+                      <button
+                        onClick={() => removeExperience(exp.id || `exp-${index}`)}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Cargo:
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.title}
+                          onChange={(e) => updateExperience(exp.id || `exp-${index}`, { title: e.target.value })}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Empresa:
+                        </label>
+                        <input
+                          type="text"
+                          value={exp.company}
+                          onChange={(e) => updateExperience(exp.id || `exp-${index}`, { company: e.target.value })}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                        Descrição:
+                      </label>
+                      <textarea
+                        value={exp.description}
+                        onChange={(e) => updateExperience(exp.id || `exp-${index}`, { description: e.target.value })}
+                        placeholder="Descreva suas responsabilidades, conquistas e impacto..."
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid #e0e0e0',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          minHeight: '120px',
+                          resize: 'vertical',
+                          fontFamily: 'inherit',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Services Tab */}
+          {activeTab === 'services' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🛠️ Serviços
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => addService({
+                    name: 'Novo Serviço',
+                    description: 'Descrição do serviço oferecido...',
+                    price: 'A partir de R$ 1.000',
+                    icon: '💻'
+                  })}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Serviço
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {(siteData.portfolioData.services || []).map((service, index) => (
+                  <div key={service.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Serviço #{index + 1}</h3>
+                      <button
+                        onClick={() => removeService(service.id || `service-${index}`)}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Nome do Serviço:
+                        </label>
+                        <input
+                          type="text"
+                          value={service.name}
+                          onChange={(e) => updateService(service.id || `service-${index}`, { name: e.target.value })}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Preço:
+                        </label>
+                        <input
+                          type="text"
+                          value={service.price || ''}
+                          onChange={(e) => updateService(service.id || `service-${index}`, { price: e.target.value })}
+                          placeholder="Ex: A partir de R$ 1.000"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                        Descrição:
+                      </label>
+                      <textarea
+                        value={service.description}
+                        onChange={(e) => updateService(service.id || `service-${index}`, { description: e.target.value })}
+                        placeholder="Descreva o serviço em detalhes..."
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid #e0e0e0',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          minHeight: '100px',
+                          resize: 'vertical',
+                          fontFamily: 'inherit',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Testimonials Tab */}
+          {activeTab === 'testimonials' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                💬 Depoimentos
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => {
+                    const newTestimonials = [...(siteData.portfolioData.testimonials || []), {
+                      id: Date.now().toString(),
+                      name: 'Nome do Cliente',
+                      content: 'Depoimento sobre o trabalho realizado...',
+                      rating: 5,
+                      position: 'CEO',
+                      company: 'Empresa do Cliente'
+                    }];
+                    updateTestimonials(newTestimonials);
+                  }}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Depoimento
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {(siteData.portfolioData.testimonials || []).map((testimonial, index) => (
+                  <div key={testimonial.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Depoimento #{index + 1}</h3>
+                      <button
+                        onClick={() => {
+                          const newTestimonials = siteData.portfolioData.testimonials.filter((_, i) => i !== index);
+                          updateTestimonials(newTestimonials);
+                        }}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Nome do Cliente:
+                        </label>
+                        <input
+                          type="text"
+                          value={testimonial.name}
+                          onChange={(e) => {
+                            const newTestimonials = [...siteData.portfolioData.testimonials];
+                            newTestimonials[index] = { ...testimonial, name: e.target.value };
+                            updateTestimonials(newTestimonials);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Empresa:
+                        </label>
+                        <input
+                          type="text"
+                          value={testimonial.company || ''}
+                          onChange={(e) => {
+                            const newTestimonials = [...siteData.portfolioData.testimonials];
+                            newTestimonials[index] = { ...testimonial, company: e.target.value };
+                            updateTestimonials(newTestimonials);
+                          }}
+                          placeholder="Nome da empresa"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                        Depoimento:
+                      </label>
+                      <textarea
+                        value={testimonial.content}
+                        onChange={(e) => {
+                          const newTestimonials = [...siteData.portfolioData.testimonials];
+                          newTestimonials[index] = { ...testimonial, content: e.target.value };
+                          updateTestimonials(newTestimonials);
+                        }}
+                        placeholder="O que o cliente disse sobre o trabalho..."
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          border: '2px solid #e0e0e0',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          minHeight: '120px',
+                          resize: 'vertical',
+                          fontFamily: 'inherit',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Education Tab */}
+          {activeTab === 'education' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🎓 Educação
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => {
+                    const newEducation = [...(siteData.portfolioData.education || []), {
+                      id: Date.now().toString(),
+                      institution: 'Nome da Instituição',
+                      degree: 'Grau/Curso',
+                      period: '2020 - 2024',
+                      description: 'Descrição da formação...'
+                    }];
+                    updateEducation(newEducation);
+                  }}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Formação
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {(siteData.portfolioData.education || []).map((edu, index) => (
+                  <div key={edu.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Formação #{index + 1}</h3>
+                      <button
+                        onClick={() => {
+                          const newEducation = siteData.portfolioData.education.filter((_, i) => i !== index);
+                          updateEducation(newEducation);
+                        }}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Instituição:
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.institution}
+                          onChange={(e) => {
+                            const newEducation = [...siteData.portfolioData.education];
+                            newEducation[index] = { ...edu, institution: e.target.value };
+                            updateEducation(newEducation);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Grau/Curso:
+                        </label>
+                        <input
+                          type="text"
+                          value={edu.degree}
+                          onChange={(e) => {
+                            const newEducation = [...siteData.portfolioData.education];
+                            newEducation[index] = { ...edu, degree: e.target.value };
+                            updateEducation(newEducation);
+                          }}
+                          placeholder="Ex: Bacharelado, Tecnólogo"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Certifications Tab */}
+          {activeTab === 'certifications' && (
+            <div>
+              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🏆 Certificações
+              </h2>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <button
+                  onClick={() => {
+                    const newCertifications = [...(siteData.portfolioData.certifications || []), {
+                      id: Date.now().toString(),
+                      name: 'Nome da Certificação',
+                      issuer: 'Organização Emissora',
+                      date: '2024'
+                    }];
+                    updateCertifications(newCertifications);
+                  }}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ➕ Adicionar Certificação
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '30px' }}>
+                {(siteData.portfolioData.certifications || []).map((cert, index) => (
+                  <div key={cert.id || index} style={{
+                    padding: '25px',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ margin: 0, color: '#333' }}>Certificação #{index + 1}</h3>
+                      <button
+                        onClick={() => {
+                          const newCertifications = siteData.portfolioData.certifications.filter((_, i) => i !== index);
+                          updateCertifications(newCertifications);
+                        }}
+                        style={{
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🗑️ Remover
+                      </button>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Nome da Certificação:
+                        </label>
+                        <input
+                          type="text"
+                          value={cert.name}
+                          onChange={(e) => {
+                            const newCertifications = [...siteData.portfolioData.certifications];
+                            newCertifications[index] = { ...cert, name: e.target.value };
+                            updateCertifications(newCertifications);
+                          }}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
+                          Organização:
+                        </label>
+                        <input
+                          type="text"
+                          value={cert.issuer}
+                          onChange={(e) => {
+                            const newCertifications = [...siteData.portfolioData.certifications];
+                            newCertifications[index] = { ...cert, issuer: e.target.value };
+                            updateCertifications(newCertifications);
+                          }}
+                          placeholder="Ex: Google, Microsoft"
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none'
+                          }}
+                        />
                       </div>
                     </div>
                   </div>

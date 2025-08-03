@@ -54,6 +54,7 @@ export interface PortfolioCustomization {
     period: string;
     description: string;
     current: boolean;
+    location?: string;
   }>;
   education: Array<{
     id: string;
@@ -61,13 +62,17 @@ export interface PortfolioCustomization {
     institution: string;
     period: string;
     description?: string;
+    field?: string;
   }>;
   certifications: Array<{
     id: string;
     name: string;
     issuer: string;
+    organization?: string;
     date: string;
     url?: string;
+    credentialUrl?: string;
+    description?: string;
   }>;
   services: Array<{
     id: string;
@@ -75,11 +80,13 @@ export interface PortfolioCustomization {
     description: string;
     price: string;
     icon: string;
+    features?: string[];
   }>;
   testimonials: Array<{
     id: string;
     name: string;
     content: string;
+    text?: string;
     rating: number;
     position: string;
     company: string;
@@ -503,6 +510,24 @@ export function usePortfolioEditor(userId: string, siteId: string) {
     return updatePortfolioData({ services: filteredServices });
   }, [data, updatePortfolioData]);
 
+  // Funções para gerenciar testimonials
+  const updateTestimonials = useCallback((testimonials: PortfolioCustomization['testimonials']) => {
+    if (!data) return Promise.resolve(false);
+    return updatePortfolioData({ testimonials });
+  }, [data, updatePortfolioData]);
+
+  // Funções para gerenciar education
+  const updateEducation = useCallback((education: PortfolioCustomization['education']) => {
+    if (!data) return Promise.resolve(false);
+    return updatePortfolioData({ education });
+  }, [data, updatePortfolioData]);
+
+  // Funções para gerenciar certifications
+  const updateCertifications = useCallback((certifications: PortfolioCustomization['certifications']) => {
+    if (!data) return Promise.resolve(false);
+    return updatePortfolioData({ certifications });
+  }, [data, updatePortfolioData]);
+
   return {
     data,
     loading,
@@ -523,5 +548,8 @@ export function usePortfolioEditor(userId: string, siteId: string) {
     addService,
     updateService,
     removeService,
+    updateTestimonials,
+    updateEducation,
+    updateCertifications,
   };
 }

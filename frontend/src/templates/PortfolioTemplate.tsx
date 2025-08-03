@@ -91,6 +91,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
 
   // ✅ FALLBACK FORÇADO PARA USAR DADOS CORRETOS
   const displayName = site.name || site.personalInfo?.name || site.portfolioData?.personalInfo?.name || 'Portfolio';
+  const displaySubtitle = site.personalInfo?.subtitle || site.portfolioData?.personalInfo?.subtitle || 'Desenvolvedor Full Stack';
   const displayDescription = site.about?.text || site.description || site.portfolioData?.about?.description || 'Desenvolvedor apaixonado por tecnologia';
 
   const primaryColor = site.settings?.primaryColor || '#667eea';
@@ -370,6 +371,15 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           }}>
             {displayName}
           </h1>
+          <h2 style={{
+            fontSize: '24px',
+            marginBottom: '20px',
+            fontWeight: '500',
+            opacity: 0.95,
+            color: '#f0f0f0'
+          }}>
+            {displaySubtitle}
+          </h2>
           <p style={{
             fontSize: '20px',
             marginBottom: '30px',
