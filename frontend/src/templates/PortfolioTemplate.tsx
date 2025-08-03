@@ -10,6 +10,39 @@ interface PortfolioTemplateProps {
     email?: string;
     phone?: string;
     whatsapp?: string;
+    personalInfo?: {
+      name?: string;
+      fullName?: string;
+      subtitle?: string;
+      email?: string;
+      phone?: string;
+      location?: string;
+      whatsapp?: string;
+    };
+    portfolioData?: {
+      personalInfo?: {
+        name?: string;
+        fullName?: string;
+        subtitle?: string;
+        email?: string;
+        phone?: string;
+        location?: string;
+        whatsapp?: string;
+      };
+      about?: {
+        description?: string;
+      };
+      projects?: Array<any>;
+      skills?: {
+        technical?: string[];
+        tools?: string[];
+      };
+      theme?: {
+        primaryColor?: string;
+        secondaryColor?: string;
+        fontFamily?: string;
+      };
+    };
     about?: {
       text: string;
       skills?: string[];
@@ -56,12 +89,17 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('todos');
 
+  // ✅ FALLBACK FORÇADO PARA USAR DADOS CORRETOS
+  const displayName = site.name || site.personalInfo?.name || site.portfolioData?.personalInfo?.name || 'Portfolio';
+  const displayDescription = site.about?.text || site.description || site.portfolioData?.about?.description || 'Desenvolvedor apaixonado por tecnologia';
+
   const primaryColor = site.settings?.primaryColor || '#667eea';
   const secondaryColor = site.settings?.secondaryColor || '#764ba2';
   const fontFamily = site.settings?.fontFamily || 'Inter, sans-serif';
   const whatsapp = site.whatsapp || '';
 
-  const portfolio = site.portfolio || [
+  // Usar dados reais quando existirem, senão usar dados padrão apenas para demonstração
+  const portfolio = (site.portfolio && site.portfolio.length > 0) ? site.portfolio : [
     {
       id: '1',
       title: 'E-commerce Website',
@@ -85,7 +123,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
     }
   ];
 
-  const services = site.services || [
+  const services = (site.services && site.services.length > 0) ? site.services : [
     {
       id: '1',
       name: 'Desenvolvimento Web',
@@ -141,7 +179,8 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
     ? portfolio 
     : portfolio.filter(p => p.category === selectedCategory);
 
-  const skills = site.about?.skills || [
+  // Usar skills reais quando existirem
+  const skills = (site.about?.skills && site.about.skills.length > 0) ? site.about.skills : [
     'JavaScript', 'React', 'Node.js', 'Python', 'UI/UX Design', 
     'Figma', 'Photoshop', 'Git', 'MongoDB', 'SQL'
   ];
@@ -271,7 +310,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             fontWeight: 'bold',
             color: 'white'
           }}>
-            {site.name || site.title}
+            {displayName}
           </div>
           
           <div className="hamburger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -329,7 +368,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             fontWeight: 'bold',
             lineHeight: '1.2'
           }}>
-            {site.name || site.title || 'Desenvolvedor & Designer'}
+            {displayName}
           </h1>
           <p style={{
             fontSize: '20px',
@@ -398,7 +437,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                 color: '#666',
                 marginBottom: '30px'
               }}>
-                {site.description || site.about?.text || 'Sou um desenvolvedor apaixonado por criar soluções digitais que fazem a diferença. Com experiência em desenvolvimento web e design, trabalho para transformar ideias em realidade através de código limpo e interfaces intuitivas.'}
+                {displayDescription}
               </p>
               
               {/* Skills */}

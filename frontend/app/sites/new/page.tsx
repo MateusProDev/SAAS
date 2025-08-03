@@ -23,42 +23,130 @@ export default function NewSitePage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    
     try {
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) throw new Error('Usuário não autenticado');
+      
       const db = getFirestore();
-      // Adiciona em users/{uid}/sites
+      
+      // ✅ USAR APENAS A NOVA ESTRUTURA users/{uid}/sites
       const userSiteRef = collection(db, 'users', user.uid, 'sites');
-      const docRef = await addDoc(userSiteRef, {
+      
+      // ✅ PREPARAR DADOS DO SITE BASEADO NO TEMPLATE
+      let siteData: any = {
         title,
         description,
         template,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-        userId: user.uid
-      });
-      // Adiciona também em sites global, usando o mesmo ID
-      const { doc, setDoc } = await import('firebase/firestore');
-      const globalSiteRef = doc(db, 'sites', docRef.id);
-      await setDoc(globalSiteRef, {
-        id: docRef.id,
-        title, 
-        description,
+        userId: user.uid,
+        published: false
+      };
+      
+      // ✅ SE FOR PORTFÓLIO, CRIAR ESTRUTURA COMPLETA
+      if (template === 'portfolio') {
+        siteData.portfolioData = {
+          personalInfo: {
+            name: user.displayName || title || 'Seu Nome',
+            email: user.email || 'contato@exemplo.com',
+            phone: '',
+            title: 'Desenvolvedor Full Stack',
+            subtitle: 'Desenvolvedor apaixonado por tecnologia',
+            location: 'São Paulo, Brasil',
+            whatsapp: ''
+          },
+          about: {
+            description: description || 'Desenvolvedor apaixonado por tecnologia e inovação.'
+          },
+          skills: {
+            technical: ['JavaScript', 'TypeScript', 'React', 'Node.js'],
+            tools: ['Git', 'Docker', 'VS Code'],
+            languages: ['Português', 'Inglês'],
+            soft: ['Comunicação', 'Trabalho em equipe', 'Liderança']
+          },
+          projects: [],
+          services: [],
+          experience: [],
+          education: [],
+          certifications: [],
+          testimonials: [],
+          theme: {
+            primaryColor: '#667eea',
+            secondaryColor: '#764ba2',
+            fontFamily: 'Inter, sans-serif',
+            backgroundColor: '#ffffff',
+            textColor: '#333333',
+            layout: 'modern'
+          },
+          settings: {
+            showContactForm: true,
+            showSocialLinks: true,
+            allowDownloadResume: false,
+            enableAnalytics: false
+          },
+          showSections: {
+            about: true,
+            skills: true,
+            projects: true,
+            experience: true,
+            education: false,
+            certifications: false,
+            services: false,
+            testimonials: false,
+            contact: true
+          },
+          seo: {
+            title: title || 'Meu Portfólio',
+            description: 'Portfólio profissional - Desenvolvedor Full Stack',
+            keywords: ['desenvolvedor', 'portfolio', 'web developer']
+          }
+        };
+      } else {
+        // ✅ PARA OUTROS TEMPLATES, CRIAR ESTRUTURA BÁSICA
+        siteData.customization = {
+          hero: {
+            title: title,
+            subtitle: description
+          },
+          about: {
+            content: description
+          },
+          contact: {
+            phone: '',
+            email: user.email || '',
+            address: '',
+            whatsapp: ''
+          },
+          theme: {
+            primaryColor: '#667eea',
+            secondaryColor: '#764ba2',
+            fontFamily: 'Inter, sans-serif'
+          }
+        };
+      }
+      
+      // ✅ CRIAR SITE NA NOVA ESTRUTURA
+      const docRef = await addDoc(userSiteRef, siteData);
+      
+      console.log('✅ [NEW SITE] Site criado na nova estrutura:', {
+        siteId: docRef.id,
         template,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        userId: user.uid
+        hasPortfolioData: template === 'portfolio'
       });
+      
       if (refreshSites) await refreshSites();
       
-      // Redireciona para o editor específico baseado no template
+      // ✅ REDIRECIONAR PARA O EDITOR ADEQUADO
       if (template === 'portfolio') {
-        router.push(`/sites/${docRef.id}/portfolio`);
+        router.push(`/sites/${docRef.id}/edit`);
       } else {
         router.push(`/sites/${docRef.id}/edit`);
       }
+      
     } catch (err: any) {
+      console.error('❌ [NEW SITE] Erro ao criar site:', err);
       setError('Erro ao criar site.');
     } finally {
       setLoading(false);

@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useFirebaseAuthUser } from '../../../../src/hooks/useFirebaseAuthUser';
+import { useSiteEditor, BarbeariaCustomization } from '../../../../src/hooks/useSiteEditor';
+import { usePortfolioEditor } from '../../../../src/hooks/usePortfolioEditor';
 
 interface PageProps {
   params: {
@@ -8,101 +11,151 @@ interface PageProps {
   };
 }
 
-// Dados de exemplo (mock) - substitui Firebase por enquanto
-const getMockSiteData = (siteId: string) => ({
-  id: siteId,
-  title: 'Minha Barbearia',
-  description: 'A melhor barbearia da cidade',
-  template: 'barbearia',
-  customization: {
-    hero: {
-      title: 'Barbearia Premium',
-      subtitle: 'Cortes modernos e tradicionais com o melhor atendimento da cidade'
-    },
-    about: {
-      title: 'Sobre Nós',
-      content: 'Somos uma barbearia com mais de 10 anos de experiência, oferecendo os melhores cortes e cuidados masculinos.'
-    },
-    services: [
-      { id: '1', name: 'Corte Masculino', price: 30, duration: '30min' },
-      { id: '2', name: 'Barba', price: 20, duration: '20min' },
-      { id: '3', name: 'Corte + Barba', price: 45, duration: '45min' }
-    ],
-    contact: {
-      phone: '(11) 99999-9999',
-      email: 'contato@barbearia.com',
-      address: 'Rua das Flores, 123 - Centro',
-      whatsapp: '11999999999',
-      instagram: '@barbeariapremium'
-    },
-    theme: {
-      primaryColor: '#8B4513',
-      secondaryColor: '#DAA520',
-      fontFamily: 'Roboto'
-    },
-    gallery: [
-      'https://via.placeholder.com/300x200/8B4513/FFFFFF?text=Foto+1',
-      'https://via.placeholder.com/300x200/DAA520/FFFFFF?text=Foto+2'
-    ]
-  },
-  published: false
-});
-
 export default function EditSitePage({ params }: PageProps) {
-  const [siteData, setSiteData] = useState(getMockSiteData(params.id));
+  const { user } = useFirebaseAuthUser();
+  
+  // Primeiro carrega dados básicos para verificar template
+  const {
+    data: siteData,
+    loading: siteLoading,
+    error: siteError,
+    saving: siteSaving,
+    togglePublish: siteTogglePublish,
+    updateHero: siteUpdateHero,
+    updateAbout: siteUpdateAbout,
+    updateContact: siteUpdateContact,
+    updateTheme: siteUpdateTheme,
+    addService: siteAddService,
+    updateService: siteUpdateService,
+    removeService: siteRemoveService,
+  } = useSiteEditor(user?.uid || '', params.id);
+  
+  // Hook específico para portfólio (ativo apenas se for portfolio)
+  const portfolioHook = usePortfolioEditor(
+    user?.uid || '', 
+    params.id
+  );
+
+  // Detecta se é portfolio e usa dados apropriados
+  const isPortfolio = (siteData as any)?.template === 'portfolio' || portfolioHook.data?.template === 'portfolio';
+  
+  const data = isPortfolio ? portfolioHook.data : siteData;
+  const loading = isPortfolio ? portfolioHook.loading : siteLoading;
+  const error = isPortfolio ? portfolioHook.error : siteError;
+  const saving = isPortfolio ? portfolioHook.saving : siteSaving;
+  
+  // Funções baseadas no template
+  const togglePublish = isPortfolio ? portfolioHook.togglePublish : siteTogglePublish;
+  const updateHero = isPortfolio ? portfolioHook.updatePersonalInfo : siteUpdateHero;
+  const updateAbout = isPortfolio ? portfolioHook.updateAbout : siteUpdateAbout;
+  const updateContact = isPortfolio ? portfolioHook.updatePersonalInfo : siteUpdateContact;
+  const updateTheme = isPortfolio ? portfolioHook.updateTheme : siteUpdateTheme;
+  const addService = isPortfolio ? portfolioHook.addService : siteAddService;
+  const updateService = isPortfolio ? portfolioHook.updateService : siteUpdateService;
+  const removeService = isPortfolio ? portfolioHook.removeService : siteRemoveService;
+
   const [activeTab, setActiveTab] = useState('hero');
-  const [saving, setSaving] = useState(false);
 
-  const handleSave = async () => {
-    setSaving(true);
-    // Simula salvamento
-    setTimeout(() => {
-      setSaving(false);
-      alert(`Site ${params.id} salvo com sucesso! (Simulação)`);
-    }, 1000);
+  if (loading) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ 
+            width: '50px', 
+            height: '50px', 
+            border: '3px solid #e3e3e3',
+            borderTop: '3px solid #007bff',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 20px'
+          }}></div>
+          <p>Carregando editor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5'
+      }}>
+        <div style={{ textAlign: 'center', color: '#dc3545' }}>
+          <h2>Erro ao carregar editor</h2>
+          <p>{error || 'Dados não encontrados'}</p>
+          <button 
+            onClick={() => window.location.href = '/dashboard'}
+            style={{ 
+              color: '#007bff', 
+              textDecoration: 'none',
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            ← Voltar ao Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const handlePublish = async () => {
+    const success = await togglePublish();
+    if (success) {
+      alert(`Site ${data.published ? 'despublicado' : 'publicado'} com sucesso!`);
+    } else {
+      alert('Erro ao alterar status de publicação');
+    }
   };
 
-  const handlePublish = () => {
-    setSiteData(prev => ({ ...prev, published: !prev.published }));
-    alert(`Site ${siteData.published ? 'despublicado' : 'publicado'} com sucesso! (Simulação)`);
-  };
-
-  const addService = () => {
-    const newService = {
-      id: Date.now().toString(),
-      name: 'Novo Serviço',
-      price: 0,
-      duration: '30min'
-    };
-    setSiteData(prev => ({
-      ...prev,
-      customization: {
-        ...prev.customization,
-        services: [...prev.customization.services, newService]
+  const handleAddService = async () => {
+    if (isPortfolio && portfolioHook.addService) {
+      const success = await portfolioHook.addService({
+        name: 'Novo Serviço',
+        description: 'Descrição do serviço',
+        price: 'A partir de R$ 100',
+        icon: '💼'
+      });
+      if (!success) {
+        alert('Erro ao adicionar serviço');
       }
-    }));
+    } else if (siteAddService) {
+      const success = await siteAddService({
+        name: 'Novo Serviço',
+        price: 0,
+        duration: '30min'
+      });
+      if (!success) {
+        alert('Erro ao adicionar serviço');
+      }
+    }
   };
 
-  const removeService = (serviceId: string) => {
-    setSiteData(prev => ({
-      ...prev,
-      customization: {
-        ...prev.customization,
-        services: prev.customization.services.filter(s => s.id !== serviceId)
-      }
-    }));
+  const handleRemoveService = async (serviceId: string) => {
+    if (!window.confirm('Tem certeza que deseja remover este serviço?')) return;
+    
+    const success = await removeService(serviceId);
+    if (!success) {
+      alert('Erro ao remover serviço');
+    }
   };
 
-  const updateService = (serviceId: string, field: string, value: any) => {
-    setSiteData(prev => ({
-      ...prev,
-      customization: {
-        ...prev.customization,
-        services: prev.customization.services.map(service =>
-          service.id === serviceId ? { ...service, [field]: value } : service
-        )
-      }
-    }));
+  const handleUpdateService = async (serviceId: string, field: string, value: any) => {
+    const success = await updateService(serviceId, { [field]: value });
+    if (!success) {
+      alert('Erro ao atualizar serviço');
+    }
   };
 
   const tabs = [
@@ -111,7 +164,6 @@ export default function EditSitePage({ params }: PageProps) {
     { id: 'services', label: 'Serviços', icon: '⚡' },
     { id: 'contact', label: 'Contato', icon: '📞' },
     { id: 'theme', label: 'Tema', icon: '🎨' },
-    { id: 'gallery', label: 'Galeria', icon: '🖼️' }
   ];
 
   return (
@@ -129,28 +181,30 @@ export default function EditSitePage({ params }: PageProps) {
           <div>
             <h1 style={{ margin: 0, fontSize: '24px', color: '#333' }}>Editor de Site</h1>
             <p style={{ margin: '5px 0 0 0', color: '#666' }}>
-              Editando: {siteData.title} (ID: {params.id})
+              Editando: {data.title} (ID: {params.id})
             </p>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
             <button 
-              onClick={() => window.location.href = '/sites'}
+              onClick={() => window.location.href = '/dashboard'}
               style={{
                 padding: '10px 20px',
                 backgroundColor: '#f0f0f0',
                 border: '1px solid #ccc',
                 borderRadius: '6px',
                 cursor: 'pointer',
-                fontSize: '14px'
+                fontSize: '14px',
+                textDecoration: 'none',
+                color: '#333'
               }}
             >
               ← Voltar
             </button>
             <button 
-              onClick={handlePublish}
+              onClick={() => window.open(`/preview/${user?.uid}/${params.id}`, '_blank')}
               style={{
                 padding: '10px 20px',
-                backgroundColor: siteData.published ? '#ffc107' : '#28a745',
+                backgroundColor: '#17a2b8',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
@@ -158,14 +212,31 @@ export default function EditSitePage({ params }: PageProps) {
                 fontSize: '14px'
               }}
             >
-              {siteData.published ? '📤 Despublicar' : '📢 Publicar'}
+              👁️ Preview
             </button>
             <button 
-              onClick={handleSave}
+              onClick={() => {
+                // Alternativa: abre no sistema antigo (compatibilidade)
+                window.open(`/sites/${params.id}`, '_blank');
+              }}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#6f42c1',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              🌐 Ver Site
+            </button>
+            <button 
+              onClick={handlePublish}
               disabled={saving}
               style={{
                 padding: '10px 20px',
-                backgroundColor: '#007bff',
+                backgroundColor: data.published ? '#ffc107' : '#28a745',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
@@ -174,7 +245,7 @@ export default function EditSitePage({ params }: PageProps) {
                 opacity: saving ? 0.7 : 1
               }}
             >
-              {saving ? '💾 Salvando...' : '💾 Salvar'}
+              {saving ? '⏳ Salvando...' : (data.published ? '📤 Despublicar' : '📢 Publicar')}
             </button>
           </div>
         </div>
@@ -232,21 +303,20 @@ export default function EditSitePage({ params }: PageProps) {
                   </label>
                   <input
                     type="text"
-                    value={siteData.customization.hero.title}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        hero: { ...prev.customization.hero, title: e.target.value }
-                      }
-                    }))}
+                    value={isPortfolio 
+                      ? (data as any).personalInfo?.name || ''
+                      : (data as any).customization?.hero?.title || ''
+                    }
+                    onChange={(e) => updateHero({ title: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
                       border: '2px solid #e0e0e0',
                       borderRadius: '6px',
                       fontSize: '16px',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -255,14 +325,11 @@ export default function EditSitePage({ params }: PageProps) {
                     Subtítulo:
                   </label>
                   <textarea
-                    value={siteData.customization.hero.subtitle}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        hero: { ...prev.customization.hero, subtitle: e.target.value }
-                      }
-                    }))}
+                    value={isPortfolio 
+                      ? (data as any).personalInfo?.tagline || ''
+                      : (data as any).customization?.hero?.subtitle || ''
+                    }
+                    onChange={(e) => updateHero({ subtitle: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
@@ -272,7 +339,9 @@ export default function EditSitePage({ params }: PageProps) {
                       minHeight: '100px',
                       resize: 'vertical',
                       fontFamily: 'inherit',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -293,21 +362,20 @@ export default function EditSitePage({ params }: PageProps) {
                   </label>
                   <input
                     type="text"
-                    value={siteData.customization.about.title}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        about: { ...prev.customization.about, title: e.target.value }
-                      }
-                    }))}
+                    value={isPortfolio 
+                      ? (data as any).about?.title || 'Sobre mim'
+                      : (data as any).customization?.about?.title || ''
+                    }
+                    onChange={(e) => updateAbout({ title: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
                       border: '2px solid #e0e0e0',
                       borderRadius: '6px',
                       fontSize: '16px',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -316,14 +384,11 @@ export default function EditSitePage({ params }: PageProps) {
                     Conteúdo:
                   </label>
                   <textarea
-                    value={siteData.customization.about.content}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        about: { ...prev.customization.about, content: e.target.value }
-                      }
-                    }))}
+                    value={isPortfolio 
+                      ? (data as any).about?.content || ''
+                      : (data as any).customization?.about?.content || ''
+                    }
+                    onChange={(e) => updateAbout({ content: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
@@ -333,7 +398,9 @@ export default function EditSitePage({ params }: PageProps) {
                       minHeight: '150px',
                       resize: 'vertical',
                       fontFamily: 'inherit',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -342,14 +409,14 @@ export default function EditSitePage({ params }: PageProps) {
           )}
 
           {/* Services Tab */}
-          {activeTab === 'services' && (
+          {activeTab === 'services' && data.template === 'barbearia' && (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h2 style={{ margin: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   ⚡ Serviços
                 </h2>
                 <button
-                  onClick={addService}
+                  onClick={handleAddService}
                   style={{
                     padding: '10px 15px',
                     backgroundColor: '#28a745',
@@ -364,7 +431,7 @@ export default function EditSitePage({ params }: PageProps) {
                 </button>
               </div>
               <div style={{ display: 'grid', gap: '15px' }}>
-                {siteData.customization.services.map((service) => (
+                {((data as any).customization as BarbeariaCustomization).services.map((service) => (
                   <div key={service.id} style={{
                     padding: '20px',
                     border: '2px solid #e0e0e0',
@@ -377,13 +444,15 @@ export default function EditSitePage({ params }: PageProps) {
                         <input
                           type="text"
                           value={service.name}
-                          onChange={(e) => updateService(service.id, 'name', e.target.value)}
+                          onChange={(e) => handleUpdateService(service.id, 'name', e.target.value)}
                           style={{
                             width: '100%',
                             padding: '8px',
                             border: '1px solid #ccc',
                             borderRadius: '4px',
-                            outline: 'none'
+                            outline: 'none',
+                            backgroundColor: '#fff',
+                            color: '#333'
                           }}
                         />
                       </div>
@@ -392,13 +461,15 @@ export default function EditSitePage({ params }: PageProps) {
                         <input
                           type="number"
                           value={service.price}
-                          onChange={(e) => updateService(service.id, 'price', Number(e.target.value))}
+                          onChange={(e) => handleUpdateService(service.id, 'price', Number(e.target.value))}
                           style={{
                             width: '100%',
                             padding: '8px',
                             border: '1px solid #ccc',
                             borderRadius: '4px',
-                            outline: 'none'
+                            outline: 'none',
+                            backgroundColor: '#fff',
+                            color: '#333'
                           }}
                         />
                       </div>
@@ -407,18 +478,20 @@ export default function EditSitePage({ params }: PageProps) {
                         <input
                           type="text"
                           value={service.duration}
-                          onChange={(e) => updateService(service.id, 'duration', e.target.value)}
+                          onChange={(e) => handleUpdateService(service.id, 'duration', e.target.value)}
                           style={{
                             width: '100%',
                             padding: '8px',
                             border: '1px solid #ccc',
                             borderRadius: '4px',
-                            outline: 'none'
+                            outline: 'none',
+                            backgroundColor: '#fff',
+                            color: '#333'
                           }}
                         />
                       </div>
                       <button
-                        onClick={() => removeService(service.id)}
+                        onClick={() => handleRemoveService(service.id)}
                         style={{
                           padding: '8px 12px',
                           backgroundColor: '#dc3545',
@@ -449,21 +522,20 @@ export default function EditSitePage({ params }: PageProps) {
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Telefone:</label>
                   <input
                     type="text"
-                    value={siteData.customization.contact.phone}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        contact: { ...prev.customization.contact, phone: e.target.value }
-                      }
-                    }))}
+                    value={isPortfolio 
+                      ? (data as any).personalInfo?.phone || ''
+                      : (data as any).customization?.contact?.phone || ''
+                    }
+                    onChange={(e) => updateContact({ phone: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
                       border: '2px solid #e0e0e0',
                       borderRadius: '6px',
                       fontSize: '14px',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -471,21 +543,20 @@ export default function EditSitePage({ params }: PageProps) {
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Email:</label>
                   <input
                     type="email"
-                    value={siteData.customization.contact.email}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        contact: { ...prev.customization.contact, email: e.target.value }
-                      }
-                    }))}
+                    value={isPortfolio 
+                      ? (data as any).personalInfo?.email || ''
+                      : (data as any).customization?.contact?.email || ''
+                    }
+                    onChange={(e) => updateContact({ email: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
                       border: '2px solid #e0e0e0',
                       borderRadius: '6px',
                       fontSize: '14px',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -493,21 +564,17 @@ export default function EditSitePage({ params }: PageProps) {
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Endereço:</label>
                   <input
                     type="text"
-                    value={siteData.customization.contact.address}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        contact: { ...prev.customization.contact, address: e.target.value }
-                      }
-                    }))}
+                    value={(data as any).customization?.contact?.address || ''}
+                    onChange={(e) => updateContact({ address: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
                       border: '2px solid #e0e0e0',
                       borderRadius: '6px',
                       fontSize: '14px',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -515,21 +582,17 @@ export default function EditSitePage({ params }: PageProps) {
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>WhatsApp:</label>
                   <input
                     type="text"
-                    value={siteData.customization.contact.whatsapp}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        contact: { ...prev.customization.contact, whatsapp: e.target.value }
-                      }
-                    }))}
+                    value={(data as any).customization?.contact?.whatsapp || ''}
+                    onChange={(e) => updateContact({ whatsapp: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
                       border: '2px solid #e0e0e0',
                       borderRadius: '6px',
                       fontSize: '14px',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -537,21 +600,17 @@ export default function EditSitePage({ params }: PageProps) {
                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Instagram:</label>
                   <input
                     type="text"
-                    value={siteData.customization.contact.instagram}
-                    onChange={(e) => setSiteData(prev => ({
-                      ...prev,
-                      customization: {
-                        ...prev.customization,
-                        contact: { ...prev.customization.contact, instagram: e.target.value }
-                      }
-                    }))}
+                    value={(data as any).customization?.contact?.instagram || ''}
+                    onChange={(e) => updateContact({ instagram: e.target.value })}
                     style={{
                       width: '100%',
                       padding: '12px',
                       border: '2px solid #e0e0e0',
                       borderRadius: '6px',
                       fontSize: '14px',
-                      outline: 'none'
+                      outline: 'none',
+                      backgroundColor: '#fff',
+                      color: '#333'
                     }}
                   />
                 </div>
@@ -571,14 +630,11 @@ export default function EditSitePage({ params }: PageProps) {
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     <input
                       type="color"
-                      value={siteData.customization.theme.primaryColor}
-                      onChange={(e) => setSiteData(prev => ({
-                        ...prev,
-                        customization: {
-                          ...prev.customization,
-                          theme: { ...prev.customization.theme, primaryColor: e.target.value }
-                        }
-                      }))}
+                      value={isPortfolio 
+                        ? (data as any).theme?.primaryColor || '#007bff'
+                        : (data as any).customization?.theme?.primaryColor || '#007bff'
+                      }
+                      onChange={(e) => updateTheme({ primaryColor: e.target.value })}
                       style={{
                         width: '60px',
                         height: '40px',
@@ -589,21 +645,20 @@ export default function EditSitePage({ params }: PageProps) {
                     />
                     <input
                       type="text"
-                      value={siteData.customization.theme.primaryColor}
-                      onChange={(e) => setSiteData(prev => ({
-                        ...prev,
-                        customization: {
-                          ...prev.customization,
-                          theme: { ...prev.customization.theme, primaryColor: e.target.value }
-                        }
-                      }))}
+                      value={isPortfolio 
+                        ? (data as any).theme?.primaryColor || '#007bff'
+                        : (data as any).customization?.theme?.primaryColor || '#007bff'
+                      }
+                      onChange={(e) => updateTheme({ primaryColor: e.target.value })}
                       style={{
                         flex: 1,
                         padding: '8px',
                         border: '2px solid #e0e0e0',
                         borderRadius: '6px',
                         fontSize: '14px',
-                        outline: 'none'
+                        outline: 'none',
+                        backgroundColor: '#fff',
+                        color: '#333'
                       }}
                     />
                   </div>
@@ -613,14 +668,11 @@ export default function EditSitePage({ params }: PageProps) {
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     <input
                       type="color"
-                      value={siteData.customization.theme.secondaryColor}
-                      onChange={(e) => setSiteData(prev => ({
-                        ...prev,
-                        customization: {
-                          ...prev.customization,
-                          theme: { ...prev.customization.theme, secondaryColor: e.target.value }
-                        }
-                      }))}
+                      value={isPortfolio 
+                        ? (data as any).theme?.secondaryColor || '#6c757d'
+                        : (data as any).customization?.theme?.secondaryColor || '#6c757d'
+                      }
+                      onChange={(e) => updateTheme({ secondaryColor: e.target.value })}
                       style={{
                         width: '60px',
                         height: '40px',
@@ -631,21 +683,20 @@ export default function EditSitePage({ params }: PageProps) {
                     />
                     <input
                       type="text"
-                      value={siteData.customization.theme.secondaryColor}
-                      onChange={(e) => setSiteData(prev => ({
-                        ...prev,
-                        customization: {
-                          ...prev.customization,
-                          theme: { ...prev.customization.theme, secondaryColor: e.target.value }
-                        }
-                      }))}
+                      value={isPortfolio 
+                        ? (data as any).theme?.secondaryColor || '#6c757d'
+                        : (data as any).customization?.theme?.secondaryColor || '#6c757d'
+                      }
+                      onChange={(e) => updateTheme({ secondaryColor: e.target.value })}
                       style={{
                         flex: 1,
                         padding: '8px',
                         border: '2px solid #e0e0e0',
                         borderRadius: '6px',
                         fontSize: '14px',
-                        outline: 'none'
+                        outline: 'none',
+                        backgroundColor: '#fff',
+                        color: '#333'
                       }}
                     />
                   </div>
@@ -656,7 +707,9 @@ export default function EditSitePage({ params }: PageProps) {
                     padding: '20px',
                     border: '2px solid #e0e0e0',
                     borderRadius: '8px',
-                    backgroundColor: siteData.customization.theme.primaryColor,
+                    backgroundColor: isPortfolio 
+                      ? (data as any).theme?.primaryColor || '#007bff'
+                      : (data as any).customization?.theme?.primaryColor || '#007bff',
                     color: 'white',
                     textAlign: 'center'
                   }}>
@@ -664,7 +717,9 @@ export default function EditSitePage({ params }: PageProps) {
                     <div style={{
                       display: 'inline-block',
                       padding: '10px 20px',
-                      backgroundColor: siteData.customization.theme.secondaryColor,
+                      backgroundColor: isPortfolio 
+                        ? (data as any).theme?.secondaryColor || '#6c757d'
+                        : (data as any).customization?.theme?.secondaryColor || '#6c757d',
                       borderRadius: '4px',
                       color: 'white'
                     }}>
@@ -675,60 +730,15 @@ export default function EditSitePage({ params }: PageProps) {
               </div>
             </div>
           )}
-
-          {/* Gallery Tab */}
-          {activeTab === 'gallery' && (
-            <div>
-              <h2 style={{ marginTop: 0, color: '#333', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                🖼️ Galeria de Imagens
-              </h2>
-              <p style={{ color: '#666', marginBottom: '20px' }}>
-                Funcionalidade de upload de imagens será implementada em breve.
-              </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px' }}>
-                {siteData.customization.gallery.map((imageUrl, index) => (
-                  <div key={index} style={{
-                    border: '2px solid #e0e0e0',
-                    borderRadius: '8px',
-                    overflow: 'hidden',
-                    backgroundColor: '#f9f9f9'
-                  }}>
-                    <img 
-                      src={imageUrl} 
-                      alt={`Galeria ${index + 1}`}
-                      style={{ width: '100%', height: '150px', objectFit: 'cover' }}
-                    />
-                    <div style={{ padding: '10px', textAlign: 'center' }}>
-                      <button style={{
-                        padding: '5px 10px',
-                        backgroundColor: '#dc3545',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '12px'
-                      }}>
-                        Remover
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <div style={{
-                  border: '2px dashed #ccc',
-                  borderRadius: '8px',
-                  padding: '40px',
-                  textAlign: 'center',
-                  backgroundColor: '#f9f9f9',
-                  cursor: 'pointer'
-                }}>
-                  <div style={{ fontSize: '48px', marginBottom: '10px' }}>📷</div>
-                  <p style={{ margin: 0, color: '#666' }}>Clique para adicionar imagem</p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
