@@ -1,4 +1,14 @@
 import React, { useState } from 'react';
+import { 
+  FaFacebook, 
+  FaTwitter, 
+  FaInstagram, 
+  FaLinkedin, 
+  FaGithub, 
+  FaYoutube, 
+  FaTiktok, 
+  FaWhatsapp 
+} from 'react-icons/fa';
 
 interface PortfolioTemplateProps {
   site: {
@@ -31,6 +41,28 @@ interface PortfolioTemplateProps {
       };
       about?: {
         description?: string;
+      };
+      hero?: {
+        staticDescription?: string;
+        useStaticDescription?: boolean;
+      };
+      stats?: {
+        projects?: string;
+        experience?: string;
+        satisfaction?: string;
+      };
+      footer?: {
+        description?: string;
+        socialLinks?: {
+          facebook?: string;
+          twitter?: string;
+          instagram?: string;
+          linkedin?: string;
+          github?: string;
+          youtube?: string;
+          tiktok?: string;
+          whatsapp?: string;
+        };
       };
       projects?: Array<any>;
       skills?: {
@@ -93,6 +125,22 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
   const displayName = site.name || site.personalInfo?.name || site.portfolioData?.personalInfo?.name || 'Portfolio';
   const displaySubtitle = site.personalInfo?.subtitle || site.portfolioData?.personalInfo?.subtitle || 'Desenvolvedor Full Stack';
   const displayDescription = site.about?.text || site.description || site.portfolioData?.about?.description || 'Desenvolvedor apaixonado por tecnologia';
+  
+  // ✅ NOVOS CAMPOS DINÂMICOS
+  const heroDescription = site.portfolioData?.hero?.useStaticDescription 
+    ? site.portfolioData?.hero?.staticDescription 
+    : displayDescription;
+  
+  const stats = {
+    projects: site.portfolioData?.stats?.projects || '50+',
+    experience: site.portfolioData?.stats?.experience || '5+',
+    satisfaction: site.portfolioData?.stats?.satisfaction || '100%'
+  };
+  
+  const footerData = {
+    description: site.portfolioData?.footer?.description || 'Desenvolvedor especializado em soluções web modernas e design inovador',
+    socialLinks: site.portfolioData?.footer?.socialLinks || {}
+  };
 
   const primaryColor = site.settings?.primaryColor || '#667eea';
   const secondaryColor = site.settings?.secondaryColor || '#764ba2';
@@ -387,7 +435,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             maxWidth: '600px',
             margin: '0 auto 30px'
           }}>
-            Criando experiências digitais únicas através de código limpo e design inovador
+            {heroDescription}
           </p>
           <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
             {whatsapp && (
@@ -526,7 +574,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                     fontWeight: 'bold',
                     color: primaryColor,
                     marginBottom: '5px'
-                  }}>50+</div>
+                  }}>{stats.projects}</div>
                   <div style={{ color: '#666' }}>Projetos</div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
@@ -535,7 +583,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                     fontWeight: 'bold',
                     color: primaryColor,
                     marginBottom: '5px'
-                  }}>5+</div>
+                  }}>{stats.experience}</div>
                   <div style={{ color: '#666' }}>Anos de Experiência</div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
@@ -544,7 +592,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                     fontWeight: 'bold',
                     color: primaryColor,
                     marginBottom: '5px'
-                  }}>100%</div>
+                  }}>{stats.satisfaction}</div>
                   <div style={{ color: '#666' }}>Satisfação</div>
                 </div>
               </div>
@@ -1211,7 +1259,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             <div>
               <h3 style={{ marginBottom: '15px', fontSize: '20px' }}>{site.name || site.title}</h3>
               <p style={{ opacity: 0.8, lineHeight: '1.6' }}>
-                Desenvolvedor especializado em soluções web modernas e design inovador
+                {footerData.description}
               </p>
             </div>
             <div>
@@ -1226,11 +1274,55 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             </div>
             <div>
               <h4 style={{ marginBottom: '15px' }}>Redes Sociais</h4>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
-                <a href="#" style={{ color: 'white', fontSize: '24px' }}>📧</a>
-                <a href="#" style={{ color: 'white', fontSize: '24px' }}>💼</a>
-                <a href="#" style={{ color: 'white', fontSize: '24px' }}>📘</a>
-                <a href="#" style={{ color: 'white', fontSize: '24px' }}>📷</a>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', flexWrap: 'wrap' }}>
+                {footerData.socialLinks.facebook && (
+                  <a href={footerData.socialLinks.facebook} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.8, transition: 'opacity 0.3s' }}>
+                    <FaFacebook />
+                  </a>
+                )}
+                {footerData.socialLinks.twitter && (
+                  <a href={footerData.socialLinks.twitter} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.8, transition: 'opacity 0.3s' }}>
+                    <FaTwitter />
+                  </a>
+                )}
+                {footerData.socialLinks.instagram && (
+                  <a href={footerData.socialLinks.instagram} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.8, transition: 'opacity 0.3s' }}>
+                    <FaInstagram />
+                  </a>
+                )}
+                {footerData.socialLinks.linkedin && (
+                  <a href={footerData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.8, transition: 'opacity 0.3s' }}>
+                    <FaLinkedin />
+                  </a>
+                )}
+                {footerData.socialLinks.github && (
+                  <a href={footerData.socialLinks.github} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.8, transition: 'opacity 0.3s' }}>
+                    <FaGithub />
+                  </a>
+                )}
+                {footerData.socialLinks.youtube && (
+                  <a href={footerData.socialLinks.youtube} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.8, transition: 'opacity 0.3s' }}>
+                    <FaYoutube />
+                  </a>
+                )}
+                {footerData.socialLinks.tiktok && (
+                  <a href={footerData.socialLinks.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.8, transition: 'opacity 0.3s' }}>
+                    <FaTiktok />
+                  </a>
+                )}
+                {footerData.socialLinks.whatsapp && (
+                  <a href={`https://wa.me/${footerData.socialLinks.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.8, transition: 'opacity 0.3s' }}>
+                    <FaWhatsapp />
+                  </a>
+                )}
+                {/* Fallback para quando não há redes sociais configuradas */}
+                {!Object.values(footerData.socialLinks).some(link => link) && (
+                  <>
+                    <span style={{ color: 'white', fontSize: '24px', opacity: 0.5 }}>📧</span>
+                    <span style={{ color: 'white', fontSize: '24px', opacity: 0.5 }}>💼</span>
+                    <span style={{ color: 'white', fontSize: '24px', opacity: 0.5 }}>�</span>
+                  </>
+                )}
               </div>
             </div>
           </div>
