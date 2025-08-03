@@ -368,101 +368,359 @@ export default function EditPortfolioPage({ params }: PageProps) {
                 
                 <div style={{ marginTop: '30px' }}>
                   <h3 style={{ color: '#333', marginBottom: '15px' }}>Habilidades Técnicas:</h3>
-                  <textarea
-                    value={siteData.portfolioData.skills.technical.join(', ')}
-                    onChange={(e) => {
-                      const newSkills = e.target.value.split(',').map(skill => skill.trim()).filter(skill => skill);
-                      updateSkills({ technical: newSkills });
-                    }}
-                    placeholder="JavaScript, React, Node.js, Python..."
-                    style={{
-                      width: '100%',
-                      padding: '12px',
-                      border: '2px solid #e0e0e0',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      minHeight: '80px',
-                      resize: 'vertical',
-                      fontFamily: 'inherit',
-                      outline: 'none',
-                      backgroundColor: '#fff',
-                      color: '#333',
-                      marginBottom: '15px'
-                    }}
-                  />
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+                    <input
+                      type="text"
+                      id="tech-skills-input"
+                      placeholder="Digite uma habilidade técnica e pressione Enter..."
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const input = e.target as HTMLInputElement;
+                          const newSkill = input.value.trim();
+                          if (newSkill && !siteData.portfolioData.skills.technical.includes(newSkill)) {
+                            const newSkills = [...siteData.portfolioData.skills.technical, newSkill];
+                            updateSkills({ technical: newSkills });
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      style={{
+                        flex: 1,
+                        padding: '12px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        outline: 'none',
+                        backgroundColor: '#fff',
+                        color: '#333'
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.getElementById('tech-skills-input') as HTMLInputElement;
+                        if (input) {
+                          const newSkill = input.value.trim();
+                          if (newSkill && !siteData.portfolioData.skills.technical.includes(newSkill)) {
+                            const newSkills = [...siteData.portfolioData.skills.technical, newSkill];
+                            updateSkills({ technical: newSkills });
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      style={{
+                        padding: '12px 16px',
+                        backgroundColor: '#667eea',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      + Adicionar
+                    </button>
+                  </div>
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#666',
+                    fontStyle: 'italic',
+                    marginBottom: '10px'
+                  }}>
+                    💡 Digite uma habilidade e pressione Enter ou clique em "Adicionar"
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+                    {siteData.portfolioData.skills.technical.map((skill, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          padding: '6px 12px',
+                          backgroundColor: '#667eea',
+                          color: 'white',
+                          borderRadius: '20px',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => {
+                          const newSkills = siteData.portfolioData.skills.technical.filter((_, i) => i !== index);
+                          updateSkills({ technical: newSkills });
+                        }}
+                        title="Clique para remover"
+                      >
+                        {skill}
+                        <span style={{ fontSize: '14px', opacity: 0.8 }}>×</span>
+                      </span>
+                    ))}
+                  </div>
                   
                   <h3 style={{ color: '#333', marginBottom: '15px' }}>Ferramentas:</h3>
-                  <textarea
-                    value={siteData.portfolioData.skills.tools.join(', ')}
-                    onChange={(e) => {
-                      const newSkills = e.target.value.split(',').map(skill => skill.trim()).filter(skill => skill);
-                      updateSkills({ tools: newSkills });
-                    }}
-                    placeholder="Git, Docker, VS Code, Figma..."
-                    style={{
-                      width: '100%',
-                      padding: '12px',
-                      border: '2px solid #e0e0e0',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      minHeight: '80px',
-                      resize: 'vertical',
-                      fontFamily: 'inherit',
-                      outline: 'none',
-                      backgroundColor: '#fff',
-                      color: '#333',
-                      marginBottom: '15px'
-                    }}
-                  />
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+                    <input
+                      type="text"
+                      id="tools-input"
+                      placeholder="Digite uma ferramenta e pressione Enter..."
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const input = e.target as HTMLInputElement;
+                          const newTool = input.value.trim();
+                          if (newTool && !siteData.portfolioData.skills.tools.includes(newTool)) {
+                            const newTools = [...siteData.portfolioData.skills.tools, newTool];
+                            updateSkills({ tools: newTools });
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      style={{
+                        flex: 1,
+                        padding: '12px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        outline: 'none',
+                        backgroundColor: '#fff',
+                        color: '#333'
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.getElementById('tools-input') as HTMLInputElement;
+                        if (input) {
+                          const newTool = input.value.trim();
+                          if (newTool && !siteData.portfolioData.skills.tools.includes(newTool)) {
+                            const newTools = [...siteData.portfolioData.skills.tools, newTool];
+                            updateSkills({ tools: newTools });
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      style={{
+                        padding: '12px 16px',
+                        backgroundColor: '#667eea',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      + Adicionar
+                    </button>
+                  </div>
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#666',
+                    fontStyle: 'italic',
+                    marginBottom: '10px'
+                  }}>
+                    💡 Digite uma ferramenta e pressione Enter ou clique em "Adicionar"
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+                    {siteData.portfolioData.skills.tools.map((tool, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          padding: '6px 12px',
+                          backgroundColor: '#28a745',
+                          color: 'white',
+                          borderRadius: '20px',
+                          fontSize: '12px',
+                          fontWeight: 'bold',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => {
+                          const newTools = siteData.portfolioData.skills.tools.filter((_, i) => i !== index);
+                          updateSkills({ tools: newTools });
+                        }}
+                        title="Clique para remover"
+                      >
+                        {tool}
+                        <span style={{ fontSize: '14px', opacity: 0.8 }}>×</span>
+                      </span>
+                    ))}
+                  </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
                       <h3 style={{ color: '#333', marginBottom: '15px' }}>Idiomas:</h3>
-                      <textarea
-                        value={siteData.portfolioData.skills.languages.join(', ')}
-                        onChange={(e) => {
-                          const newSkills = e.target.value.split(',').map(skill => skill.trim()).filter(skill => skill);
-                          updateSkills({ languages: newSkills });
-                        }}
-                        placeholder="Português, Inglês..."
-                        style={{
-                          width: '100%',
-                          padding: '12px',
-                          border: '2px solid #e0e0e0',
-                          borderRadius: '6px',
-                          fontSize: '14px',
-                          minHeight: '80px',
-                          resize: 'vertical',
-                          fontFamily: 'inherit',
-                          outline: 'none',
-                          backgroundColor: '#fff',
-                          color: '#333'
-                        }}
-                      />
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+                        <input
+                          type="text"
+                          id="languages-input"
+                          placeholder="Digite um idioma e pressione Enter..."
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              const input = e.target as HTMLInputElement;
+                              const newLanguage = input.value.trim();
+                              if (newLanguage && !siteData.portfolioData.skills.languages.includes(newLanguage)) {
+                                const newLanguages = [...siteData.portfolioData.skills.languages, newLanguage];
+                                updateSkills({ languages: newLanguages });
+                                input.value = '';
+                              }
+                            }
+                          }}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '12px',
+                            outline: 'none',
+                            backgroundColor: '#fff',
+                            color: '#333'
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const input = document.getElementById('languages-input') as HTMLInputElement;
+                            if (input) {
+                              const newLanguage = input.value.trim();
+                              if (newLanguage && !siteData.portfolioData.skills.languages.includes(newLanguage)) {
+                                const newLanguages = [...siteData.portfolioData.skills.languages, newLanguage];
+                                updateSkills({ languages: newLanguages });
+                                input.value = '';
+                              }
+                            }
+                          }}
+                          style={{
+                            padding: '8px 12px',
+                            backgroundColor: '#ffc107',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {siteData.portfolioData.skills.languages.map((language, index) => (
+                          <span
+                            key={index}
+                            style={{
+                              padding: '4px 8px',
+                              backgroundColor: '#ffc107',
+                              color: 'white',
+                              borderRadius: '15px',
+                              fontSize: '11px',
+                              fontWeight: 'bold',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              cursor: 'pointer'
+                            }}
+                            onClick={() => {
+                              const newLanguages = siteData.portfolioData.skills.languages.filter((_, i) => i !== index);
+                              updateSkills({ languages: newLanguages });
+                            }}
+                            title="Clique para remover"
+                          >
+                            {language}
+                            <span style={{ fontSize: '12px', opacity: 0.8 }}>×</span>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                     <div>
                       <h3 style={{ color: '#333', marginBottom: '15px' }}>Habilidades Interpessoais:</h3>
-                      <textarea
-                        value={siteData.portfolioData.skills.soft.join(', ')}
-                        onChange={(e) => {
-                          const newSkills = e.target.value.split(',').map(skill => skill.trim()).filter(skill => skill);
-                          updateSkills({ soft: newSkills });
-                        }}
-                        placeholder="Comunicação, Liderança, Trabalho em equipe..."
-                        style={{
-                          width: '100%',
-                          padding: '12px',
-                          border: '2px solid #e0e0e0',
-                          borderRadius: '6px',
-                          fontSize: '14px',
-                          minHeight: '80px',
-                          resize: 'vertical',
-                          fontFamily: 'inherit',
-                          outline: 'none',
-                          backgroundColor: '#fff',
-                          color: '#333'
-                        }}
-                      />
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+                        <input
+                          type="text"
+                          id="soft-skills-input"
+                          placeholder="Digite uma soft skill e pressione Enter..."
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              const input = e.target as HTMLInputElement;
+                              const newSoftSkill = input.value.trim();
+                              if (newSoftSkill && !siteData.portfolioData.skills.soft.includes(newSoftSkill)) {
+                                const newSoftSkills = [...siteData.portfolioData.skills.soft, newSoftSkill];
+                                updateSkills({ soft: newSoftSkills });
+                                input.value = '';
+                              }
+                            }
+                          }}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '12px',
+                            outline: 'none',
+                            backgroundColor: '#fff',
+                            color: '#333'
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const input = document.getElementById('soft-skills-input') as HTMLInputElement;
+                            if (input) {
+                              const newSoftSkill = input.value.trim();
+                              if (newSoftSkill && !siteData.portfolioData.skills.soft.includes(newSoftSkill)) {
+                                const newSoftSkills = [...siteData.portfolioData.skills.soft, newSoftSkill];
+                                updateSkills({ soft: newSoftSkills });
+                                input.value = '';
+                              }
+                            }
+                          }}
+                          style={{
+                            padding: '8px 12px',
+                            backgroundColor: '#17a2b8',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {siteData.portfolioData.skills.soft.map((skill, index) => (
+                          <span
+                            key={index}
+                            style={{
+                              padding: '4px 8px',
+                              backgroundColor: '#17a2b8',
+                              color: 'white',
+                              borderRadius: '15px',
+                              fontSize: '11px',
+                              fontWeight: 'bold',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              cursor: 'pointer'
+                            }}
+                            onClick={() => {
+                              const newSoftSkills = siteData.portfolioData.skills.soft.filter((_, i) => i !== index);
+                              updateSkills({ soft: newSoftSkills });
+                            }}
+                            title="Clique para remover"
+                          >
+                            {skill}
+                            <span style={{ fontSize: '12px', opacity: 0.8 }}>×</span>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
@@ -615,38 +873,98 @@ export default function EditPortfolioPage({ params }: PageProps) {
 
                     <div>
                       <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>
-                        Tecnologias (separadas por vírgula):
+                        Tecnologias:
                       </label>
-                      <input
-                        type="text"
-                        value={project.technologies.join(', ')}
-                        onChange={(e) => updateProject(project.id, { 
-                          technologies: e.target.value.split(',').map(tech => tech.trim()).filter(tech => tech)
-                        })}
-                        placeholder="React, Node.js, MongoDB..."
-                        style={{
-                          width: '100%',
-                          padding: '12px',
-                          border: '2px solid #e0e0e0',
-                          borderRadius: '6px',
-                          fontSize: '14px',
-                          outline: 'none'
-                        }}
-                      />
-                      <div style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+                        <input
+                          type="text"
+                          id={`tech-input-${project.id}`}
+                          placeholder="Digite uma tecnologia e pressione Enter..."
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              const input = e.target as HTMLInputElement;
+                              const newTech = input.value.trim();
+                              if (newTech && !project.technologies.includes(newTech)) {
+                                updateProject(project.id, { 
+                                  technologies: [...project.technologies, newTech] 
+                                });
+                                input.value = '';
+                              }
+                            }
+                          }}
+                          style={{
+                            flex: 1,
+                            padding: '12px',
+                            border: '2px solid #e0e0e0',
+                            borderRadius: '6px',
+                            fontSize: '14px',
+                            outline: 'none',
+                            backgroundColor: '#fff',
+                            color: '#333'
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const input = document.getElementById(`tech-input-${project.id}`) as HTMLInputElement;
+                            if (input) {
+                              const newTech = input.value.trim();
+                              if (newTech && !project.technologies.includes(newTech)) {
+                                updateProject(project.id, { 
+                                  technologies: [...project.technologies, newTech] 
+                                });
+                                input.value = '';
+                              }
+                            }
+                          }}
+                          style={{
+                            padding: '12px 16px',
+                            backgroundColor: '#667eea',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          + Adicionar
+                        </button>
+                      </div>
+                      <div style={{ 
+                        fontSize: '12px', 
+                        color: '#666',
+                        fontStyle: 'italic',
+                        marginBottom: '10px'
+                      }}>
+                        💡 Digite uma tecnologia e pressione Enter ou clique em "Adicionar"
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                         {project.technologies.map((tech, techIndex) => (
                           <span
                             key={techIndex}
                             style={{
-                              padding: '4px 12px',
+                              padding: '6px 12px',
                               backgroundColor: '#667eea',
                               color: 'white',
                               borderRadius: '20px',
                               fontSize: '12px',
-                              fontWeight: 'bold'
+                              fontWeight: 'bold',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              cursor: 'pointer'
                             }}
+                            onClick={() => {
+                              // Permitir remover clicando na tag
+                              const newTechs = project.technologies.filter((_, i) => i !== techIndex);
+                              updateProject(project.id, { technologies: newTechs });
+                            }}
+                            title="Clique para remover"
                           >
                             {tech}
+                            <span style={{ fontSize: '14px', opacity: 0.8 }}>×</span>
                           </span>
                         ))}
                       </div>

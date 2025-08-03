@@ -53,49 +53,115 @@ export default function NewSitePage() {
             email: user.email || 'contato@exemplo.com',
             phone: '',
             title: 'Desenvolvedor Full Stack',
-            subtitle: 'Desenvolvedor apaixonado por tecnologia',
+            subtitle: 'Transformando ideias em soluções digitais',
             location: 'São Paulo, Brasil',
-            whatsapp: ''
+            whatsapp: '',
+            linkedin: '',
+            github: '',
+            website: '',
           },
           about: {
-            description: description || 'Desenvolvedor apaixonado por tecnologia e inovação.'
+            description: description || 'Sou um desenvolvedor apaixonado por tecnologia, sempre em busca de novos desafios e oportunidades de crescimento. Especializado em criar soluções inovadoras e eficientes que fazem a diferença.',
+            mission: '',
+            vision: '',
           },
           skills: {
-            technical: ['JavaScript', 'TypeScript', 'React', 'Node.js'],
-            tools: ['Git', 'Docker', 'VS Code'],
-            languages: ['Português', 'Inglês'],
-            soft: ['Comunicação', 'Trabalho em equipe', 'Liderança']
+            technical: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python'],
+            tools: ['Git', 'Docker', 'VS Code', 'Figma'],
+            languages: ['Português - Nativo', 'Inglês - Intermediário'],
+            soft: ['Comunicação', 'Trabalho em equipe', 'Liderança', 'Resolução de problemas']
           },
-          projects: [],
-          services: [],
-          experience: [],
-          education: [],
-          certifications: [],
-          testimonials: [],
+          projects: [
+            {
+              id: 'demo_project_1',
+              title: 'Projeto Exemplo',
+              description: 'Este é um projeto de exemplo. Substitua por seus próprios projetos!',
+              technologies: ['React', 'TypeScript', 'Node.js'],
+              featured: true,
+              category: 'Web',
+              status: 'completed',
+              liveUrl: '',
+              githubUrl: '',
+            }
+          ],
+          experience: [
+            {
+              id: 'demo_exp_1',
+              company: 'Empresa Exemplo',
+              position: 'Desenvolvedor',
+              startDate: '2023-01',
+              endDate: '',
+              current: true,
+              description: 'Esta é uma experiência de exemplo. Substitua por suas próprias experiências!',
+              location: 'São Paulo, SP',
+            }
+          ],
+          education: [
+            {
+              id: 'demo_edu_1',
+              institution: 'Universidade/Curso',
+              degree: 'Bacharelado/Curso',
+              field: 'Ciência da Computação/Área',
+              startDate: '2020-01',
+              endDate: '2023-12',
+              current: false,
+              description: 'Adicione sua formação acadêmica aqui.',
+            }
+          ],
+          certifications: [
+            {
+              id: 'demo_cert_1',
+              name: 'Certificação Exemplo',
+              issuer: 'Instituição',
+              issueDate: '2023-06',
+              credentialId: '',
+              credentialUrl: '',
+            }
+          ],
+          services: [
+            {
+              id: 'demo_service_1',
+              title: 'Desenvolvimento Web',
+              description: 'Criação de sites e aplicações web modernas e responsivas',
+              price: 'A partir de R$ 2.500',
+              features: ['Design Responsivo', 'SEO Otimizado', 'Performance Alta'],
+              icon: '💻',
+            }
+          ],
+          testimonials: [
+            {
+              id: 'demo_testimonial_1',
+              name: 'Cliente Exemplo',
+              position: 'CEO',
+              company: 'Empresa X',
+              text: 'Excelente profissional, entrega de qualidade e no prazo!',
+              rating: 5,
+            }
+          ],
           theme: {
             primaryColor: '#667eea',
             secondaryColor: '#764ba2',
             fontFamily: 'Inter, sans-serif',
             backgroundColor: '#ffffff',
             textColor: '#333333',
-            layout: 'modern'
+            layout: 'modern',
+            showSections: {
+              about: true,
+              skills: true,
+              projects: true,
+              experience: true,
+              education: false,
+              certifications: false,
+              services: false,
+              testimonials: false,
+              contact: true,
+            },
           },
           settings: {
             showContactForm: true,
             showSocialLinks: true,
             allowDownloadResume: false,
             enableAnalytics: false
-          },
-          showSections: {
-            about: true,
-            skills: true,
-            projects: true,
-            experience: true,
-            education: false,
-            certifications: false,
-            services: false,
-            testimonials: false,
-            contact: true
           },
           seo: {
             title: title || 'Meu Portfólio',

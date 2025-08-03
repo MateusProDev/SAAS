@@ -30,6 +30,30 @@ export default function PortfolioEditor({ siteId }: PortfolioEditorProps) {
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
 
+  // Função auxiliar para adicionar tags com suporte a vírgulas
+  const addTagsFromInput = (input: HTMLInputElement, currentTags: string[], updateFn: (tags: string[]) => void) => {
+    const text = input.value.trim();
+    if (!text) return;
+
+    // Se contém vírgula, dividir em múltiplas tags
+    if (text.includes(',')) {
+      const newTags = text.split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0 && !currentTags.includes(tag));
+      
+      if (newTags.length > 0) {
+        updateFn([...currentTags, ...newTags]);
+        input.value = '';
+      }
+    } else {
+      // Tag única
+      if (!currentTags.includes(text)) {
+        updateFn([...currentTags, text]);
+        input.value = '';
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.loading}>
@@ -300,20 +324,43 @@ export default function PortfolioEditor({ siteId }: PortfolioEditorProps) {
               <div className={styles.field}>
                 <label>Habilidades Técnicas</label>
                 <div className={styles.skillsInput}>
-                  <input
-                    type="text"
-                    placeholder="Digite uma habilidade e pressione Enter"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        const input = e.target as HTMLInputElement;
-                        const newSkill = input.value.trim();
-                        if (newSkill && !data.skills.technical.includes(newSkill)) {
-                          updateSkills('technical', [...data.skills.technical, newSkill]);
-                          input.value = '';
+                  <div style={additionalStyles.inputWithButton}>
+                    <input
+                      type="text"
+                      placeholder="Digite habilidades separadas por vírgula (ex: JavaScript, React, Node.js) ou pressione Enter"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const input = e.target as HTMLInputElement;
+                          addTagsFromInput(input, data.skills.technical, (tags) => updateSkills('technical', tags));
                         }
-                      }
-                    }}
-                  />
+                      }}
+                      onInput={(e) => {
+                        // Log para verificar se vírgulas estão funcionando
+                        const input = e.target as HTMLInputElement;
+                        console.log('Technical skills input:', input.value);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      style={additionalStyles.addTagButton}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLElement).style.background = '#0056b3';
+                        (e.target as HTMLElement).style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.background = '#007bff';
+                        (e.target as HTMLElement).style.transform = 'scale(1)';
+                      }}
+                      onClick={() => {
+                        const input = document.querySelector(`.${styles.skillsInput} input`) as HTMLInputElement;
+                        addTagsFromInput(input, data.skills.technical, (tags) => updateSkills('technical', tags));
+                      }}
+                      title="Adicionar habilidade(s)"
+                    >
+                      +
+                    </button>
+                  </div>
                   <div className={styles.skillsTags}>
                     {data.skills.technical.map((skill: string, index: number) => (
                       <span key={index} className={styles.skillTag}>
@@ -335,20 +382,43 @@ export default function PortfolioEditor({ siteId }: PortfolioEditorProps) {
               <div className={styles.field}>
                 <label>Ferramentas</label>
                 <div className={styles.skillsInput}>
-                  <input
-                    type="text"
-                    placeholder="Digite uma ferramenta e pressione Enter"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
+                  <div style={additionalStyles.inputWithButton}>
+                    <input
+                      type="text"
+                      placeholder="Digite uma ferramenta (ex: VS Code, Git) e pressione Enter ou clique no +"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const input = e.target as HTMLInputElement;
+                          const newTool = input.value.trim();
+                          if (newTool && !data.skills.tools.includes(newTool)) {
+                            updateSkills('tools', [...data.skills.tools, newTool]);
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      onInput={(e) => {
+                        // Permitir digitação normal incluindo vírgulas
                         const input = e.target as HTMLInputElement;
-                        const newTool = input.value.trim();
+                        console.log('Tools input value:', input.value);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      style={additionalStyles.addTagButton}
+                      onClick={() => {
+                        const inputs = document.querySelectorAll(`.${styles.skillsInput} input`);
+                        const toolInput = inputs[1] as HTMLInputElement; // Segunda input (tools)
+                        const newTool = toolInput.value.trim();
                         if (newTool && !data.skills.tools.includes(newTool)) {
                           updateSkills('tools', [...data.skills.tools, newTool]);
-                          input.value = '';
+                          toolInput.value = '';
                         }
-                      }
-                    }}
-                  />
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
                   <div className={styles.skillsTags}>
                     {data.skills.tools.map((tool: string, index: number) => (
                       <span key={index} className={styles.skillTag}>
@@ -370,20 +440,43 @@ export default function PortfolioEditor({ siteId }: PortfolioEditorProps) {
               <div className={styles.field}>
                 <label>Idiomas</label>
                 <div className={styles.skillsInput}>
-                  <input
-                    type="text"
-                    placeholder="Digite um idioma e pressione Enter"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
+                  <div style={additionalStyles.inputWithButton}>
+                    <input
+                      type="text"
+                      placeholder="Digite um idioma (ex: Português - Nativo) e pressione Enter ou clique no +"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const input = e.target as HTMLInputElement;
+                          const newLanguage = input.value.trim();
+                          if (newLanguage && !data.skills.languages.includes(newLanguage)) {
+                            updateSkills('languages', [...data.skills.languages, newLanguage]);
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      onInput={(e) => {
+                        // Permitir digitação normal incluindo vírgulas
                         const input = e.target as HTMLInputElement;
-                        const newLanguage = input.value.trim();
+                        console.log('Languages input value:', input.value);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      style={additionalStyles.addTagButton}
+                      onClick={() => {
+                        const inputs = document.querySelectorAll(`.${styles.skillsInput} input`);
+                        const languageInput = inputs[2] as HTMLInputElement; // Terceira input (languages)
+                        const newLanguage = languageInput.value.trim();
                         if (newLanguage && !data.skills.languages.includes(newLanguage)) {
                           updateSkills('languages', [...data.skills.languages, newLanguage]);
-                          input.value = '';
+                          languageInput.value = '';
                         }
-                      }
-                    }}
-                  />
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
                   <div className={styles.skillsTags}>
                     {data.skills.languages.map((language: string, index: number) => (
                       <span key={index} className={styles.skillTag}>
@@ -392,6 +485,64 @@ export default function PortfolioEditor({ siteId }: PortfolioEditorProps) {
                           onClick={() => {
                             const updatedLanguages = data.skills.languages.filter((_: string, i: number) => i !== index);
                             updateSkills('languages', updatedLanguages);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.field}>
+                <label>Habilidades Interpessoais (Soft Skills)</label>
+                <div className={styles.skillsInput}>
+                  <div style={additionalStyles.inputWithButton}>
+                    <input
+                      type="text"
+                      placeholder="Digite uma soft skill (ex: Liderança, Comunicação) e pressione Enter ou clique no +"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const input = e.target as HTMLInputElement;
+                          const newSoftSkill = input.value.trim();
+                          if (newSoftSkill && !data.skills.soft.includes(newSoftSkill)) {
+                            updateSkills('soft', [...data.skills.soft, newSoftSkill]);
+                            input.value = '';
+                          }
+                        }
+                      }}
+                      onInput={(e) => {
+                        // Permitir digitação normal incluindo vírgulas
+                        const input = e.target as HTMLInputElement;
+                        console.log('Soft skills input value:', input.value);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      style={additionalStyles.addTagButton}
+                      onClick={() => {
+                        const inputs = document.querySelectorAll(`.${styles.skillsInput} input`);
+                        const softSkillInput = inputs[3] as HTMLInputElement; // Quarta input (soft skills)
+                        const newSoftSkill = softSkillInput.value.trim();
+                        if (newSoftSkill && !data.skills.soft.includes(newSoftSkill)) {
+                          updateSkills('soft', [...data.skills.soft, newSoftSkill]);
+                          softSkillInput.value = '';
+                        }
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className={styles.skillsTags}>
+                    {data.skills.soft.map((skill: string, index: number) => (
+                      <span key={index} className={styles.skillTag}>
+                        {skill}
+                        <button
+                          onClick={() => {
+                            const updatedSoftSkills = data.skills.soft.filter((_: string, i: number) => i !== index);
+                            updateSkills('soft', updatedSoftSkills);
                           }}
                         >
                           ×
@@ -502,6 +653,71 @@ export default function PortfolioEditor({ siteId }: PortfolioEditorProps) {
                       </div>
                     </div>
 
+                    <div className={styles.field}>
+                      <label>Tecnologias</label>
+                      <div className={styles.skillsInput}>
+                        <div style={additionalStyles.inputWithButton}>
+                          <input
+                            type="text"
+                            placeholder="Digite tecnologias separadas por vírgula (ex: React, Node.js, MongoDB) ou pressione Enter"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const input = e.target as HTMLInputElement;
+                                addTagsFromInput(input, project.technologies, (techs) => 
+                                  updateProject(project.id, { technologies: techs })
+                                );
+                              }
+                            }}
+                            onInput={(e) => {
+                              // Log para verificar se vírgulas estão funcionando
+                              const input = e.target as HTMLInputElement;
+                              console.log('Project tech input:', input.value);
+                            }}
+                          />
+                          <button
+                            type="button"
+                            style={additionalStyles.addTagButton}
+                            onMouseEnter={(e) => {
+                              (e.target as HTMLElement).style.background = '#0056b3';
+                              (e.target as HTMLElement).style.transform = 'scale(1.05)';
+                            }}
+                            onMouseLeave={(e) => {
+                              (e.target as HTMLElement).style.background = '#007bff';
+                              (e.target as HTMLElement).style.transform = 'scale(1)';
+                            }}
+                            onClick={(e) => {
+                              const projectCard = (e.target as HTMLElement).closest(`.${styles.projectCard}`);
+                              const input = projectCard?.querySelector('input[placeholder*="tecnologia"]') as HTMLInputElement;
+                              if (input) {
+                                addTagsFromInput(input, project.technologies, (techs) => 
+                                  updateProject(project.id, { technologies: techs })
+                                );
+                              }
+                            }}
+                            title="Adicionar tecnologia(s)"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <div className={styles.skillsTags}>
+                          {project.technologies.map((tech: string, index: number) => (
+                            <span key={index} className={styles.skillTag}>
+                              {tech}
+                              <button
+                                onClick={() => {
+                                  const updatedTechs = project.technologies.filter((_: string, i: number) => i !== index);
+                                  updateProject(project.id, { technologies: updatedTechs });
+                                }}
+                              >
+                                ×
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
                     <div className={styles.checkboxField}>
                       <label>
                         <input
@@ -593,8 +809,161 @@ export default function PortfolioEditor({ siteId }: PortfolioEditorProps) {
               ))}
             </div>
           )}
+
+          {activeTab === 'experience' && (
+            <div className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <h2>Experiência Profissional</h2>
+                <button
+                  onClick={() => {
+                    addExperience({
+                      company: 'Nova Empresa',
+                      position: 'Cargo',
+                      startDate: '2023-01',
+                      description: 'Descrição da experiência profissional',
+                      current: false,
+                    });
+                  }}
+                  className={styles.addButton}
+                >
+                  + Adicionar Experiência
+                </button>
+              </div>
+
+              <div className={styles.projectsList}>
+                {data.experience.map((exp: PortfolioData['experience'][0]) => (
+                  <div key={exp.id} className={styles.projectCard}>
+                    <div className={styles.projectHeader}>
+                      <input
+                        type="text"
+                        value={exp.position}
+                        onChange={(e) => updateExperience(exp.id, { position: e.target.value })}
+                        className={styles.projectTitle}
+                        placeholder="Cargo/Posição"
+                      />
+                      <button
+                        onClick={() => removeExperience(exp.id)}
+                        className={styles.deleteButton}
+                      >
+                        🗑️
+                      </button>
+                    </div>
+
+                    <div className={styles.fieldRow}>
+                      <div className={styles.field}>
+                        <label>Empresa</label>
+                        <input
+                          type="text"
+                          value={exp.company}
+                          onChange={(e) => updateExperience(exp.id, { company: e.target.value })}
+                          placeholder="Nome da empresa"
+                        />
+                      </div>
+
+                      <div className={styles.field}>
+                        <label>Localização</label>
+                        <input
+                          type="text"
+                          value={exp.location || ''}
+                          onChange={(e) => updateExperience(exp.id, { location: e.target.value })}
+                          placeholder="Cidade, Estado"
+                        />
+                      </div>
+                    </div>
+
+                    <div className={styles.fieldRow}>
+                      <div className={styles.field}>
+                        <label>Data de Início</label>
+                        <input
+                          type="month"
+                          value={exp.startDate}
+                          onChange={(e) => updateExperience(exp.id, { startDate: e.target.value })}
+                        />
+                      </div>
+
+                      <div className={styles.field}>
+                        <label>Data de Fim</label>
+                        <input
+                          type="month"
+                          value={exp.endDate || ''}
+                          onChange={(e) => updateExperience(exp.id, { endDate: e.target.value })}
+                          disabled={exp.current}
+                        />
+                      </div>
+                    </div>
+
+                    <div className={styles.checkboxField}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={exp.current}
+                          onChange={(e) => updateExperience(exp.id, { 
+                            current: e.target.checked,
+                            endDate: e.target.checked ? undefined : exp.endDate
+                          })}
+                        />
+                        Trabalho atual
+                      </label>
+                    </div>
+
+                    <div className={styles.field}>
+                      <label>Descrição</label>
+                      <textarea
+                        value={exp.description}
+                        onChange={(e) => updateExperience(exp.id, { description: e.target.value })}
+                        placeholder="Descreva suas responsabilidades e conquistas..."
+                        rows={4}
+                      />
+                    </div>
+
+                    <div className={styles.field}>
+                      <label>URL da Empresa (opcional)</label>
+                      <input
+                        type="url"
+                        value={exp.companyUrl || ''}
+                        onChange={(e) => updateExperience(exp.id, { companyUrl: e.target.value })}
+                        placeholder="https://empresa.com"
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                {data.experience.length === 0 && (
+                  <div className={styles.emptyState}>
+                    <p>📋 Nenhuma experiência adicionada ainda.</p>
+                    <p>Clique em "Adicionar Experiência" para começar!</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
   );
 }
+
+// CSS adicional para os novos elementos
+const additionalStyles = {
+  inputWithButton: {
+    display: 'flex',
+    gap: '8px',
+    alignItems: 'center'
+  } as React.CSSProperties,
+  addTagButton: {
+    background: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    width: '32px',
+    height: '32px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '18px',
+    fontWeight: 'bold',
+    transition: 'all 0.2s ease',
+    flexShrink: 0
+  } as React.CSSProperties
+};
