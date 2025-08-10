@@ -122,3 +122,4 @@ frontend/build/
 # Uploaded files (if storing locally)
 uploads/
 public/uploads/
+.vercel

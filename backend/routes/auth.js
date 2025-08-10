@@ -44,18 +44,97 @@ router.post('/register', async (req, res) => {
       emailVerified: false
     });
 
-    // Criar documento inicial no Firestore
-    await admin.firestore().collection('users').doc(userRecord.uid).set({
+    // Dados default do usuário
+    const userData = {
+      uid: userRecord.uid,
       email,
-      displayName,
+      displayName: displayName || '',
+      plan: 'free',
+      maxSites: 2,
+      currentSites: 1,
+      customDomain: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      plan: 'free', // Para futuras implementações de planos
-      sitesCount: 0
-    });
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    };
+
+    // Dados default do site inicial
+    const siteId = admin.firestore().collection('users').doc().id;
+    const siteData = {
+      title: 'Meu Primeiro Site',
+      template: 'portfolio',
+      published: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      portfolioData: {
+        personalInfo: {
+          name: displayName || '',
+          email: email,
+          phone: '',
+          title: 'Desenvolvedor Full Stack',
+          subtitle: 'Desenvolvedor apaixonado por tecnologia',
+          location: 'São Paulo, Brasil',
+          whatsapp: ''
+        },
+        about: {
+          description: 'Desenvolvedor apaixonado por tecnologia e inovação.'
+        },
+        skills: {
+          technical: ['JavaScript', 'TypeScript', 'React', 'Node.js'],
+          tools: ['Git', 'Docker', 'VS Code'],
+          languages: ['Português', 'Inglês'],
+          soft: ['Comunicação', 'Trabalho em equipe', 'Liderança']
+        },
+        projects: [],
+        services: [],
+        experience: [],
+        education: [],
+        certifications: [],
+        testimonials: [],
+        theme: {
+          primaryColor: '#667eea',
+          secondaryColor: '#764ba2',
+          fontFamily: 'Inter, sans-serif',
+          backgroundColor: '#ffffff',
+          textColor: '#333333',
+          layout: 'modern'
+        },
+        settings: {
+          showContactForm: true,
+          showSocialLinks: true,
+          allowDownloadResume: false,
+          enableAnalytics: false,
+          showSections: {
+            about: true,
+            skills: true,
+            projects: true,
+            experience: true,
+            education: false,
+            certifications: false,
+            services: false,
+            testimonials: false,
+            contact: true
+          }
+        },
+        seo: {
+          title: 'Meu Portfólio',
+          description: 'Portfólio profissional - Desenvolvedor Full Stack',
+          keywords: ['desenvolvedor', 'portfolio', 'web developer']
+        }
+      }
+    };
+
+    // Batch para criar usuário e site inicial juntos
+    const batch = admin.firestore().batch();
+    const userRef = admin.firestore().collection('users').doc(userRecord.uid);
+    const siteRef = userRef.collection('sites').doc(siteId);
+    batch.set(userRef, userData);
+    batch.set(siteRef, siteData);
+    await batch.commit();
 
     res.status(201).json({ 
       message: 'User created successfully',
-      uid: userRecord.uid 
+      uid: userRecord.uid,
+      siteId
     });
   } catch (error) {
     console.error('Registration error:', error);
