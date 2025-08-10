@@ -193,6 +193,20 @@ export default function EditPortfolioPage({ params }: PageProps) {
               🌐 Ver Site
             </button>
             <button 
+              onClick={() => window.open(`/sites/${params.id}`, '_blank')}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#6f42c1',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+            >
+              👁️ Preview
+            </button>
+            <button 
               onClick={handlePublish}
               disabled={saving}
               style={{

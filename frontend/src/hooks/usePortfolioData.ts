@@ -292,14 +292,27 @@ export function usePortfolioData(userId: string, siteId: string) {
       
       if (docSnap.exists()) {
         const siteData = docSnap.data();
-        
+        // Padroniza todos os campos essenciais
+        const baseSite = {
+          id: siteData.id || siteId,
+          siteId: siteData.siteId || siteId,
+          userId: siteData.userId || userId,
+          slug: siteData.slug || '',
+          template: siteData.template || 'portfolio',
+          createdAt: siteData.createdAt,
+          updatedAt: siteData.updatedAt,
+          published: typeof siteData.published === 'boolean' ? siteData.published : false,
+          title: siteData.title || siteData.name || 'Meu Portfólio',
+          description: siteData.description || '',
+        };
         // Se já tem dados específicos do portfólio, usa eles
         if (siteData.portfolioData) {
-          setData(siteData.portfolioData);
+          setData({ ...siteData.portfolioData, ...baseSite });
         } else {
           // Se não tem, cria com dados padrão
           const newPortfolioData = {
             ...defaultPortfolioData,
+            ...baseSite,
             personalInfo: {
               ...defaultPortfolioData.personalInfo,
               name: siteData.name || defaultPortfolioData.personalInfo.name,
@@ -310,29 +323,30 @@ export function usePortfolioData(userId: string, siteId: string) {
               description: siteData.description || defaultPortfolioData.about.description,
             },
           };
-          
           // Salva os dados padrão no Firestore
           await updateDoc(docRef, {
             portfolioData: newPortfolioData,
             updatedAt: serverTimestamp(),
           });
-          
           setData(newPortfolioData);
         }
       } else {
         // Site não existe, cria um novo
         const newSiteData = {
           id: siteId,
+          siteId: siteId,
+          userId: userId,
           name: "Meu Portfólio",
+          title: "Meu Portfólio",
           template: "portfolio",
+          slug: '',
           portfolioData: defaultPortfolioData,
-          isPublished: false,
+          published: false,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         };
-        
         await setDoc(docRef, newSiteData);
-        setData(defaultPortfolioData);
+        setData({ ...defaultPortfolioData, ...newSiteData });
       }
     } catch (err) {
       console.error('Erro ao carregar dados do portfólio:', err);

@@ -48,7 +48,15 @@ export interface SiteData {
  * Combina dados reais do Firebase com mock data para campos ainda não implementados
  */
 export function useSiteEdit(siteId: string) {
-  const [siteData, setSiteData] = useState<SiteData | null>(null);
+  const [siteData, setSiteData] = useState<SiteData & {
+    siteId?: string;
+    userId?: string;
+    slug?: string;
+    template?: string;
+    createdAt?: any;
+    updatedAt?: any;
+    isPublished?: boolean;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -126,19 +134,21 @@ export function useSiteEdit(siteId: string) {
         const res = await api.get(`/api/sites/${siteId}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
-        
         const firebaseData = res.data;
         const mockData = getMockDataForTemplate(firebaseData.template || 'comercial');
-        
-        // Combina dados reais do Firebase com mock data
+        // Combina dados reais do Firebase com mock data e garante todos os campos essenciais
         setSiteData({
           ...mockData,
           id: firebaseData.id,
+          siteId: firebaseData.siteId || firebaseData.id,
+          userId: firebaseData.userId,
           title: firebaseData.title || firebaseData.name || 'Seu Site',
           description: firebaseData.description || 'Descrição do seu site',
           template: firebaseData.template || 'comercial',
           slug: firebaseData.slug,
-          published: firebaseData.published || false,
+          isPublished: typeof firebaseData.isPublished === 'boolean' ? firebaseData.isPublished : false,
+          createdAt: firebaseData.createdAt,
+          updatedAt: firebaseData.updatedAt,
           settings: firebaseData.settings || {
             theme: 'light',
             primaryColor: '#3B82F6',
@@ -168,20 +178,20 @@ export function useSiteEdit(siteId: string) {
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       
-      // Por enquanto, salva apenas os campos que existem no Firebase
+      // Salva todos os campos essenciais
       const firebaseFields = {
         title: dataToSave.title || siteData.title,
         description: dataToSave.description || siteData.description,
         template: dataToSave.template || siteData.template,
-        settings: dataToSave.settings || siteData.settings
+        slug: dataToSave.slug || siteData.slug,
+        published: typeof dataToSave.published === 'boolean' ? dataToSave.published : siteData.published,
+        settings: dataToSave.settings || siteData.settings,
+        updatedAt: new Date().toISOString(),
       };
-      
       await api.put(`/api/sites/${siteId}`, firebaseFields, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      
-      // Atualiza o estado local
-      setSiteData(prev => prev ? { ...prev, ...dataToSave } : null);
+      setSiteData(prev => prev ? { ...prev, ...firebaseFields } : null);
       return true;
     } catch (err: any) {
       console.error('Erro ao salvar dados do site:', err);

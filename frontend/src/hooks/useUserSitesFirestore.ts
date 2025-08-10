@@ -26,7 +26,22 @@ export function useUserSitesFirestore(userId: string) {
       // Busca do Firestore (sempre busca para garantir atualização)
       const ref = collection(db, `users/${userId}/sites`);
       const snapshot = await getDocs(ref);
-      const freshSites = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+      const freshSites = snapshot.docs.map((doc: any) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          siteId: data.siteId || doc.id,
+          userId: data.userId || userId,
+          slug: data.slug || '',
+          template: data.template || '',
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+          published: typeof data.published === 'boolean' ? data.published : false,
+          title: data.title || data.name || '',
+          description: data.description || '',
+          ...data
+        };
+      });
       setSites(freshSites);
       localStorage.setItem(`sites_${userId}` , JSON.stringify(freshSites));
       setLoading(false);

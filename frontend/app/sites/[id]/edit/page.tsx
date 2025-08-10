@@ -181,7 +181,7 @@ export default function EditSitePage({ params }: PageProps) {
               ← Voltar
             </button>
             <button 
-              onClick={() => window.open(`/preview/${user?.uid}/${params.id}`, '_blank')}
+              onClick={() => window.open(`/sites/${params.id}`, '_blank')}
               style={{
                 padding: '10px 20px',
                 backgroundColor: '#17a2b8',
@@ -192,13 +192,10 @@ export default function EditSitePage({ params }: PageProps) {
                 fontSize: '14px'
               }}
             >
-              👁️ Preview
+              🌐 Ver Site
             </button>
             <button 
-              onClick={() => {
-                // Alternativa: abre no sistema antigo (compatibilidade)
-                window.open(`/sites/${params.id}`, '_blank');
-              }}
+              onClick={() => window.open(`/sites/${params.id}`, '_blank')}
               style={{
                 padding: '10px 20px',
                 backgroundColor: '#6f42c1',
@@ -209,7 +206,7 @@ export default function EditSitePage({ params }: PageProps) {
                 fontSize: '14px'
               }}
             >
-              🌐 Ver Site
+              👁️ Preview
             </button>
             <button 
               onClick={handlePublish}

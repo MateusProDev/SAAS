@@ -67,13 +67,13 @@ export default function SitesPage() {
                       href={`/sites/${site.id}`} 
                       className={`${styles['site-card-btn']} ${styles['site-card-btn-view']}`}
                     >
-                      👁️ Ver Site
+                      🌐 Ver Site
                     </Link>
                     <Link 
-                      href={`/preview/${site.id}`} 
+                      href={`/sites/${site.id}`} 
                       className={`${styles['site-card-btn']} ${styles['site-card-btn-preview']}`}
                     >
-                      🔍 Preview
+                      �️ Preview
                     </Link>
                   </div>
                 </div>

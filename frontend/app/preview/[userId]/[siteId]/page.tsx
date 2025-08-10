@@ -118,12 +118,22 @@ export default function PreviewPage({ params }: PageProps) {
   // Adicionar dados específicos por template com conversões corretas
   if (siteData.template === 'barbearia') {
     const barbeariaData = siteData.customization as BarbeariaCustomization;
-    (templateData as any).services = barbeariaData.services.map(service => ({
-      id: service.id,
-      name: service.name,
-      description: `Duração: ${service.duration}`,
-      price: `R$ ${service.price.toFixed(2).replace('.', ',')}`
-    }));
+    (templateData as any).services = Array.isArray(barbeariaData.services)
+      ? barbeariaData.services.map(service => {
+          let priceFormatted = '';
+          if (typeof service.price === 'number') {
+            priceFormatted = `R$ ${service.price.toFixed(2).replace('.', ',')}`;
+          } else if (typeof service.price === 'string') {
+            priceFormatted = (service.price && String(service.price).startsWith('R$')) ? service.price : `R$ ${service.price}`;
+          }
+          return {
+            id: service.id,
+            name: service.name,
+            description: `Duração: ${service.duration}`,
+            price: priceFormatted
+          };
+        })
+      : [];
   }
   
   if (siteData.template === 'comercial') {

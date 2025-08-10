@@ -201,18 +201,20 @@ router.post('/', verifyToken, async (req, res) => {
       console.warn('Não foi possível buscar template do Firestore:', e);
     }
 
+    const defaultCustomization = getDefaultTemplateData(template);
     const siteData = {
       name,
       template,
       slug,
-      data: getDefaultTemplateData(template),
+      data: defaultCustomization, // compatibilidade antiga
+      customization: defaultCustomization, // compatível com frontend
       isPublished: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       active: true,
       content: templateContent,
       publishedAt: null,
-      siteId: '',
+      siteId: '', // será atualizado após criar
       userId: req.user.uid,
       views: 0
     };
@@ -223,18 +225,43 @@ router.post('/', verifyToken, async (req, res) => {
       .doc(req.user.uid)
       .collection('sites')
       .add(siteData);
-    console.log('✅ [DEBUG] Site criado no Firestore:', { id: siteRef.id, ...siteData });
+    // Atualizar os campos siteId e slug explicitamente para garantir que ambos estejam presentes
+    await admin.firestore()
+      .collection('users')
+      .doc(req.user.uid)
+      .collection('sites')
+      .doc(siteRef.id)
+      .update({ siteId: siteRef.id, slug });
 
     // Registrar slug na coleção auxiliar
     await admin.firestore().collection('slugs').doc(slug).set({
       userId: req.user.uid,
       siteId: siteRef.id
     });
+
+    // Criar/atualizar documento em published_sites para lookup rápido por slug
+    await admin.firestore().collection('published_sites').doc(siteRef.id).set({
+      siteId: siteRef.id,
+      userId: req.user.uid,
+      slug,
+      name,
+      template,
+      active: true,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      publishedAt: null,
+      content: templateContent,
+      views: 0
+    }, { merge: true });
+
+    console.log('✅ [DEBUG] Site criado no Firestore:', { id: siteRef.id, ...siteData, siteId: siteRef.id });
     console.log('✅ [DEBUG] Slug registrado na coleção auxiliar:', { slug, userId: req.user.uid, siteId: siteRef.id });
+    console.log('✅ [DEBUG] Documento criado em published_sites:', { siteId: siteRef.id, slug });
 
     res.status(201).json({ 
       id: siteRef.id, 
       ...siteData,
+      siteId: siteRef.id,
       message: 'Site created successfully' 
     });
   } catch (error) {
@@ -272,6 +299,29 @@ router.put('/:siteId', verifyToken, async (req, res) => {
       });
     }
 
+    // Sincronizar published_sites
+    const siteDoc = await admin.firestore()
+      .collection('users')
+      .doc(req.user.uid)
+      .collection('sites')
+      .doc(req.params.siteId)
+      .get();
+    if (siteDoc.exists) {
+      const data = siteDoc.data();
+      await admin.firestore().collection('published_sites').doc(req.params.siteId).set({
+        siteId: req.params.siteId,
+        userId: req.user.uid,
+        slug: data.slug,
+        name: data.name,
+        template: data.template,
+        active: data.active,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        publishedAt: data.publishedAt || null,
+        content: data.content || '',
+        views: data.views || 0
+      }, { merge: true });
+    }
+
     res.json({ message: 'Site updated successfully' });
   } catch (error) {
     console.error('Error updating site:', error);
@@ -307,6 +357,8 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
     if (slugToDelete) {
       await admin.firestore().collection('slugs').doc(slugToDelete).delete();
     }
+    // Remover da published_sites
+    await admin.firestore().collection('published_sites').doc(req.params.siteId).delete();
     res.json({ message: 'Site deleted successfully' });
   } catch (error) {
     console.error('Error deleting site:', error);
@@ -315,39 +367,60 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
 });
 
 // GET /site/:slug - Endpoint público para visualizar sites publicados
-// GET /api/sites/public/:slug - Retorna HTML publicado de published_sites
+// GET /api/sites/public/:slug - Retorna HTML publicado do site centralizado
 router.get('/public/:slug', async (req, res) => {
   try {
-    // Busca rápida pelo slug na coleção auxiliar 'slugs'
-    const slugRef = admin.firestore().collection('slugs').doc(req.params.slug);
+    const slug = req.params.slug;
+    console.log(`[PUBLIC] Buscando site público para slug/siteId: ${slug}`);
+    // 1. Busca rápida pelo slug na coleção auxiliar 'slugs'
+    const slugRef = admin.firestore().collection('slugs').doc(slug);
     const slugSnap = await slugRef.get();
-    if (!slugSnap.exists) {
-      return res.status(404).json({ error: 'Site not found or not published' });
+    if (slugSnap.exists) {
+      const { userId, siteId } = slugSnap.data();
+      console.log(`[PUBLIC] Slug encontrado em 'slugs': userId=${userId}, siteId=${siteId}`);
+      const siteDoc = await admin.firestore()
+        .collection('users')
+        .doc(userId)
+        .collection('sites')
+        .doc(siteId)
+        .get();
+      if (siteDoc.exists) {
+        const siteData = siteDoc.data();
+        console.log(`[PUBLIC] Site encontrado por slug:`, siteData);
+        return res.json({
+          id: siteDoc.id,
+          ...siteData,
+          slug: siteData.slug,
+          content: siteData.content || ''
+        });
+      } else {
+        console.warn(`[PUBLIC] Documento do site não encontrado para userId=${userId}, siteId=${siteId}`);
+      }
+    } else {
+      console.warn(`[PUBLIC] Slug não encontrado em 'slugs': ${slug}`);
     }
-    const { userId, siteId } = slugSnap.data();
-    const siteDoc = await admin.firestore()
-      .collection('users')
-      .doc(userId)
-      .collection('sites')
-      .doc(siteId)
-      .get();
-    if (!siteDoc.exists) {
-      return res.status(404).json({ error: 'Site not found or not published' });
+    // 2. Se não achou pelo slug, tenta buscar diretamente em published_sites pelo siteId
+    const pubDoc = await admin.firestore().collection('published_sites').doc(slug).get();
+    if (pubDoc.exists) {
+      const pubData = pubDoc.data();
+      console.log(`[PUBLIC] Site encontrado em 'published_sites':`, pubData);
+      return res.json({
+        id: pubDoc.id,
+        ...pubData,
+        slug: pubData.slug,
+        content: pubData.content || ''
+      });
+    } else {
+      console.warn(`[PUBLIC] Documento não encontrado em 'published_sites' para id: ${slug}`);
     }
-    const siteData = siteDoc.data();
-    return res.json({
-      id: siteDoc.id,
-      ...siteData,
-      slug: siteData.slug,
-      content: siteData.content || ''
-    });
+    return res.status(404).json({ error: 'Site not found or not published', slug });
   } catch (error) {
     console.error('Error fetching public site:', error);
     res.status(500).json({ error: 'Failed to fetch site', details: error.message });
   }
 });
 
-// POST /api/sites/:siteId/publish - Publica o site (salva HTML em published_sites)
+// POST /api/sites/:siteId/publish - Publica o site (atualiza campo content e isPublished)
 router.post('/:siteId/publish', verifyToken, async (req, res) => {
   try {
     const { content } = req.body;
@@ -368,13 +441,8 @@ router.post('/:siteId/publish', verifyToken, async (req, res) => {
     if (!siteData.slug) {
       return res.status(400).json({ error: 'Site slug is missing' });
     }
-  // Atualizar apenas o documento do usuário (centralizado)
-// --- FLUXO CENTRALIZADO ---
-// Todas as operações de sites (criação, edição, publicação, deleção, busca) ocorrem APENAS em users/{userId}/sites/{siteId}.
-// Não existe mais escrita, leitura ou deleção em /sites ou /published_sites.
-// Se necessário, crie índices no Firestore para buscas por slug ou outros campos.
-// Valide e sanitize todos os dados recebidos antes de salvar.
-// Trate erros e retorne mensagens amigáveis.
+
+    // Atualizar documento do usuário
     await admin.firestore()
       .collection('users')
       .doc(req.user.uid)
@@ -384,6 +452,21 @@ router.post('/:siteId/publish', verifyToken, async (req, res) => {
         content,
         isPublished: true,
         publishedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+    // Sempre criar/atualizar published_sites
+    await admin.firestore()
+      .collection('published_sites')
+      .doc(req.params.siteId)
+      .set({
+        siteId: req.params.siteId,
+        userId: req.user.uid,
+        slug: siteData.slug,
+        name: siteData.name || siteData.title || '',
+        content,
+        publishedAt: admin.firestore.FieldValue.serverTimestamp(),
+        active: true,
+        views: 0
       }, { merge: true });
 
     res.json({ message: 'Site published successfully', slug: siteData.slug });

@@ -82,41 +82,24 @@ export default function DashboardPage() {
                 </div>
               </div>
             )}
-            <button 
-              onClick={handleLogout} 
-              disabled={logoutLoading} 
-              className={styles['dashboard-logout-btn']}
-            >
-              {logoutLoading ? 'Saindo...' : 'Sair'}
-            </button>
-          </div>
-        </div>
-      </header>
-      <main className={styles['dashboard-main']}>
-        <div className={styles['dashboard-header-section']}>
-          <h2 className={styles['dashboard-section-title']}>Seus sites</h2>
-          <div className={styles['dashboard-actions']}>
-            <Link href="/sites" className={styles['dashboard-link']}>
-              Ver sites públicos
-            </Link>
-            <Link href="/sites/new" className={styles['dashboard-new-site-btn']}>
+            {/* Botão de novo site */}
+            <Link href="/sites/new" className={styles['dashboard-site-btn']}>
               + Novo site
             </Link>
           </div>
         </div>
-        
+      </header>
+      <main>
         {(loadingUser || loadingSites) && (
           <div className={styles['dashboard-loading']}>
             ⏳ Carregando sites...
           </div>
         )}
-        
         {!loadingUser && !loadingSites && sites.length === 0 && (
           <div className={styles['dashboard-empty']}>
             Nenhum site criado ainda. Comece criando seu primeiro site!
           </div>
         )}
-        
         {!loadingUser && !loadingSites && sites.length > 0 && (
           <div className={styles['dashboard-sites-grid']}>
             {sites.map(site => (
@@ -135,13 +118,19 @@ export default function DashboardPage() {
                     href={`/sites/${site.id}`} 
                     className={`${styles['dashboard-site-btn']} ${styles['dashboard-site-btn-view']}`}
                   >
-                    Visualizar
+                    🌐 Ver Site
                   </Link>
                   <Link 
                     href={getEditRoute(site.id, site.template)} 
                     className={`${styles['dashboard-site-btn']} ${styles['dashboard-site-btn-edit']}`}
                   >
-                    Editar
+                    ✏️ Editar
+                  </Link>
+                  <Link 
+                    href={`/sites/${site.id}`} 
+                    className={`${styles['dashboard-site-btn']} ${styles['dashboard-site-btn-preview']}`}
+                  >
+                    👁️ Preview
                   </Link>
                   <button 
                     onClick={() => handleDelete(site.id)} 
