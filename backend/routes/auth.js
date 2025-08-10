@@ -35,7 +35,18 @@ router.get('/verify', verifyToken, (req, res) => {
 // POST /api/auth/register - Registrar novo usuário (opcional - pode ser feito no frontend)
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, displayName } = req.body;
+    let { email, password, displayName } = req.body;
+    // Sanitização básica
+    if (typeof email !== 'string' || !email.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) {
+      return res.status(400).json({ error: 'Email inválido' });
+    }
+    if (typeof password !== 'string' || password.length < 6) {
+      return res.status(400).json({ error: 'Senha deve ter pelo menos 6 caracteres' });
+    }
+    if (displayName && typeof displayName !== 'string') {
+      displayName = '';
+    }
+    displayName = (displayName || '').replace(/[^\w\sÀ-ÿ\-\.]/g, '').trim().slice(0, 50);
 
     const userRecord = await admin.auth().createUser({
       email,

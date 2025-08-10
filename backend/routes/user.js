@@ -83,15 +83,14 @@ router.post('/profile', verifyToken, async (req, res) => {
 // PUT /api/user/profile - Atualizar perfil do usuário
 router.put('/profile', verifyToken, async (req, res) => {
   try {
-    const updateData = {
-      ...req.body,
-      updatedAt: admin.firestore.Timestamp.now()
-    };
-
-    // Remover campos que não devem ser atualizados diretamente
-    delete updateData.uid;
-    delete updateData.createdAt;
-    delete updateData.plan; // Plano só pode ser alterado via upgrade
+    const allowedFields = ['displayName'];
+    const updateData = { updatedAt: admin.firestore.Timestamp.now() };
+    for (const key of allowedFields) {
+      if (key in req.body && typeof req.body[key] === 'string') {
+        updateData[key] = req.body[key].replace(/[^\w\sÀ-ÿ\-\.]/g, '').trim().slice(0, 50);
+      }
+    }
+    // Não permitir update de email, plano, maxSites, etc
 
     await admin.firestore()
       .collection('users')

@@ -4,11 +4,15 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 require('dotenv').config();
 
+
+const rateLimit = require('./rateLimit');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middlewares
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+}));
 // CORS: permitir localhost e produção (onrender.com)
 const allowedOrigins = [
   'http://localhost:3000',
@@ -31,6 +35,9 @@ app.use(cors({
   preflightContinue: false
 }));
 
+// Rate limiting global
+app.use(rateLimit);
+
 // Garantir headers CORS para todas as respostas (incluindo preflight)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', allowedOrigins.includes(req.headers.origin) ? req.headers.origin : '');
@@ -43,14 +50,15 @@ app.use((req, res, next) => {
   next();
 });
 app.use(morgan('combined'));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/sites', require('./routes/sites'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/user', require('./routes/user'));
+
 
 // Health check
 app.get('/', (req, res) => {
@@ -59,6 +67,13 @@ app.get('/', (req, res) => {
     status: 'running',
     timestamp: new Date().toISOString()
   });
+});
+
+// Error handler global
+app.use((err, req, res, next) => {
+  console.error('Erro global:', err);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ error: 'Erro interno do servidor' });
 });
 
 // Error handling middleware
