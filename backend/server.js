@@ -16,9 +16,9 @@ app.use(helmet({
 // CORS: permitir localhost e produção (onrender.com)
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://your-domain.vercel.app',
+  'https://saas-app-liart.vercel.app', // domínio Vercel de produção
   'https://saas-msjn.onrender.com',
-  'https://frontend-peach-ten-86.vercel.app' 
+  'https://frontend-peach-ten-86.vercel.app'
 ];
 app.use(cors({
   origin: function (origin, callback) {
