@@ -161,8 +161,7 @@ router.post('/', verifyToken, async (req, res) => {
       // Garante unicidade
       let trySlug = slug;
       let i = 1;
-      // Aqui, apenas gere o slug localmente. Se quiser garantir unicidade, busque nos sites do usuário.
-      // Exemplo:
+  // Gera slug único apenas na subcoleção do usuário
       while (true) {
         const exists = await admin.firestore()
           .collection('users')
@@ -226,23 +225,12 @@ router.post('/', verifyToken, async (req, res) => {
       .add(siteData);
     console.log('✅ [DEBUG] Site criado no Firestore:', { id: siteRef.id, ...siteData });
 
-    // Também criar uma referência global para slugs únicos, com todos os campos relevantes
-    await admin.firestore()
-      .collection('sites')
-      .doc(siteRef.id)
-      .set({ 
-        userId: req.user.uid, 
-        slug,
-        name,
-        template,
-        isPublished: false,
-        active: true,
-        content: templateContent,
-        publishedAt: null,
-        siteId: '',
-        views: 0
-      });
-    console.log('✅ [DEBUG] Referência global criada para slug:', { id: siteRef.id, slug });
+    // Registrar slug na coleção auxiliar
+    await admin.firestore().collection('slugs').doc(slug).set({
+      userId: req.user.uid,
+      siteId: siteRef.id
+    });
+    console.log('✅ [DEBUG] Slug registrado na coleção auxiliar:', { slug, userId: req.user.uid, siteId: siteRef.id });
 
     res.status(201).json({ 
       id: siteRef.id, 
@@ -276,7 +264,13 @@ router.put('/:siteId', verifyToken, async (req, res) => {
       .doc(req.params.siteId)
       .update(updateData);
 
-  // Não atualizar referência global, tudo centralizado na subcoleção do usuário
+    // Atualizar slug na coleção auxiliar se mudou
+    if (slug) {
+      await admin.firestore().collection('slugs').doc(slug).set({
+        userId: req.user.uid,
+        siteId: req.params.siteId
+      });
+    }
 
     res.json({ message: 'Site updated successfully' });
   } catch (error) {
@@ -288,6 +282,20 @@ router.put('/:siteId', verifyToken, async (req, res) => {
 // DELETE /api/sites/:siteId - Deletar site
 router.delete('/:siteId', verifyToken, async (req, res) => {
   try {
+    // Buscar o site para pegar o slug
+    const siteDoc = await admin.firestore()
+      .collection('users')
+      .doc(req.user.uid)
+      .collection('sites')
+      .doc(req.params.siteId)
+      .get();
+    let slugToDelete = null;
+    if (siteDoc.exists) {
+      const siteData = siteDoc.data();
+      if (siteData.slug) {
+        slugToDelete = siteData.slug;
+      }
+    }
     // Deletar da coleção do usuário
     await admin.firestore()
       .collection('users')
@@ -295,9 +303,10 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
       .collection('sites')
       .doc(req.params.siteId)
       .delete();
-
-  // Não deleta mais da coleção global
-
+    // Remover slug da coleção auxiliar
+    if (slugToDelete) {
+      await admin.firestore().collection('slugs').doc(slugToDelete).delete();
+    }
     res.json({ message: 'Site deleted successfully' });
   } catch (error) {
     console.error('Error deleting site:', error);
@@ -309,29 +318,29 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
 // GET /api/sites/public/:slug - Retorna HTML publicado de published_sites
 router.get('/public/:slug', async (req, res) => {
   try {
-    // Buscar em todas as subcoleções de todos os usuários (ineficiente, mas centralizado)
-    // Ideal: manter um índice de slugs para busca rápida, mas aqui faz busca completa
-    const usersSnap = await admin.firestore().collection('users').get();
-    for (const userDoc of usersSnap.docs) {
-      const sitesSnap = await admin.firestore()
-        .collection('users')
-        .doc(userDoc.id)
-        .collection('sites')
-        .where('slug', '==', req.params.slug)
-        .limit(1)
-        .get();
-      if (!sitesSnap.empty) {
-        const siteDoc = sitesSnap.docs[0];
-        const siteData = siteDoc.data();
-        return res.json({
-          id: siteDoc.id,
-          ...siteData,
-          slug: siteData.slug,
-          content: siteData.content || ''
-        });
-      }
+    // Busca rápida pelo slug na coleção auxiliar 'slugs'
+    const slugRef = admin.firestore().collection('slugs').doc(req.params.slug);
+    const slugSnap = await slugRef.get();
+    if (!slugSnap.exists) {
+      return res.status(404).json({ error: 'Site not found or not published' });
     }
-    return res.status(404).json({ error: 'Site not found or not published' });
+    const { userId, siteId } = slugSnap.data();
+    const siteDoc = await admin.firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('sites')
+      .doc(siteId)
+      .get();
+    if (!siteDoc.exists) {
+      return res.status(404).json({ error: 'Site not found or not published' });
+    }
+    const siteData = siteDoc.data();
+    return res.json({
+      id: siteDoc.id,
+      ...siteData,
+      slug: siteData.slug,
+      content: siteData.content || ''
+    });
   } catch (error) {
     console.error('Error fetching public site:', error);
     res.status(500).json({ error: 'Failed to fetch site', details: error.message });
@@ -359,7 +368,13 @@ router.post('/:siteId/publish', verifyToken, async (req, res) => {
     if (!siteData.slug) {
       return res.status(400).json({ error: 'Site slug is missing' });
     }
-    // Atualizar apenas o documento do usuário
+  // Atualizar apenas o documento do usuário (centralizado)
+// --- FLUXO CENTRALIZADO ---
+// Todas as operações de sites (criação, edição, publicação, deleção, busca) ocorrem APENAS em users/{userId}/sites/{siteId}.
+// Não existe mais escrita, leitura ou deleção em /sites ou /published_sites.
+// Se necessário, crie índices no Firestore para buscas por slug ou outros campos.
+// Valide e sanitize todos os dados recebidos antes de salvar.
+// Trate erros e retorne mensagens amigáveis.
     await admin.firestore()
       .collection('users')
       .doc(req.user.uid)
