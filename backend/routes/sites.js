@@ -161,8 +161,15 @@ router.post('/', verifyToken, async (req, res) => {
       // Garante unicidade
       let trySlug = slug;
       let i = 1;
+      // Aqui, apenas gere o slug localmente. Se quiser garantir unicidade, busque nos sites do usuário.
+      // Exemplo:
       while (true) {
-        const exists = await admin.firestore().collection('sites').where('slug', '==', trySlug).get();
+        const exists = await admin.firestore()
+          .collection('users')
+          .doc(req.user.uid)
+          .collection('sites')
+          .where('slug', '==', trySlug)
+          .get();
         if (exists.empty) {
           slug = trySlug;
           break;
@@ -173,6 +180,8 @@ router.post('/', verifyToken, async (req, res) => {
     } else {
       // Verificar se o slug já existe
       const existingSlug = await admin.firestore()
+        .collection('users')
+        .doc(req.user.uid)
         .collection('sites')
         .where('slug', '==', slug)
         .get();
@@ -267,21 +276,7 @@ router.put('/:siteId', verifyToken, async (req, res) => {
       .doc(req.params.siteId)
       .update(updateData);
 
-    // Atualizar também a referência global se necessário
-    const globalUpdate = {};
-    if (typeof isPublished === 'boolean') globalUpdate.isPublished = isPublished;
-    if (slug) globalUpdate.slug = slug;
-    if (Object.keys(globalUpdate).length > 0) {
-      const globalDocRef = admin.firestore().collection('sites').doc(req.params.siteId);
-      const globalDoc = await globalDocRef.get();
-      if (globalDoc.exists) {
-        await globalDocRef.update(globalUpdate);
-        console.log(`[PUT] Global doc atualizado: ${req.params.siteId}`, globalUpdate);
-      } else {
-        await globalDocRef.set(globalUpdate, { merge: true });
-        console.log(`[PUT] Global doc criado (merge): ${req.params.siteId}`, globalUpdate);
-      } 
-    }
+  // Não atualizar referência global, tudo centralizado na subcoleção do usuário
 
     res.json({ message: 'Site updated successfully' });
   } catch (error) {
@@ -301,11 +296,7 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
       .doc(req.params.siteId)
       .delete();
 
-    // Deletar da coleção global
-    await admin.firestore()
-      .collection('sites')
-      .doc(req.params.siteId)
-      .delete();
+  // Não deleta mais da coleção global
 
     res.json({ message: 'Site deleted successfully' });
   } catch (error) {
@@ -318,22 +309,27 @@ router.delete('/:siteId', verifyToken, async (req, res) => {
 // GET /api/sites/public/:slug - Retorna HTML publicado de published_sites
 router.get('/public/:slug', async (req, res) => {
   try {
-    // Buscar apenas na coleção 'sites' (global)
-    const sitesSnap = await admin.firestore()
-      .collection('sites')
-      .where('slug', '==', req.params.slug)
-      .limit(1)
-      .get();
-    if (!sitesSnap.empty) {
-      const siteDoc = sitesSnap.docs[0];
-      const siteData = siteDoc.data();
-      // Retornar todos os campos relevantes, incluindo content
-      return res.json({
-        id: siteDoc.id,
-        ...siteData,
-        slug: siteData.slug,
-        content: siteData.content || ''
-      });
+    // Buscar em todas as subcoleções de todos os usuários (ineficiente, mas centralizado)
+    // Ideal: manter um índice de slugs para busca rápida, mas aqui faz busca completa
+    const usersSnap = await admin.firestore().collection('users').get();
+    for (const userDoc of usersSnap.docs) {
+      const sitesSnap = await admin.firestore()
+        .collection('users')
+        .doc(userDoc.id)
+        .collection('sites')
+        .where('slug', '==', req.params.slug)
+        .limit(1)
+        .get();
+      if (!sitesSnap.empty) {
+        const siteDoc = sitesSnap.docs[0];
+        const siteData = siteDoc.data();
+        return res.json({
+          id: siteDoc.id,
+          ...siteData,
+          slug: siteData.slug,
+          content: siteData.content || ''
+        });
+      }
     }
     return res.status(404).json({ error: 'Site not found or not published' });
   } catch (error) {
@@ -363,24 +359,17 @@ router.post('/:siteId/publish', verifyToken, async (req, res) => {
     if (!siteData.slug) {
       return res.status(400).json({ error: 'Site slug is missing' });
     }
-    // Salvar/atualizar published_sites
-    const publishedRef = admin.firestore()
-      .collection('published_sites')
-      .doc(req.params.siteId);
-    await publishedRef.set({
-      slug: siteData.slug,
-      userId: req.user.uid,
-      content,
-      publishedAt: admin.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-
-    // Salvar/atualizar o campo 'content' também na coleção global 'sites'
-    const globalSiteRef = admin.firestore().collection('sites').doc(req.params.siteId);
-    await globalSiteRef.set({
-      content,
-      isPublished: true,
-      publishedAt: admin.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+    // Atualizar apenas o documento do usuário
+    await admin.firestore()
+      .collection('users')
+      .doc(req.user.uid)
+      .collection('sites')
+      .doc(req.params.siteId)
+      .set({
+        content,
+        isPublished: true,
+        publishedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
 
     res.json({ message: 'Site published successfully', slug: siteData.slug });
   } catch (error) {

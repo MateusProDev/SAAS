@@ -443,26 +443,15 @@ export function usePortfolioData(userId: string, siteId: string) {
   // Publicar portfólio
   const publishPortfolio = async () => {
     if (!userId || !siteId || !data) return false;
-    
     try {
-      // Atualiza o site como publicado
+      // Atualiza o site como publicado apenas na subcoleção do usuário
       const siteRef = doc(db, 'users', userId, 'sites', siteId);
       await updateDoc(siteRef, {
         isPublished: true,
         publishedAt: serverTimestamp(),
-      });
-      
-      // Opcional: Cria uma cópia na coleção pública para SEO
-      const publicRef = doc(db, 'published_sites', siteId);
-      await setDoc(publicRef, {
-        userId,
-        siteId,
-        template: 'portfolio',
         portfolioData: data,
-        publishedAt: serverTimestamp(),
         slug: `${data.personalInfo.name.toLowerCase().replace(/\s+/g, '-')}-${siteId}`,
       });
-      
       return true;
     } catch (err) {
       console.error('Erro ao publicar portfólio:', err);
