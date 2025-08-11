@@ -15,6 +15,29 @@ if (!admin.apps.length) {
 }
 
 async function main() {
+  // --- Restauração automática de sites a partir de published_sites ---
+  console.log('\n[RESTAURAÇÃO] Garantindo que todos os published_sites existam em users/{userId}/sites/{siteId}...');
+  const pubsSnap = await admin.firestore().collection('published_sites').get();
+  let restored = 0;
+  for (const pubDoc of pubsSnap.docs) {
+    const pub = pubDoc.data();
+    const userId = pub.userId;
+    const siteId = pub.siteId;
+    if (!userId || !siteId) continue;
+    const userSiteRef = admin.firestore().collection('users').doc(userId).collection('sites').doc(siteId);
+    const userSiteSnap = await userSiteRef.get();
+    if (!userSiteSnap.exists) {
+      // Cria o documento a partir do published_site
+      await userSiteRef.set({
+        ...pub,
+        restoredFromPublished: true,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+      restored++;
+      console.log(`[RESTAURADO] users/${userId}/sites/${siteId} criado a partir de published_sites/${siteId}`);
+    }
+  }
+  console.log(`[RESTAURAÇÃO] Total de sites restaurados: ${restored}`);
   let totalSites = 0, fixedPublished = 0, fixedSlugs = 0;
   // Busca todos os sites em todas as subcoleções users/*/sites
   const sitesQuery = await admin.firestore().collectionGroup('sites').get();
