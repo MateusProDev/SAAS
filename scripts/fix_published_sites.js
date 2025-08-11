@@ -18,8 +18,8 @@ async function main() {
   // --- Garantir published_sites e slugs para todos os sites em users/*/sites ---
   console.log('\n[SINCRONIZAÇÃO] Garantindo que todos os sites em users/*/sites tenham published_sites e slugs...');
   let createdPublished = 0, createdSlugs = 0;
-  const sitesQuery = await admin.firestore().collectionGroup('sites').get();
-  for (const siteDoc of sitesQuery.docs) {
+    const allSitesQuery1 = await admin.firestore().collectionGroup('sites').get();
+  for (const siteDoc of allSitesQuery1.docs) {
     const site = siteDoc.data();
     const siteId = siteDoc.id;
     const userId = siteDoc.ref.parent.parent.id;
@@ -80,12 +80,12 @@ async function main() {
   console.log(`[RESTAURAÇÃO] Total de sites restaurados: ${restored}`);
   let totalSites = 0, fixedPublished = 0, fixedSlugs = 0;
   // Busca todos os sites em todas as subcoleções users/*/sites
-  const sitesQuery = await admin.firestore().collectionGroup('sites').get();
-  console.log(`Total de sites encontrados em todas as subcoleções users/*/sites: ${sitesQuery.size}`);
-  if (sitesQuery.size === 0) {
+    const allSitesQuery2 = await admin.firestore().collectionGroup('sites').get();
+  console.log(`Total de sites encontrados em todas as subcoleções users/*/sites: ${allSitesQuery2.size}`);
+  if (allSitesQuery2.size === 0) {
     console.log('Nenhum site encontrado em nenhuma subcoleção users/*/sites.');
   }
-  for (const siteDoc of sitesQuery.docs) {
+  for (const siteDoc of allSitesQuery2.docs) {
     totalSites++;
     const site = siteDoc.data();
     const siteId = siteDoc.id;
