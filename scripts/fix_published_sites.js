@@ -15,6 +15,46 @@ if (!admin.apps.length) {
 }
 
 async function main() {
+  // --- Garantir published_sites e slugs para todos os sites em users/*/sites ---
+  console.log('\n[SINCRONIZAÇÃO] Garantindo que todos os sites em users/*/sites tenham published_sites e slugs...');
+  let createdPublished = 0, createdSlugs = 0;
+  const sitesQuery = await admin.firestore().collectionGroup('sites').get();
+  for (const siteDoc of sitesQuery.docs) {
+    const site = siteDoc.data();
+    const siteId = siteDoc.id;
+    const userId = siteDoc.ref.parent.parent.id;
+    if (!site.slug) continue;
+    // published_sites
+    const pubRef = admin.firestore().collection('published_sites').doc(siteId);
+    const pubSnap = await pubRef.get();
+    if (!pubSnap.exists) {
+      await pubRef.set({
+        siteId,
+        userId,
+        slug: site.slug,
+        name: site.name || '',
+        template: site.template || '',
+        active: typeof site.active === 'boolean' ? site.active : true,
+        published: typeof site.published === 'boolean' ? site.published : false,
+        createdAt: site.createdAt || admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: site.updatedAt || admin.firestore.FieldValue.serverTimestamp(),
+        publishedAt: site.publishedAt || null,
+        content: site.content || '',
+        views: typeof site.views === 'number' ? site.views : 0
+      }, { merge: true });
+      createdPublished++;
+      console.log(`[SINCRONIZADO] published_sites/${siteId} criado.`);
+    }
+    // slugs
+    const slugRef = admin.firestore().collection('slugs').doc(site.slug);
+    const slugSnap = await slugRef.get();
+    if (!slugSnap.exists) {
+      await slugRef.set({ userId, siteId }, { merge: true });
+      createdSlugs++;
+      console.log(`[SINCRONIZADO] slugs/${site.slug} criado.`);
+    }
+  }
+  console.log(`[SINCRONIZAÇÃO] published_sites criados: ${createdPublished}, slugs criados: ${createdSlugs}`);
   // --- Restauração automática de sites a partir de published_sites ---
   console.log('\n[RESTAURAÇÃO] Garantindo que todos os published_sites existam em users/{userId}/sites/{siteId}...');
   const pubsSnap = await admin.firestore().collection('published_sites').get();
