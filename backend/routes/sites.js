@@ -247,6 +247,7 @@ router.post('/', verifyToken, async (req, res) => {
       name,
       template,
       active: true,
+      published: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       publishedAt: null,
