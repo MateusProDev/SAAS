@@ -1255,7 +1255,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             marginBottom: '30px'
           }}>
             <div>
-              <h3 style={{ marginBottom: '15px', fontSize: '20px' }}>{site.name || site.title}</h3>
+              <h3 style={{ marginBottom: '15px', fontSize: '20px' }}>{displayName}</h3>
               <p style={{ opacity: 0.8, lineHeight: '1.6' }}>
                 {footerData.description}
               </p>
@@ -1329,7 +1329,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             paddingTop: '20px',
             opacity: 0.8
           }}>
-            © {new Date().getFullYear()} {site.name || site.title}. Todos os direitos reservados.
+            © {new Date().getFullYear()} {displayName}. Todos os direitos reservados.
           </div>
         </div>
       </footer>
