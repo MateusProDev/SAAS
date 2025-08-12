@@ -139,7 +139,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
 
   // Sempre priorizar dados do portfolioData
   const pd = site.portfolioData || {};
-  const displayName = pd.personalInfo?.name || site.name || 'Portfolio';
+  const displayName = (pd.personalInfo?.name && pd.personalInfo?.name.trim() !== '' ? pd.personalInfo?.name : (site.name || site.title || 'Portfolio'));
   const displaySubtitle = pd.personalInfo?.subtitle || 'Desenvolvedor Full Stack';
   const displayDescription = pd.about?.description || site.description || 'Desenvolvedor apaixonado por tecnologia';
   const heroDescription = pd.hero?.useStaticDescription ? pd.hero?.staticDescription : displayDescription;
