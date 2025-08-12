@@ -359,18 +359,28 @@ export function usePortfolioData(userId: string, siteId: string) {
   // Salvar dados do portfólio
   const savePortfolioData = async (newData: PortfolioData) => {
     if (!userId || !siteId) return;
-    
     try {
       const docRef = doc(db, 'users', userId, 'sites', siteId);
-      
       await updateDoc(docRef, {
         portfolioData: newData,
         updatedAt: serverTimestamp(),
-        // Atualiza também os campos básicos do site
         name: newData.personalInfo.name,
         description: newData.about.description,
       });
-      
+      // Chamada para backend garantir published_sites atualizado
+      try {
+        const token = localStorage.getItem('token') || '';
+        await fetch(`/api/sites/${siteId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({})
+        });
+      } catch (e) {
+        console.warn('Falha ao sincronizar published_sites:', e);
+      }
       setData(newData);
       return true;
     } catch (err) {
