@@ -390,29 +390,41 @@ router.get('/public/:slug', async (req, res) => {
         console.log(`[PUBLIC] Site encontrado por slug:`, siteData);
         return res.json({
           id: siteDoc.id,
-          ...siteData,
-          slug: siteData.slug,
-          content: siteData.content || ''
+          ...siteData
         });
       } else {
         console.warn(`[PUBLIC] Documento do site não encontrado para userId=${userId}, siteId=${siteId}`);
       }
     } else {
-      console.warn(`[PUBLIC] Slug não encontrado em 'slugs': ${slug}`);
-    }
-    // 2. Se não achou pelo slug, tenta buscar diretamente em published_sites pelo siteId
-    const pubDoc = await admin.firestore().collection('published_sites').doc(slug).get();
-    if (pubDoc.exists) {
-      const pubData = pubDoc.data();
-      console.log(`[PUBLIC] Site encontrado em 'published_sites':`, pubData);
-      return res.json({
-        id: pubDoc.id,
-        ...pubData,
-        slug: pubData.slug,
-        content: pubData.content || ''
-      });
-    } else {
-      console.warn(`[PUBLIC] Documento não encontrado em 'published_sites' para id: ${slug}`);
+      // 2. Se não achou pelo slug, tenta buscar diretamente em published_sites pelo siteId
+      const pubDoc = await admin.firestore().collection('published_sites').doc(slug).get();
+      if (pubDoc.exists) {
+        const pubData = pubDoc.data();
+        console.log(`[PUBLIC] Site encontrado em 'published_sites':`, pubData);
+        // Buscar o documento real do usuário, se possível
+        if (pubData.userId && pubData.siteId) {
+          const siteDoc = await admin.firestore()
+            .collection('users')
+            .doc(pubData.userId)
+            .collection('sites')
+            .doc(pubData.siteId)
+            .get();
+          if (siteDoc.exists) {
+            const siteData = siteDoc.data();
+            return res.json({
+              id: siteDoc.id,
+              ...siteData
+            });
+          }
+        }
+        // Se não achou o documento real, retorna published_sites mesmo
+        return res.json({
+          id: pubDoc.id,
+          ...pubData
+        });
+      } else {
+        console.warn(`[PUBLIC] Documento não encontrado em 'published_sites' para id: ${slug}`);
+      }
     }
     return res.status(404).json({ error: 'Site not found or not published', slug });
   } catch (error) {
