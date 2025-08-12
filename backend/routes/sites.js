@@ -14,7 +14,7 @@ const verifyToken = async (req, res, next) => {
     }
 
     const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = decodedToken;
+    req.user = decodedToken;   
     next();
   } catch (error) {
     console.error('Token verification error:', error);
