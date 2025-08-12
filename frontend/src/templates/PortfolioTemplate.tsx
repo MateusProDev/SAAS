@@ -121,34 +121,28 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('todos');
 
-  // ✅ FALLBACK FORÇADO PARA USAR DADOS CORRETOS
-  const displayName = site.name || site.personalInfo?.name || site.portfolioData?.personalInfo?.name || 'Portfolio';
-  const displaySubtitle = site.personalInfo?.subtitle || site.portfolioData?.personalInfo?.subtitle || 'Desenvolvedor Full Stack';
-  const displayDescription = site.about?.text || site.description || site.portfolioData?.about?.description || 'Desenvolvedor apaixonado por tecnologia';
-  
-  // ✅ NOVOS CAMPOS DINÂMICOS
-  const heroDescription = site.portfolioData?.hero?.useStaticDescription 
-    ? site.portfolioData?.hero?.staticDescription 
-    : displayDescription;
-  
+  // Sempre priorizar dados do portfolioData
+  const pd = site.portfolioData || {};
+  const displayName = pd.personalInfo?.name || site.name || 'Portfolio';
+  const displaySubtitle = pd.personalInfo?.subtitle || 'Desenvolvedor Full Stack';
+  const displayDescription = pd.about?.description || site.description || 'Desenvolvedor apaixonado por tecnologia';
+  const heroDescription = pd.hero?.useStaticDescription ? pd.hero?.staticDescription : displayDescription;
   const stats = {
-    projects: site.portfolioData?.stats?.projects || '50+',
-    experience: site.portfolioData?.stats?.experience || '5+',
-    satisfaction: site.portfolioData?.stats?.satisfaction || '100%'
+    projects: pd.stats?.projects || '50+',
+    experience: pd.stats?.experience || '5+',
+    satisfaction: pd.stats?.satisfaction || '100%'
   };
-  
   const footerData = {
-    description: site.portfolioData?.footer?.description || 'Desenvolvedor especializado em soluções web modernas e design inovador',
-    socialLinks: site.portfolioData?.footer?.socialLinks || {}
+    description: pd.footer?.description || 'Desenvolvedor especializado em soluções web modernas e design inovador',
+    socialLinks: pd.footer?.socialLinks || {}
   };
+  const primaryColor = pd.theme?.primaryColor || ((pd as any).settings?.primaryColor) || site.settings?.primaryColor || '#667eea';
+  const secondaryColor = pd.theme?.secondaryColor || ((pd as any).settings?.secondaryColor) || site.settings?.secondaryColor || '#764ba2';
+  const fontFamily = pd.theme?.fontFamily || ((pd as any).settings?.fontFamily) || site.settings?.fontFamily || 'Inter, sans-serif';
+  const whatsapp = pd.personalInfo?.whatsapp || site.whatsapp || '';
 
-  const primaryColor = site.settings?.primaryColor || '#667eea';
-  const secondaryColor = site.settings?.secondaryColor || '#764ba2';
-  const fontFamily = site.settings?.fontFamily || 'Inter, sans-serif';
-  const whatsapp = site.whatsapp || '';
-
-  // Usar dados reais quando existirem, senão usar dados padrão apenas para demonstração
-  const portfolio = (site.portfolio && site.portfolio.length > 0) ? site.portfolio : [
+  // Exibir apenas dados reais do usuário; se não houver, exibe exemplos para manter o visual completo
+  const exampleProjects = [
     {
       id: '1',
       title: 'E-commerce Website',
@@ -171,8 +165,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       technologies: ['Illustrator', 'Photoshop', 'Brand Strategy']
     }
   ];
-
-  const services = (site.services && site.services.length > 0) ? site.services : [
+  const exampleServices = [
     {
       id: '1',
       name: 'Desenvolvimento Web',
@@ -195,8 +188,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       icon: '💡'
     }
   ];
-
-  const testimonials = site.testimonials || [
+  const exampleTestimonials = [
     {
       id: '1',
       name: 'Carlos Mendes',
@@ -222,19 +214,11 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       company: 'DigitalFlow'
     }
   ];
-
-  const categories = ['todos', ...Array.from(new Set(portfolio.map(p => p.category)))];
-  const filteredPortfolio = selectedCategory === 'todos' 
-    ? portfolio 
-    : portfolio.filter(p => p.category === selectedCategory);
-
-  // Usar skills reais quando existirem
-  const skills = (site.about?.skills && site.about.skills.length > 0) ? site.about.skills : [
+  const exampleSkills = [
     'JavaScript', 'React', 'Node.js', 'Python', 'UI/UX Design', 
     'Figma', 'Photoshop', 'Git', 'MongoDB', 'SQL'
   ];
-
-  const experience = site.about?.experience || [
+  const exampleExperience = [
     {
       title: 'Senior Developer',
       company: 'Tech Solutions',
@@ -254,6 +238,14 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       description: 'Criação de interfaces modernas e responsivas'
     }
   ];
+
+  const portfolio = Array.isArray(pd.projects) && pd.projects.length > 0 ? pd.projects : exampleProjects;
+  const services = Array.isArray((pd as any).services) && (pd as any).services.length > 0 ? (pd as any).services : exampleServices;
+  const testimonials = Array.isArray((pd as any).testimonials) && (pd as any).testimonials.length > 0 ? (pd as any).testimonials : exampleTestimonials;
+  const categories = ['todos', ...Array.from(new Set(portfolio.map((p: {category: string}) => p.category)))];
+  const filteredPortfolio = selectedCategory === 'todos' ? portfolio : portfolio.filter((p: {category: string}) => p.category === selectedCategory);
+  const skills = Array.isArray(pd.skills?.technical) && pd.skills.technical.length > 0 ? pd.skills.technical : exampleSkills;
+  const experience = Array.isArray((pd as any).experience) && (pd as any).experience.length > 0 ? (pd as any).experience : exampleExperience;
 
   return (
     <div style={{ fontFamily, margin: 0, padding: 0, boxSizing: 'border-box' }}>
@@ -643,7 +635,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
               gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
               gap: '30px'
             }}>
-              {experience.map((exp, index) => (
+              {experience.map((exp: any, index: number) => (
                 <div key={index} style={{
                   background: 'white',
                   padding: '25px',
@@ -821,7 +813,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                       gap: '6px',
                       marginBottom: '20px'
                     }}>
-                      {project.technologies.map((tech, techIndex) => {
+                      {project.technologies.map((tech: string, techIndex: number) => {
                         const techIcons: { [key: string]: string } = {
                           'React': '⚛️',
                           'JavaScript': '🟨',
@@ -915,7 +907,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: '30px'
           }}>
-            {services.map((service, index) => (
+            {services.map((service: any, index: number) => (
               <div 
                 key={service.id}
                 className="service-card"
@@ -1038,7 +1030,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: '30px'
           }}>
-            {testimonials.map((testimonial) => (
+            {testimonials.map((testimonial: any) => (
               <div key={testimonial.id} className="testimonial-card">
                 <div style={{
                   color: '#ffc107',
