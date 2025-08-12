@@ -120,11 +120,31 @@ async function main() {
     await admin.firestore().collection('users').doc(userId).collection('sites').doc(siteId).set(updateFields, { merge: true });
 
     // published_sites
-  const pubRef = admin.firestore().collection('published_sites').doc(siteId);
-  // Copia todos os campos do site do usuário para published_sites
-  const allFields = { ...site, siteId, userId, slug };
-  await pubRef.set(allFields, { merge: true });
-  fixedPublished++;
+    const pubRef = admin.firestore().collection('published_sites').doc(siteId);
+    // Copia todos os campos do site do usuário para published_sites
+    // Garante que todos os campos essenciais de portfolioData.theme estejam presentes
+    let allFields = { ...site, siteId, userId, slug };
+    if (site.template === 'portfolio') {
+      // Defaults para theme
+      const defaultTheme = {
+        primaryColor: '#667eea',
+        secondaryColor: '#764ba2',
+        backgroundColor: '#f8f9fa',
+        textColor: '#222',
+        headingColor: '#111',
+        buttonTextColor: '#fff',
+        fontFamily: 'Inter, sans-serif',
+        layout: 'default',
+      };
+      if (!allFields.portfolioData) allFields.portfolioData = {};
+      if (!allFields.portfolioData.theme) allFields.portfolioData.theme = {};
+      allFields.portfolioData.theme = {
+        ...defaultTheme,
+        ...allFields.portfolioData.theme
+      };
+    }
+    await pubRef.set(allFields, { merge: true });
+    fixedPublished++;
 
     // slugs
     const slugRef = admin.firestore().collection('slugs').doc(slug);

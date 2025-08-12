@@ -3111,6 +3111,102 @@ export default function EditPortfolioPage({ params }: PageProps) {
                     />
                   </div>
                 </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Cor dos Títulos:</label>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input
+                      type="color"
+                      value={siteData.portfolioData.theme.headingColor}
+                      onChange={(e) => updateTheme({ headingColor: e.target.value })}
+                      style={{
+                        width: '60px',
+                        height: '40px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                      }}
+                    />
+                    <input
+                      type="text"
+                      value={siteData.portfolioData.theme.headingColor}
+                      onChange={(e) => updateTheme({ headingColor: e.target.value })}
+                      style={{
+                        flex: 1,
+                        padding: '8px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        outline: 'none',
+                        backgroundColor: '#fff',
+                        color: '#333'
+                      }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Cor do Texto:</label>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input
+                      type="color"
+                      value={siteData.portfolioData.theme.textColor}
+                      onChange={(e) => updateTheme({ textColor: e.target.value })}
+                      style={{
+                        width: '60px',
+                        height: '40px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                      }}
+                    />
+                    <input
+                      type="text"
+                      value={siteData.portfolioData.theme.textColor}
+                      onChange={(e) => updateTheme({ textColor: e.target.value })}
+                      style={{
+                        flex: 1,
+                        padding: '8px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        outline: 'none',
+                        backgroundColor: '#fff',
+                        color: '#333'
+                      }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold', color: '#555' }}>Cor do Texto dos Botões:</label>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input
+                      type="color"
+                      value={siteData.portfolioData.theme.buttonTextColor}
+                      onChange={(e) => updateTheme({ buttonTextColor: e.target.value })}
+                      style={{
+                        width: '60px',
+                        height: '40px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                      }}
+                    />
+                    <input
+                      type="text"
+                      value={siteData.portfolioData.theme.buttonTextColor}
+                      onChange={(e) => updateTheme({ buttonTextColor: e.target.value })}
+                      style={{
+                        flex: 1,
+                        padding: '8px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        outline: 'none',
+                        backgroundColor: '#fff',
+                        color: '#333'
+                      }}
+                    />
+                  </div>
+                </div>
                 <div style={{ gridColumn: '1 / -1' }}>
                   <h3 style={{ color: '#333', marginBottom: '15px' }}>Preview das Cores:</h3>
                   <div style={{

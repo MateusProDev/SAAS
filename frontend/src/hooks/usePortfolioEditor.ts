@@ -119,6 +119,8 @@ export interface PortfolioCustomization {
     secondaryColor: string;
     backgroundColor: string;
     textColor: string;
+    headingColor: string;
+    buttonTextColor: string;
     fontFamily: string;
     layout: string;
   };
@@ -272,6 +274,8 @@ export const getDefaultPortfolioCustomization = (): PortfolioCustomization => ({
     secondaryColor: '#764ba2',
     backgroundColor: '#ffffff',
     textColor: '#333333',
+    headingColor: '#111',
+    buttonTextColor: '#fff',
     fontFamily: 'Inter, sans-serif',
     layout: 'modern',
   },

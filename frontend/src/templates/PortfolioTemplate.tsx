@@ -72,6 +72,9 @@ interface PortfolioTemplateProps {
       theme?: {
         primaryColor?: string;
         secondaryColor?: string;
+        headingColor?: string;
+        textColor?: string;
+        buttonTextColor?: string;
         fontFamily?: string;
       };
     };
@@ -138,6 +141,9 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
   };
   const primaryColor = pd.theme?.primaryColor || ((pd as any).settings?.primaryColor) || site.settings?.primaryColor || '#667eea';
   const secondaryColor = pd.theme?.secondaryColor || ((pd as any).settings?.secondaryColor) || site.settings?.secondaryColor || '#764ba2';
+  const headingColor = pd.theme?.headingColor || '#111';
+  const textColor = pd.theme?.textColor || '#222';
+  const buttonTextColor = pd.theme?.buttonTextColor || '#fff';
   const fontFamily = pd.theme?.fontFamily || ((pd as any).settings?.fontFamily) || site.settings?.fontFamily || 'Inter, sans-serif';
   const whatsapp = pd.personalInfo?.whatsapp || site.whatsapp || '';
 
@@ -387,7 +393,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       {/* Hero Section */}
       <section id="home" className="hero" style={{
         background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-        color: 'white',
+        color: textColor,
         padding: '120px 20px 80px',
         textAlign: 'center',
         position: 'relative' as const,
@@ -399,7 +405,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             marginBottom: '20px',
             fontWeight: '500',
             opacity: 0.95,
-            color: '#f0f0f0'
+            color: headingColor
           }}>
             {displaySubtitle}
           </h2>
@@ -408,7 +414,8 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             marginBottom: '30px',
             opacity: 0.9,
             maxWidth: '600px',
-            margin: '0 auto 30px'
+            margin: '0 auto 30px',
+            color: textColor
           }}>
             {heroDescription}
           </p>
@@ -420,7 +427,8 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                 style={{
                   fontSize: '18px',
                   padding: '15px 30px',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
+                  color: buttonTextColor
                 }}
               >
                 Conversar
@@ -433,8 +441,8 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                 padding: '15px 30px',
                 borderRadius: '8px',
                 background: 'transparent',
-                color: 'white',
-                border: '2px solid white',
+                color: buttonTextColor,
+                border: `2px solid ${buttonTextColor}`,
                 textDecoration: 'none',
                 fontWeight: 'bold',
                 transition: 'all 0.3s'
@@ -446,7 +454,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
   </section>
 
       {/* About Section */}
-      <section id="about" className="section" style={{ background: '#f8f9fa' }}>
+  <section id="about" className="section" style={{ background: '#f8f9fa', color: textColor }}>
         <div className="container">
           <div className="grid-2" style={{
             display: 'grid',
@@ -458,7 +466,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
               <h2 style={{
                 fontSize: '36px',
                 marginBottom: '20px',
-                color: primaryColor,
+                color: headingColor,
                 fontWeight: 'bold'
               }}>
                 Sobre Mim
@@ -466,7 +474,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
               <p style={{
                 fontSize: '16px',
                 lineHeight: '1.8',
-                color: '#666',
+                color: textColor,
                 marginBottom: '30px'
               }}>
                 {displayDescription}
