@@ -3,6 +3,7 @@
 
 
 import React, { useState, useEffect } from "react";
+import { fetchPublicSiteBySlug } from '../../../src/utils/fetchPublicSite';
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { BarbeariaTemplate } from "../../../src/templates/BarbeariaTemplate";
@@ -18,17 +19,12 @@ export default function SiteDetailPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
 
-  // Busca userId via API published_sites (apenas uma vez)
+  // Busca userId via API published_sites (apenas uma vez, usando SLUG)
   useEffect(() => {
     if (!id) return;
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/sites/public/${id}`)
-      .then(async (res) => {
-        if (res.ok) {
-          const data = await res.json();
-          setUserId(data.userId);
-        } else {
-          setNotFound(true);
-        }
+    fetchPublicSiteBySlug(id as string)
+      .then((data) => {
+        setUserId(data.userId);
       })
       .catch(() => setNotFound(true));
   }, [id]);

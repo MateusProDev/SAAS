@@ -1,6 +1,9 @@
 // Script para garantir que todos os sites publicados tenham published_sites e slugs corretos
 // Rode manualmente: node scripts/fix_published_sites.js
 
+// Script para garantir que todos os sites publicados tenham published_sites e slugs corretos
+// Rode manualmente: node scripts/fix_published_sites.js
+
 
 const admin = require('firebase-admin');
 const serviceAccount = require('../serviceAccountKey.json');
