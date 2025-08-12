@@ -90,6 +90,11 @@ export default function SiteDetailPage() {
   if (site!.template === "agencia") {
     return <AgenciaViagemTemplate site={site!} />;
   }
+  if (site!.template === "portfolio") {
+    // Renderiza o portfólio completo com todos os campos
+    const { PortfolioTemplate } = require("../../../src/templates/PortfolioTemplate");
+    return <PortfolioTemplate site={site!} />;
+  }
   // Fallback: renderização responsiva premium
   const contact = site!.customization?.contact || {};
   const services = (site!.customization as any)?.services || [];

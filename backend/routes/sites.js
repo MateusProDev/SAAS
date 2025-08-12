@@ -243,8 +243,30 @@ router.post('/', verifyToken, async (req, res) => {
     // Espelhar todos os campos do documento do usuário
     const userSiteDoc = await admin.firestore().collection('users').doc(req.user.uid).collection('sites').doc(siteRef.id).get();
     if (userSiteDoc.exists) {
+      const userData = userSiteDoc.data();
+      let portfolioFields = {};
+      if (userData.template === 'portfolio') {
+        // Copia todos os campos essenciais do template portfolio
+        portfolioFields = {
+          about: userData.about || {},
+          certifications: userData.certifications || [],
+          education: userData.education || [],
+          experience: userData.experience || [],
+          personalInfo: userData.personalInfo || {},
+          portfolio: userData.portfolio || [],
+          projects: userData.projects || [],
+          services: userData.services || [],
+          settings: userData.settings || {},
+          skills: userData.skills || {},
+          technologies: userData.technologies || [],
+          testimonials: userData.testimonials || [],
+          theme: userData.theme || {},
+          seo: userData.seo || {},
+        };
+      }
       await admin.firestore().collection('published_sites').doc(siteRef.id).set({
-        ...userSiteDoc.data(),
+        ...userData,
+        ...portfolioFields,
         siteId: siteRef.id,
         userId: req.user.uid,
         slug,

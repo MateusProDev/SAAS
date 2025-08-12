@@ -120,19 +120,11 @@ async function main() {
     await admin.firestore().collection('users').doc(userId).collection('sites').doc(siteId).set(updateFields, { merge: true });
 
     // published_sites
-    const pubRef = admin.firestore().collection('published_sites').doc(siteId);
-    await pubRef.set({
-      siteId,
-      userId,
-      slug,
-      name: updateFields.name,
-      template: updateFields.template,
-      content: site.content || '',
-      publishedAt: site.publishedAt || null,
-      active: updateFields.active,
-      views: updateFields.views
-    }, { merge: true });
-    fixedPublished++;
+  const pubRef = admin.firestore().collection('published_sites').doc(siteId);
+  // Copia todos os campos do site do usuário para published_sites
+  const allFields = { ...site, siteId, userId, slug };
+  await pubRef.set(allFields, { merge: true });
+  fixedPublished++;
 
     // slugs
     const slugRef = admin.firestore().collection('slugs').doc(slug);
