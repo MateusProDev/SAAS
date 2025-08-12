@@ -1,3 +1,16 @@
+// Função utilitária para determinar se uma cor é clara ou escura
+function isColorDark(hex: string) {
+  if (!hex) return false;
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  if (c.length !== 6) return false;
+  const r = parseInt(c.substr(0,2),16);
+  const g = parseInt(c.substr(2,2),16);
+  const b = parseInt(c.substr(4,2),16);
+  // Perceptual luminance
+  const luminance = (0.299*r + 0.587*g + 0.114*b) / 255;
+  return luminance < 0.5;
+}
 import React, { useState } from 'react';
 import { 
   FaFacebook, 
@@ -146,6 +159,9 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
   const buttonTextColor = pd.theme?.buttonTextColor || '#fff';
   const fontFamily = pd.theme?.fontFamily || ((pd as any).settings?.fontFamily) || site.settings?.fontFamily || 'Inter, sans-serif';
   const whatsapp = pd.personalInfo?.whatsapp || site.whatsapp || '';
+
+  // Contraste automático para blocos
+  const autoTextOn = (bg: string, fallback: string = '#222') => isColorDark(bg) ? '#fff' : '#111';
 
   // Exibir apenas dados reais do usuário; se não houver, exibe exemplos para manter o visual completo
   const exampleProjects = [
@@ -393,7 +409,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       {/* Hero Section */}
       <section id="home" className="hero" style={{
         background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-        color: textColor,
+        color: autoTextOn(primaryColor),
         padding: '120px 20px 80px',
         textAlign: 'center',
         position: 'relative' as const,
@@ -405,7 +421,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             marginBottom: '20px',
             fontWeight: '500',
             opacity: 0.95,
-            color: headingColor
+            color: autoTextOn(primaryColor)
           }}>
             {displaySubtitle}
           </h2>
@@ -415,7 +431,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             opacity: 0.9,
             maxWidth: '600px',
             margin: '0 auto 30px',
-            color: textColor
+            color: autoTextOn(primaryColor)
           }}>
             {heroDescription}
           </p>
@@ -454,7 +470,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
   </section>
 
       {/* About Section */}
-  <section id="about" className="section" style={{ background: '#f8f9fa', color: textColor }}>
+  <section id="about" className="section" style={{ background: '#f8f9fa', color: autoTextOn('#f8f9fa') }}>
         <div className="container">
           <div className="grid-2" style={{
             display: 'grid',
@@ -466,7 +482,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
               <h2 style={{
                 fontSize: '36px',
                 marginBottom: '20px',
-                color: headingColor,
+                color: autoTextOn('#f8f9fa'),
                 fontWeight: 'bold'
               }}>
                 Sobre Mim
@@ -474,7 +490,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
               <p style={{
                 fontSize: '16px',
                 lineHeight: '1.8',
-                color: textColor,
+                color: autoTextOn('#f8f9fa'),
                 marginBottom: '30px'
               }}>
                 {displayDescription}
@@ -669,7 +685,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       </section>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="section">
+  <section id="portfolio" className="section" style={{ background: 'white', color: autoTextOn('white') }}>
         <div className="container">
           <h2 style={{
             fontSize: '36px',
@@ -872,7 +888,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="section" style={{ background: '#f8f9fa' }}>
+  <section id="services" className="section" style={{ background: '#f8f9fa', color: autoTextOn('#f8f9fa') }}>
         <div className="container">
           <h2 style={{
             fontSize: '36px',
@@ -995,7 +1011,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="section">
+  <section id="testimonials" className="section" style={{ background: 'white', color: autoTextOn('white') }}>
         <div className="container">
           <h2 style={{
             fontSize: '36px',
@@ -1059,7 +1075,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="section" style={{ background: '#f8f9fa' }}>
+  <section id="contact" className="section" style={{ background: '#f8f9fa', color: autoTextOn('#f8f9fa') }}>
         <div className="container">
           <h2 style={{
             fontSize: '36px',
