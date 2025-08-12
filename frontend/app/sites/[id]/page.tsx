@@ -11,7 +11,7 @@ import { ComercialTemplate } from "../../../src/templates/ComercialTemplate";
 import { AgenciaViagemTemplate } from "../../../src/templates/AgenciaViagemTemplate";
 import { PortfolioTemplate } from "../../../src/templates/PortfolioTemplate";
 import { useSiteEditor } from "../../../src/hooks/useSiteEditor";
-import styles from './site-detail.module.css';
+import styles from './site-detail.module.css'; 
 
 export default function SiteDetailPage() {
   const { id } = useParams();
