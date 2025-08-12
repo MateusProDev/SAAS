@@ -240,20 +240,18 @@ router.post('/', verifyToken, async (req, res) => {
     });
 
     // Criar/atualizar documento em published_sites para lookup rápido por slug
-    await admin.firestore().collection('published_sites').doc(siteRef.id).set({
-      siteId: siteRef.id,
-      userId: req.user.uid,
-      slug,
-      name,
-      template,
-      active: true,
-      published: false,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      publishedAt: null,
-      content: templateContent,
-      views: 0
-    }, { merge: true });
+    // Espelhar todos os campos do documento do usuário
+    const userSiteDoc = await admin.firestore().collection('users').doc(req.user.uid).collection('sites').doc(siteRef.id).get();
+    if (userSiteDoc.exists) {
+      await admin.firestore().collection('published_sites').doc(siteRef.id).set({
+        ...userSiteDoc.data(),
+        siteId: siteRef.id,
+        userId: req.user.uid,
+        slug,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        publishedAt: null,
+      }, { merge: true });
+    }
 
     console.log('✅ [DEBUG] Site criado no Firestore:', { id: siteRef.id, ...siteData, siteId: siteRef.id });
     console.log('✅ [DEBUG] Slug registrado na coleção auxiliar:', { slug, userId: req.user.uid, siteId: siteRef.id });
@@ -310,16 +308,12 @@ router.put('/:siteId', verifyToken, async (req, res) => {
     if (siteDoc.exists) {
       const data = siteDoc.data();
       await admin.firestore().collection('published_sites').doc(req.params.siteId).set({
+        ...data,
         siteId: req.params.siteId,
         userId: req.user.uid,
         slug: data.slug,
-        name: data.name,
-        template: data.template,
-        active: data.active,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         publishedAt: data.publishedAt || null,
-        content: data.content || '',
-        views: data.views || 0
       }, { merge: true });
     }
 
@@ -472,14 +466,12 @@ router.post('/:siteId/publish', verifyToken, async (req, res) => {
       .collection('published_sites')
       .doc(req.params.siteId)
       .set({
+        ...siteData,
         siteId: req.params.siteId,
         userId: req.user.uid,
         slug: siteData.slug,
-        name: siteData.name || siteData.title || '',
-        content,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         publishedAt: admin.firestore.FieldValue.serverTimestamp(),
-        active: true,
-        views: 0
       }, { merge: true });
 
     res.json({ message: 'Site published successfully', slug: siteData.slug });
