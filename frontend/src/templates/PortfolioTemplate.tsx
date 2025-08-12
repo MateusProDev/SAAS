@@ -393,24 +393,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
         position: 'relative' as const,
         overflow: 'hidden'
       }}>
-        <div style={{
-          position: 'absolute' as const,
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover`,
-          opacity: 0.1
-        }}></div>
-        <div className="container" style={{ position: 'relative' as const, zIndex: 1 }}>
-          <h1 style={{
-            fontSize: '48px',
-            marginBottom: '20px',
-            fontWeight: 'bold',
-            lineHeight: '1.2'
-          }}>
-            {displayName}
-          </h1>
+          {/* Removido o nome principal (displayName) da hero */}
           <h2 style={{
             fontSize: '24px',
             marginBottom: '20px',
@@ -460,8 +443,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
               Ver Portfólio
             </a>
           </div>
-        </div>
-      </section>
+  </section>
 
       {/* About Section */}
       <section id="about" className="section" style={{ background: '#f8f9fa' }}>
