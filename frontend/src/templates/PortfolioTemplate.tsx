@@ -424,46 +424,35 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           </div>
           
           <div className="hamburger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <div style={{
-              width: 40,
-              height: 40,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              position: 'relative',
-              margin: '0 auto'
-            }}>
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect y="7" width="32" height="4" rx="2" fill={isMenuOpen ? secondaryColor : 'white'} style={{ transition: 'all 0.3s' }}/>
-                <rect y="14" width="32" height="4" rx="2" fill={isMenuOpen ? secondaryColor : 'white'} style={{ transition: 'all 0.3s', transform: isMenuOpen ? 'rotate(45deg) translate(6px, -6px)' : 'none' }}/>
-                <rect y="21" width="32" height="4" rx="2" fill={isMenuOpen ? secondaryColor : 'white'} style={{ transition: 'all 0.3s', opacity: isMenuOpen ? 0 : 1 }}/>
-              </svg>
-            </div>
+            <div></div>
+            <div></div>
+            <div></div>
           </div>
 
           <div className="nav-menu" style={{
             listStyle: 'none',
             gap: '30px',
-            alignItems: 'center'
+            alignItems: 'left',
+            flexDirection: isMenuOpen ? 'column' : 'row',
+            padding: isMenuOpen ? '32px 0 0 0' : '0'
           }}>
             <a href="#home" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span role="img" aria-label="Início">🏠</span> Início
+              🏠 Início
             </a>
             <a href="#about" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span role="img" aria-label="Sobre">👤</span> Sobre
+              👤 Sobre
             </a>
             <a href="#portfolio" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span role="img" aria-label="Portfólio">💼</span> Portfólio
+              💼 Portfólio
             </a>
             <a href="#services" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span role="img" aria-label="Serviços">🛠️</span> Serviços
+              🛠️ Serviços
             </a>
             <a href="#testimonials" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span role="img" aria-label="Depoimentos">⭐</span> Depoimentos
+              ⭐ Depoimentos
             </a>
             <a href="#contact" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span role="img" aria-label="Contato">✉️</span> Contato
+              ✉️ Contato
             </a>
             {whatsapp && (
               <a 
@@ -471,8 +460,53 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                 className="btn-primary"
                 style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}
               >
-                <span role="img" aria-label="WhatsApp">💬</span> Contratar
+                💬 Contratar
               </a>
+            )}
+            {/* Ícones das redes sociais no menu mobile */}
+            {isMenuOpen && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '18px', marginTop: '32px', flexWrap: 'wrap' }}>
+                {footerData.socialLinks.facebook && (
+                  <a href={footerData.socialLinks.facebook} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                    <FaFacebook />
+                  </a>
+                )}
+                {footerData.socialLinks.twitter && (
+                  <a href={footerData.socialLinks.twitter} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                    <FaTwitter />
+                  </a>
+                )}
+                {footerData.socialLinks.instagram && (
+                  <a href={footerData.socialLinks.instagram} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                    <FaInstagram />
+                  </a>
+                )}
+                {footerData.socialLinks.linkedin && (
+                  <a href={footerData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                    <FaLinkedin />
+                  </a>
+                )}
+                {footerData.socialLinks.github && (
+                  <a href={footerData.socialLinks.github} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                    <FaGithub />
+                  </a>
+                )}
+                {footerData.socialLinks.youtube && (
+                  <a href={footerData.socialLinks.youtube} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                    <FaYoutube />
+                  </a>
+                )}
+                {footerData.socialLinks.tiktok && (
+                  <a href={footerData.socialLinks.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                    <FaTiktok />
+                  </a>
+                )}
+                {footerData.socialLinks.whatsapp && (
+                  <a href={`https://wa.me/${footerData.socialLinks.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                    <FaWhatsapp />
+                  </a>
+                )}
+              </div>
             )}
           </div>
         </div>
