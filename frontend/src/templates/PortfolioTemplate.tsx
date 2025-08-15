@@ -270,12 +270,18 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
   const experience = Array.isArray((pd as any).experience) && (pd as any).experience.length > 0 ? (pd as any).experience : exampleExperience;
 
   return (
-    <div style={{ fontFamily, margin: 0, padding: 0, boxSizing: 'border-box' }}>
+    <div style={{ fontFamily, margin: 0, padding: 0, boxSizing: 'border-box', background: 'linear-gradient(120deg, #f8f9fa 0%, #e9eafc 100%)' }}>
       <style>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: linear-gradient(120deg, #f8f9fa 0%, #e9eafc 100%); }
         .hamburger { display: none; flex-direction: column; cursor: pointer; }
-        .hamburger div { width: 25px; height: 3px; background: white; margin: 3px 0; transition: 0.3s; }
-        .nav-menu { display: flex; }
+        .hamburger div { width: 28px; height: 4px; background: white; margin: 4px 0; border-radius: 2px; transition: 0.3s; }
+        .nav-menu { display: flex; gap: 36px; }
+        .nav-menu a { font-size: 17px; letter-spacing: 0.5px; }
+        @media (max-width: 900px) {
+          .container { padding: 0 10px; }
+          .nav-menu { gap: 18px; }
+        }
         @media (max-width: 768px) {
           .hamburger { display: flex; }
           .nav-menu { 
@@ -287,68 +293,102 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             width: 100%; 
             background: ${primaryColor}; 
             z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
           }
           .nav-menu a { 
-            padding: 15px 20px; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding: 18px 24px; 
+            border-bottom: 1px solid rgba(255,255,255,0.08); 
+            font-size: 18px;
           }
-          .container { padding: 0 15px; }
+          .container { padding: 0 10px; }
           .grid-2 { grid-template-columns: 1fr !important; }
           .hero h1 { font-size: 32px !important; }
           .portfolio-grid { grid-template-columns: 1fr !important; }
           .skills-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
-        .portfolio-card:hover, .service-card:hover { transform: translateY(-5px); }
+        .portfolio-card {
+          background: white;
+          border-radius: 18px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+          padding: 32px 28px;
+          margin-bottom: 24px;
+          transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .portfolio-card:hover {
+          box-shadow: 0 16px 48px rgba(0,0,0,0.16);
+          transform: translateY(-6px) scale(1.03);
+        }
+        .service-card {
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+          padding: 28px 22px;
+          margin-bottom: 18px;
+          transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .service-card:hover {
+          box-shadow: 0 12px 32px rgba(0,0,0,0.13);
+          transform: translateY(-4px) scale(1.02);
+        }
         .btn-primary { 
-          background: ${primaryColor}; 
+          background: linear-gradient(90deg, ${primaryColor} 60%, ${secondaryColor} 100%); 
           color: white; 
           border: none; 
-          padding: 12px 24px; 
-          border-radius: 6px; 
+          padding: 14px 32px; 
+          border-radius: 8px; 
           cursor: pointer; 
-          font-weight: bold;
+          font-weight: 600;
+          font-size: 18px;
+          letter-spacing: 0.5px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.07);
           transition: all 0.3s;
           text-decoration: none;
           display: inline-block;
         }
         .btn-primary:hover { 
-          background: ${secondaryColor}; 
-          transform: translateY(-2px);
+          background: linear-gradient(90deg, ${secondaryColor} 60%, ${primaryColor} 100%); 
+          transform: translateY(-2px) scale(1.04);
+          box-shadow: 0 6px 18px rgba(0,0,0,0.10);
         }
         .btn-category {
           background: white;
           border: 2px solid ${primaryColor};
           color: ${primaryColor};
-          padding: 8px 16px;
+          padding: 10px 22px;
           border-radius: 25px;
           cursor: pointer;
           transition: all 0.3s;
-          font-weight: 500;
+          font-weight: 600;
+          font-size: 16px;
         }
         .btn-category.active, .btn-category:hover {
           background: ${primaryColor};
           color: white;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.07);
         }
-        .section { padding: 80px 20px; }
+        .section { padding: 90px 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
         .testimonial-card {
           background: white;
-          padding: 30px;
-          border-radius: 12px;
-          box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+          padding: 36px 28px;
+          border-radius: 16px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.10);
           text-align: center;
-          transition: transform 0.3s;
+          transition: box-shadow 0.3s, transform 0.3s;
         }
-        .testimonial-card:hover { transform: translateY(-5px); }
+        .testimonial-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.16); transform: translateY(-6px) scale(1.03); }
         .skill-tag {
-          background: ${primaryColor}20;
+          background: ${primaryColor}22;
           color: ${primaryColor};
-          padding: 8px 16px;
-          border-radius: 20px;
-          font-size: 14px;
-          font-weight: 500;
-          display: inline-block;
-          margin: 4px;
+          padding: 10px 18px;
+          border-radius: 22px;
+          font-size: 15px;
+          font-weight: 600;
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          margin: 6px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
       `}</style>
 
