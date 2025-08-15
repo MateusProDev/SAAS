@@ -477,44 +477,56 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             )}
             {/* Ícones das redes sociais no menu mobile */}
             {isMenuOpen && (
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '18px', marginTop: '32px', flexWrap: 'wrap' }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '28px',
+                marginTop: '32px',
+                marginBottom: '24px',
+                flexWrap: 'wrap',
+                padding: '12px 0',
+                width: '100vw',
+                boxSizing: 'border-box',
+                background: 'transparent'
+              }}>
                 {footerData.socialLinks.facebook && (
-                  <a href={footerData.socialLinks.facebook} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                  <a href={footerData.socialLinks.facebook} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '32px', opacity: 1, transition: 'opacity 0.3s', padding: '6px' }}>
                     <FaFacebook />
                   </a>
                 )}
                 {footerData.socialLinks.twitter && (
-                  <a href={footerData.socialLinks.twitter} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                  <a href={footerData.socialLinks.twitter} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '32px', opacity: 1, transition: 'opacity 0.3s', padding: '6px' }}>
                     <FaTwitter />
                   </a>
                 )}
                 {footerData.socialLinks.instagram && (
-                  <a href={footerData.socialLinks.instagram} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                  <a href={footerData.socialLinks.instagram} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '32px', opacity: 1, transition: 'opacity 0.3s', padding: '6px' }}>
                     <FaInstagram />
                   </a>
                 )}
                 {footerData.socialLinks.linkedin && (
-                  <a href={footerData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                  <a href={footerData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '32px', opacity: 1, transition: 'opacity 0.3s', padding: '6px' }}>
                     <FaLinkedin />
                   </a>
                 )}
                 {footerData.socialLinks.github && (
-                  <a href={footerData.socialLinks.github} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                  <a href={footerData.socialLinks.github} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '32px', opacity: 1, transition: 'opacity 0.3s', padding: '6px' }}>
                     <FaGithub />
                   </a>
                 )}
                 {footerData.socialLinks.youtube && (
-                  <a href={footerData.socialLinks.youtube} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                  <a href={footerData.socialLinks.youtube} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '32px', opacity: 1, transition: 'opacity 0.3s', padding: '6px' }}>
                     <FaYoutube />
                   </a>
                 )}
                 {footerData.socialLinks.tiktok && (
-                  <a href={footerData.socialLinks.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                  <a href={footerData.socialLinks.tiktok} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '32px', opacity: 1, transition: 'opacity 0.3s', padding: '6px' }}>
                     <FaTiktok />
                   </a>
                 )}
                 {footerData.socialLinks.whatsapp && (
-                  <a href={`https://wa.me/${footerData.socialLinks.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '24px', opacity: 0.9 }}>
+                  <a href={`https://wa.me/${footerData.socialLinks.whatsapp}`} target="_blank" rel="noopener noreferrer" style={{ color: 'white', fontSize: '32px', opacity: 1, transition: 'opacity 0.3s', padding: '6px' }}>
                     <FaWhatsapp />
                   </a>
                 )}
