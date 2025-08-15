@@ -515,6 +515,16 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             </a>
           </div>
   </section>
+      {/* Work Together Section */}
+      <section id="work-together" className="section" style={{ background: '#fff', color: '#222', padding: '60px 0', textAlign: 'center' }}>
+        <div className="container">
+          <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 18 }}>Vamos Trabalhar Juntos</h2>
+          <p style={{ fontSize: 20, marginBottom: 32, maxWidth: 600, margin: '0 auto' }}>
+            Se você busca parceria, colaboração ou deseja contratar meus serviços, estou disponível para novos projetos e desafios.<br/>
+            Entre em contato e vamos transformar ideias em realidade!
+          </p>
+        </div>
+      </section>
 
       {/* About Section */}
   <section id="about" className="section" style={{ background: '#f8f9fa', color: autoTextOn('#f8f9fa') }}>
@@ -1267,11 +1277,11 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
               <div style={{ position: 'relative' as const, zIndex: 1 }}>
                 <div style={{ fontSize: '48px', marginBottom: '20px' }}>🚀</div>
                 <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '15px' }}>
-                  Pronto para começar?
+                  Bem-vindo ao meu portfólio!
                 </div>
                 <div style={{ opacity: 0.9 }}>
-                  Vamos transformar sua ideia em realidade!<br/>
-                  Entre em contato e vamos conversar sobre seu projeto.
+                  Aqui você encontra minha trajetória, conquistas e projetos.<br/>
+                  Fique à vontade para conhecer meu trabalho e entrar em contato.
                 </div>
               </div>
             </div>
