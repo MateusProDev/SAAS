@@ -424,9 +424,22 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           </div>
           
           <div className="hamburger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div style={{
+              width: 40,
+              height: 40,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              position: 'relative',
+              margin: '0 auto'
+            }}>
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect y="7" width="32" height="4" rx="2" fill={isMenuOpen ? secondaryColor : 'white'} style={{ transition: 'all 0.3s' }}/>
+                <rect y="14" width="32" height="4" rx="2" fill={isMenuOpen ? secondaryColor : 'white'} style={{ transition: 'all 0.3s', transform: isMenuOpen ? 'rotate(45deg) translate(6px, -6px)' : 'none' }}/>
+                <rect y="21" width="32" height="4" rx="2" fill={isMenuOpen ? secondaryColor : 'white'} style={{ transition: 'all 0.3s', opacity: isMenuOpen ? 0 : 1 }}/>
+              </svg>
+            </div>
           </div>
 
           <div className="nav-menu" style={{
@@ -434,19 +447,31 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             gap: '30px',
             alignItems: 'center'
           }}>
-            <a href="#home" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Início</a>
-            <a href="#about" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Sobre</a>
-            <a href="#portfolio" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Portfólio</a>
-            <a href="#services" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Serviços</a>
-            <a href="#testimonials" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Depoimentos</a>
-            <a href="#contact" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Contato</a>
+            <a href="#home" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span role="img" aria-label="Início">🏠</span> Início
+            </a>
+            <a href="#about" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span role="img" aria-label="Sobre">👤</span> Sobre
+            </a>
+            <a href="#portfolio" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span role="img" aria-label="Portfólio">💼</span> Portfólio
+            </a>
+            <a href="#services" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span role="img" aria-label="Serviços">🛠️</span> Serviços
+            </a>
+            <a href="#testimonials" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span role="img" aria-label="Depoimentos">⭐</span> Depoimentos
+            </a>
+            <a href="#contact" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span role="img" aria-label="Contato">✉️</span> Contato
+            </a>
             {whatsapp && (
               <a 
                 href={`https://wa.me/${whatsapp}`} 
                 className="btn-primary"
-                style={{ textDecoration: 'none' }}
+                style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}
               >
-                Contratar
+                <span role="img" aria-label="WhatsApp">💬</span> Contratar
               </a>
             )}
           </div>
