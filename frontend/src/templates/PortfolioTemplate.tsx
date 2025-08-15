@@ -515,16 +515,6 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             </a>
           </div>
   </section>
-      {/* Work Together Section */}
-      <section id="work-together" className="section" style={{ background: '#fff', color: '#222', padding: '60px 0', textAlign: 'center' }}>
-        <div className="container">
-          <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 18 }}>Vamos Trabalhar Juntos</h2>
-          <p style={{ fontSize: 20, marginBottom: 32, maxWidth: 600, margin: '0 auto' }}>
-            Se você busca parceria, colaboração ou deseja contratar meus serviços, estou disponível para novos projetos e desafios.<br/>
-            Entre em contato e vamos transformar ideias em realidade!
-          </p>
-        </div>
-      </section>
 
       {/* About Section */}
   <section id="about" className="section" style={{ background: '#f8f9fa', color: autoTextOn('#f8f9fa') }}>
@@ -1134,7 +1124,25 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       {/* Contact Section */}
   <section id="contact" className="section" style={{ background: '#f8f9fa', color: autoTextOn('#f8f9fa') }}>
         <div className="container">
-          {/* Removido 'Vamos Trabalhar Juntos?' e mantido bloco motivacional */}
+          {/* Vamos Trabalhar Juntos - chamada principal */}
+          <div style={{
+            background: '#fff',
+            borderRadius: '15px',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.04)',
+            margin: '0 0 40px 0',
+            padding: '32px',
+            maxWidth: '600px',
+            textAlign: 'center',
+            color: '#222',
+            fontSize: '20px',
+            fontWeight: 500,
+            marginLeft: 'auto',
+            marginRight: 'auto'
+          }}>
+            <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 18 }}>Vamos Trabalhar Juntos</h3>
+            Se você busca parceria, colaboração ou deseja contratar meus serviços, estou disponível para novos projetos e desafios.<br/>
+            Entre em contato e vamos transformar ideias em realidade!
+          </div>
           
           <div className="grid-2" style={{
             display: 'grid',
