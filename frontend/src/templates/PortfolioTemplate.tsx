@@ -279,7 +279,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
         .nav-menu { display: flex; gap: 36px; }
         .nav-menu a { font-size: 17px; letter-spacing: 0.5px; }
         @media (max-width: 900px) {
-          .container { padding: 0 10px; }
+          .container { padding: 0 18px; }
           .nav-menu { gap: 18px; }
         }
         @media (max-width: 768px) {
@@ -290,7 +290,8 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             position: absolute; 
             top: 100%; 
             left: 0; 
-            width: 100%; 
+            width: 100vw; 
+            min-width: 0;
             background: ${primaryColor}; 
             z-index: 1000;
             box-shadow: 0 8px 32px rgba(0,0,0,0.08);
@@ -300,7 +301,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             border-bottom: 1px solid rgba(255,255,255,0.08); 
             font-size: 18px;
           }
-          .container { padding: 0 10px; }
+          .container { padding: 0 8px; }
           .grid-2 { grid-template-columns: 1fr !important; }
           .hero h1 { font-size: 32px !important; }
           .portfolio-grid { grid-template-columns: 1fr !important; }
@@ -313,6 +314,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           padding: 32px 28px;
           margin-bottom: 24px;
           transition: box-shadow 0.3s, transform 0.3s;
+          min-width: 0;
         }
         .portfolio-card:hover {
           box-shadow: 0 16px 48px rgba(0,0,0,0.16);
@@ -325,6 +327,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           padding: 28px 22px;
           margin-bottom: 18px;
           transition: box-shadow 0.3s, transform 0.3s;
+          min-width: 0;
         }
         .service-card:hover {
           box-shadow: 0 12px 32px rgba(0,0,0,0.13);
@@ -360,6 +363,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           transition: all 0.3s;
           font-weight: 600;
           font-size: 16px;
+          margin-bottom: 8px;
         }
         .btn-category.active, .btn-category:hover {
           background: ${primaryColor};
@@ -367,7 +371,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           box-shadow: 0 2px 8px rgba(0,0,0,0.07);
         }
         .section { padding: 90px 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; padding-left: 12px; padding-right: 12px; }
         .testimonial-card {
           background: white;
           padding: 36px 28px;
@@ -375,6 +379,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           box-shadow: 0 8px 32px rgba(0,0,0,0.10);
           text-align: center;
           transition: box-shadow 0.3s, transform 0.3s;
+          min-width: 0;
         }
         .testimonial-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.16); transform: translateY(-6px) scale(1.03); }
         .skill-tag {
@@ -389,7 +394,9 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
           gap: 7px;
           margin: 6px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+          min-width: 0;
         }
+        .grid-2 { min-width: 0; }
       `}</style>
 
       {/* Navbar */}
