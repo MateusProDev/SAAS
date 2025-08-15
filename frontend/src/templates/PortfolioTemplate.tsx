@@ -297,17 +297,23 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             top: 100%; 
             left: 0; 
             width: 100vw; 
+            max-width: 100vw;
             min-width: 0;
             background: ${primaryColor}; 
             z-index: 1000;
             box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            overflow-x: hidden;
+            padding-left: 0;
+            padding-right: 0;
           }
           .nav-menu a { 
             padding: 18px 24px; 
             border-bottom: 1px solid rgba(255,255,255,0.08); 
             font-size: 18px;
+            width: 100vw;
+            box-sizing: border-box;
           }
-          .container { padding: 0 8px; }
+          .container { padding: 0 0px; }
           .grid-2 { grid-template-columns: 1fr !important; }
           .hero h1 { font-size: 32px !important; }
           .portfolio-grid { grid-template-columns: 1fr !important; }
