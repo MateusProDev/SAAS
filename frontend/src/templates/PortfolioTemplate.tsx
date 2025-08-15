@@ -1131,17 +1131,28 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             boxShadow: '0 4px 24px rgba(0,0,0,0.04)',
             margin: '0 0 40px 0',
             padding: '32px',
-            maxWidth: '600px',
+            maxWidth: '700px',
             textAlign: 'center',
-            color: '#222',
-            fontSize: '20px',
-            fontWeight: 500,
+            color: textColor,
             marginLeft: 'auto',
             marginRight: 'auto'
           }}>
-            <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 18 }}>Vamos Trabalhar Juntos</h3>
-            Se você busca parceria, colaboração ou deseja contratar meus serviços, estou disponível para novos projetos e desafios.<br/>
-            Entre em contato e vamos transformar ideias em realidade!
+            <h2 style={{
+              fontSize: '36px',
+              textAlign: 'center',
+              marginBottom: '20px',
+              color: primaryColor,
+              fontWeight: 'bold'
+            }}>Vamos Trabalhar Juntos</h2>
+            <p style={{
+              fontSize: '18px',
+              color: '#666',
+              marginBottom: '10px',
+              lineHeight: '1.7'
+            }}>
+              Se você busca parceria, colaboração ou deseja contratar meus serviços, estou disponível para novos projetos e desafios.<br/>
+              Entre em contato e vamos transformar ideias em realidade!
+            </p>
           </div>
           
           <div className="grid-2" style={{
