@@ -55,7 +55,29 @@ export default function SiteDetailPage() {
   if (loading || !userId) {
     return (
       <div className={styles['site-detail-loading']}>
-        ⏳ Carregando site...
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '18px'
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            border: '6px solid #e0e7ff',
+            borderTop: '6px solid #667eea',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }} />
+          <span style={{ fontSize: '1.1rem', color: '#667eea', fontWeight: 500 }}>Carregando...</span>
+        </div>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
     );
   }
