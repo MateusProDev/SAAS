@@ -20,7 +20,13 @@ import {
   FaGithub, 
   FaYoutube, 
   FaTiktok, 
-  FaWhatsapp 
+  FaWhatsapp,
+  FaHome,
+  FaUser,
+  FaBriefcase,
+  FaTools,
+  FaStar,
+  FaEnvelope
 } from 'react-icons/fa';
 
 interface PortfolioTemplateProps {
@@ -437,22 +443,22 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
             padding: isMenuOpen ? '32px 0 0 0' : '0'
           }}>
             <a href="#home" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              🏠 Início
+              <FaHome /> Início
             </a>
             <a href="#about" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              👤 Sobre
+              <FaUser /> Sobre
             </a>
             <a href="#portfolio" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              💼 Portfólio
+              <FaBriefcase /> Portfólio
             </a>
             <a href="#services" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              🛠️ Serviços
+              <FaTools /> Serviços
             </a>
             <a href="#testimonials" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              ⭐ Depoimentos
+              <FaStar /> Depoimentos
             </a>
             <a href="#contact" style={{ color: 'white', textDecoration: 'none', fontWeight: '500', display: 'flex', alignItems: 'center', gap: 8 }}>
-              ✉️ Contato
+              <FaEnvelope /> Contato
             </a>
             {whatsapp && (
               <a 
