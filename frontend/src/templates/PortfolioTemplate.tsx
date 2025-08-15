@@ -1077,15 +1077,7 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
       {/* Contact Section */}
   <section id="contact" className="section" style={{ background: '#f8f9fa', color: autoTextOn('#f8f9fa') }}>
         <div className="container">
-          <h2 style={{
-            fontSize: '36px',
-            textAlign: 'center',
-            marginBottom: '50px',
-            color: primaryColor,
-            fontWeight: 'bold'
-          }}>
-            Vamos Trabalhar Juntos?
-          </h2>
+          {/* Removido 'Vamos Trabalhar Juntos?' e mantido bloco motivacional */}
           
           <div className="grid-2" style={{
             display: 'grid',
