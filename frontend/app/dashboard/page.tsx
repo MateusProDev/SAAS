@@ -127,6 +127,9 @@ export default function DashboardPage() {
           </div>
           
           <div className={styles.userActions}>
+            <button onClick={toggleDarkMode} className={styles.toggleThemeButton} aria-label="Alternar tema">
+              {isDarkMode ? <FiSun size={22} /> : <FiMoon size={22} />}
+            </button>
             {user && (
               <div className={styles.userProfile}>
                 <div className={`${styles.avatar} ${styles.avatarGlow}`}>
