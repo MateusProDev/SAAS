@@ -2,11 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiSettings, FiPlus, FiGlobe, FiEdit2, FiEye, FiTrash2, FiLogOut } from 'react-icons/fi';
+import { 
+  FiSettings, FiPlus, FiGlobe, FiEdit2, FiEye, FiTrash2, FiLogOut,
+  FiCheckCircle, FiClock, FiAlertCircle, FiUpload, FiActivity 
+} from 'react-icons/fi';
 import { useUserSitesFirestore } from '../../src/hooks/useUserSitesFirestore';
 import { useFirebaseAuthUser } from '../../src/hooks/useFirebaseAuthUser';
 import { deleteSite } from '../../src/hooks/deleteSite';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
@@ -15,6 +19,17 @@ export default function DashboardPage() {
   const { sites, loading: loadingSites, refreshSites } = useUserSitesFirestore(user?.uid || "");
   const [deleting, setDeleting] = useState<string | null>(null);
   const [logoutLoading, setLogoutLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Detecta o modo de cor do sistema
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDarkMode(mediaQuery.matches);
+    
+    const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   const getEditRoute = (siteId: string, template: string) => {
     switch (template) {
@@ -37,28 +52,50 @@ export default function DashboardPage() {
   async function handleDelete(siteId: string) {
     if (!user?.uid) return;
     if (!window.confirm('Tem certeza que deseja excluir este site? Essa ação não pode ser desfeita.')) return;
+    
     setDeleting(siteId);
-    await deleteSite(user.uid, siteId);
-    setDeleting(null);
-    await refreshSites();
+    const toastId = toast.loading('Excluindo site...');
+    try {
+      await deleteSite(user.uid, siteId);
+      toast.success('Site excluído com sucesso!', { id: toastId });
+      await refreshSites();
+    } catch (error) {
+      toast.error('Erro ao excluir site', { id: toastId });
+    } finally {
+      setDeleting(null);
+    }
   }
 
   async function handleLogout() {
     setLogoutLoading(true);
+    const toastId = toast.loading('Saindo...');
     try {
       const { signOut } = await import('firebase/auth');
       const { auth } = await import('../../src/utils/firebase');
       await signOut(auth);
+      toast.success('Logout realizado!', { id: toastId });
       window.location.href = '/login';
     } catch {
-      alert('Erro ao deslogar.');
+      toast.error('Erro ao deslogar', { id: toastId });
     } finally {
       setLogoutLoading(false);
     }
   }
 
+  // Função para gerar status aleatório (simulação)
+  const getRandomStatus = () => {
+    const statuses = [
+      { type: 'published', label: 'Publicado', icon: <FiCheckCircle />, color: 'success' },
+      { type: 'draft', label: 'Rascunho', icon: <FiClock />, color: 'warning' },
+      { type: 'error', label: 'Erro', icon: <FiAlertCircle />, color: 'danger' },
+      { type: 'pending', label: 'Processando', icon: <FiUpload />, color: 'info' },
+      { type: 'active', label: 'Ativo', icon: <FiActivity />, color: 'primary' }
+    ];
+    return statuses[Math.floor(Math.random() * statuses.length)];
+  };
+
   return (
-    <div className={styles.dashboard}>
+    <div className={`${styles.dashboard} ${isDarkMode ? styles.darkMode : ''}`}>
       <header className={styles.header}>
         <div className={styles.headerContainer}>
           <div className={styles.brand}>
@@ -72,7 +109,7 @@ export default function DashboardPage() {
           <div className={styles.userActions}>
             {user && (
               <div className={styles.userProfile}>
-                <div className={styles.avatar}>
+                <div className={`${styles.avatar} ${styles.avatarGlow}`}>
                   {user.displayName ? user.displayName[0] : (user.email ? user.email[0] : '?')}
                 </div>
                 <span className={styles.userName}>
@@ -90,9 +127,10 @@ export default function DashboardPage() {
               <span>{logoutLoading ? 'Saindo...' : 'Sair'}</span>
             </button>
             
-            <Link href="/sites/new" className={styles.primaryButton}>
+            <Link href="/sites/new" className={styles.createButton}>
               <FiPlus />
               <span>Criar site</span>
+              <div className={styles.buttonPulse}></div>
             </Link>
           </div>
         </div>
@@ -119,60 +157,77 @@ export default function DashboardPage() {
               </div>
               <h3>Nenhum site criado ainda</h3>
               <p>Comece criando seu primeiro site para aparecer aqui</p>
-              <Link href="/sites/new" className={styles.primaryButton}>
+              <Link href="/sites/new" className={styles.createButton}>
                 <FiPlus />
                 <span>Criar primeiro site</span>
+                <div className={styles.buttonPulse}></div>
               </Link>
             </div>
           )}
 
           {!loadingUser && !loadingSites && sites.length > 0 && (
             <div className={styles.sitesGrid}>
-              {sites.map((site) => (
-                <div key={site.id} className={styles.siteCard}>
-                  <div className={styles.cardHeader}>
-                    <h3>{site.name || site.title || site.id}</h3>
-                    <span className={styles.templateBadge}>{site.template}</span>
-                  </div>
-                  
-                  <div className={styles.cardBody}>
-                    <p className={styles.siteDescription}>
-                      {site.description && site.description.length > 120 
-                        ? `${site.description.substring(0, 120)}...` 
-                        : site.description || 'Sem descrição'}
-                    </p>
-                  </div>
-                  
-                  <div className={styles.cardFooter}>
-                    <div className={styles.actions}>
-                      <Link 
-                        href={`/sites/${site.id}`} 
-                        className={`${styles.actionButton} ${styles.viewButton}`}
-                      >
-                        <FiGlobe />
-                        <span>Visualizar</span>
-                      </Link>
-                      
-                      <Link 
-                        href={getEditRoute(site.id, site.template)} 
-                        className={`${styles.actionButton} ${styles.editButton}`}
-                      >
-                        <FiEdit2 />
-                        <span>Editar</span>
-                      </Link>
-                      
-                      <button
-                        onClick={() => handleDelete(site.id)}
-                        disabled={deleting === site.id}
-                        className={`${styles.actionButton} ${styles.deleteButton}`}
-                      >
-                        <FiTrash2 />
-                        <span>{deleting === site.id ? 'Excluindo...' : 'Excluir'}</span>
-                      </button>
+              {sites.map((site, index) => {
+                const status = getRandomStatus();
+                return (
+                  <div 
+                    key={site.id} 
+                    className={styles.siteCard}
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className={styles.cardHeader}>
+                      <h3>{site.name || site.title || site.id}</h3>
+                      <div className={styles.statusBadge} data-status={status.color}>
+                        {status.icon}
+                        <span>{status.label}</span>
+                      </div>
+                    </div>
+                    
+                    <div className={styles.cardBody}>
+                      <p className={styles.siteDescription}>
+                        {site.description && site.description.length > 120 
+                          ? `${site.description.substring(0, 120)}...` 
+                          : site.description || 'Sem descrição'}
+                      </p>
+                    </div>
+                    
+                    <div className={styles.cardFooter}>
+                      <div className={styles.actions}>
+                        <Link 
+                          href={`/sites/${site.id}`} 
+                          className={`${styles.actionButton} ${styles.viewButton}`}
+                        >
+                          <FiGlobe />
+                          <span>Visualizar</span>
+                        </Link>
+                        
+                        <Link 
+                          href={getEditRoute(site.id, site.template)} 
+                          className={`${styles.actionButton} ${styles.editButton}`}
+                        >
+                          <FiEdit2 />
+                          <span>Editar</span>
+                        </Link>
+                        
+                        <button
+                          onClick={() => handleDelete(site.id)}
+                          disabled={deleting === site.id}
+                          className={`${styles.actionButton} ${styles.deleteButton}`}
+                        >
+                          {deleting === site.id ? (
+                            <div className={styles.buttonLoader}></div>
+                          ) : (
+                            <>
+                              <FiTrash2 />
+                              <span>Excluir</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
