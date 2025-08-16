@@ -88,6 +88,7 @@ export default function LoginPage() {
               required 
               className={styles['login-input']}
               placeholder="Sua senha"
+              autoComplete="current-password"
             />
           </div>
           
