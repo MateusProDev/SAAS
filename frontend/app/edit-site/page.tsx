@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { usePlan } from '../../src/contexts/PlanContext';
+import { UpsellBanner } from '../../src/components/UpsellBanner';
 
 // Dados de exemplo (mock) - substitui Firebase por enquanto
 const mockSiteData = {
@@ -43,6 +45,10 @@ const mockSiteData = {
 };
 
 export default function EditSitePage() {
+  const { plan } = usePlan();
+  if (plan === 'free') {
+    return <UpsellBanner />;
+  }
   const [siteData, setSiteData] = useState(mockSiteData);
   const [activeTab, setActiveTab] = useState('hero');
   const [saving, setSaving] = useState(false);

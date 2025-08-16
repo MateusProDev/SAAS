@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
+import { usePlan } from '../../../src/contexts/PlanContext';
 import Link from 'next/link';
 import { useRefreshSites } from '../../../src/hooks/useRefreshSitesContext';
 import { useRouter } from 'next/navigation';
-import { getFirestore, collection, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, serverTimestamp, updateDoc, getDocs } from 'firebase/firestore';
 import { doc, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import '../../../src/utils/firebase';
@@ -12,6 +13,7 @@ import styles from './new-site.module.css';
 
 
 export default function NewSitePage() {
+  const { plan } = usePlan();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [template, setTemplate] = useState('barbearia');
@@ -24,18 +26,24 @@ export default function NewSitePage() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) throw new Error('Usuário não autenticado');
-      
+
       const db = getFirestore();
-      
-      // ✅ USAR APENAS A NOVA ESTRUTURA users/{uid}/sites
       const userSiteRef = collection(db, 'users', user.uid, 'sites');
-      
-      // ✅ PREPARAR DADOS DO SITE BASEADO NO TEMPLATE
+
+      // Validação de limite de sites por plano
+      const snapshot = await getDocs(userSiteRef);
+      const siteCount = snapshot.size;
+      if ((plan === 'free' || plan === 'basic') && siteCount >= 1) {
+        setLoading(false);
+        setError('Seu plano permite apenas 1 site. Faça upgrade para o PRO para criar mais sites.');
+        return;
+      }
+
       let siteData: any = {
         title,
         description,
@@ -43,10 +51,9 @@ export default function NewSitePage() {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         userId: user.uid,
-  published: false
+        published: false
       };
-      
-      // ✅ SE FOR PORTFÓLIO, CRIAR ESTRUTURA COMPLETA
+
       if (template === 'portfolio') {
         siteData.portfolioData = {
           personalInfo: {

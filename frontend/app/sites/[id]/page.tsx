@@ -3,6 +3,9 @@
 
 
 import React, { useState, useEffect } from "react";
+import { PlanBadge } from '../../../src/components/PlanBadge';
+import { UpsellBanner } from '../../../src/components/UpsellBanner';
+import { usePlan } from '../../../src/contexts/PlanContext';
 import { fetchPublicSiteBySlug } from '../../../src/utils/fetchPublicSite';
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +17,7 @@ import { useSiteEditor } from "../../../src/hooks/useSiteEditor";
 import styles from './site-detail.module.css'; 
 
 export default function SiteDetailPage() {
+  const { plan, isTrialActive } = usePlan();
   const { id } = useParams();
   // Para buscar igual ao preview, precisamos do userId. Vamos tentar obter do siteId via published_sites (API) se não estiver no contexto.
   const [userId, setUserId] = useState<string | null>(null);
@@ -30,7 +34,23 @@ export default function SiteDetailPage() {
   }, [id]);
 
   // Só busca dados do Firestore se tiver userId
-  const { data: site, loading, error } = useSiteEditor(userId || '', id as string);
+  // Update the type for site to include "portfolio" in the template property
+  type SiteTemplateType = "barbearia" | "comercial" | "agencia" | "portfolio";
+  interface SiteType {
+    template: SiteTemplateType;
+    title: string;
+    description: string;
+    customization?: {
+      contact?: {
+        address?: string;
+        email?: string;
+        phone?: string;
+      };
+      services?: any[];
+    };
+    // ...other properties
+  }
+  const { data: site, loading, error } = useSiteEditor(userId || '', id as string) as { data: SiteType | null, loading: boolean, error: any };
 
   if (notFound) {
     return (
@@ -103,95 +123,26 @@ export default function SiteDetailPage() {
   }
 
   if (!site) return null;
-  if (site!.template === "barbearia") {
-    return <BarbeariaTemplate site={site!} />;
-  }
-  if (site!.template === "comercial") {
-    return <ComercialTemplate site={site!} />;
-  }
-  if (site!.template === "agencia") {
-    return <AgenciaViagemTemplate site={site!} />;
-  }
-  if (site!.template === "portfolio") {
-    // Renderiza o portfólio completo com todos os campos
-    const { PortfolioTemplate } = require("../../../src/templates/PortfolioTemplate");
-    return <PortfolioTemplate site={site!} />;
-  }
-  // Fallback: renderização responsiva premium
-  const contact = site!.customization?.contact || {};
-  const services = (site!.customization as any)?.services || [];
+
+  // Exemplo: proteção de domínio personalizado
+  const canUseCustomDomain = plan === 'pro' || isTrialActive;
+
   return (
-    <div className={styles['site-detail-root']}>
-      <div className={styles['site-detail-fallback']}>
-        <div className={styles['site-detail-header']}>
-          <h1 className={styles['site-detail-title']}>
-            {site!.title}
-          </h1>
-          <p className={styles['site-detail-description']}>
-            {site!.description}
-          </p>
-        </div>
-        <div className={styles['site-detail-info']}>
-          {contact.address && (
-            <div className={styles['site-detail-info-card']}>
-              <div className={styles['site-detail-info-label']}>
-                📍 Endereço
-              </div>
-              <div className={styles['site-detail-info-value']}>
-                {contact.address}
-              </div>
-            </div>
-          )}
-          {contact.email && (
-            <div className={styles['site-detail-info-card']}>
-              <div className={styles['site-detail-info-label']}>
-                📧 Email
-              </div>
-              <div className={styles['site-detail-info-value']}>
-                {contact.email}
-              </div>
-            </div>
-          )}
-          {contact.phone && (
-            <div className={styles['site-detail-info-card']}>
-              <div className={styles['site-detail-info-label']}>
-                📞 Telefone
-              </div>
-              <div className={styles['site-detail-info-value']}>
-                {contact.phone}
-              </div>
-            </div>
-          )}
-          <div className={styles['site-detail-info-card']}>
-            <div className={styles['site-detail-info-label']}>
-              🎨 Template
-            </div>
-            <div className={styles['site-detail-info-value']}>
-              {site!.template === 'barbearia' && '🪒 Barbearia'}
-              {site!.template === 'comercial' && '🏢 Comercial'}
-              {site!.template === 'agencia' && '✈️ Agência de Viagem'}
-              {!['barbearia', 'comercial', 'agencia'].includes(site!.template) && site!.template}
-            </div>
-          </div>
-        </div>
-        {services && services.length > 0 && (
-          <div className={styles['site-detail-services']}>
-            <h2 className={styles['site-detail-services-title']}>
-              🛠️ Serviços
-            </h2>
-            <div className={styles['site-detail-services-grid']}>
-              {services.map((srv: any, idx: number) => (
-                <div key={idx} className={styles['site-detail-service-item']}>
-                  <div className={styles['site-detail-service-name']}>
-                    {srv.name}
-                  </div>
-                  <div className={styles['site-detail-service-description']}>
-                    {srv.description}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+    <div>
+      <PlanBadge />
+      {!canUseCustomDomain && <UpsellBanner />}
+      {/* Renderização do template */}
+      {site.template === "barbearia" && <BarbeariaTemplate site={site} />}
+      {site.template === "comercial" && <ComercialTemplate site={site} />}
+      {site.template === "agencia" && <AgenciaViagemTemplate site={site} />}
+      {site.template === "portfolio" && <PortfolioTemplate site={site} />}
+      {/* Exemplo de recurso premium bloqueado */}
+      <div style={{marginTop:32}}>
+        <h3>Domínio personalizado</h3>
+        {canUseCustomDomain ? (
+          <div style={{color:'#10b981'}}>Você pode configurar seu domínio personalizado aqui.</div>
+        ) : (
+          <div style={{color:'#ef4444'}}>Recurso disponível apenas para plano PRO. <UpsellBanner /></div>
         )}
       </div>
     </div>

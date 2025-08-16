@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { PlanProvider } from '../src/contexts/PlanContext';
 
 export const metadata: Metadata = {
   title: 'MabelSoft - Website Builder',
@@ -12,7 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR"> 
       <body>
         {/* Navbar removida do layout global. Navegação só aparece no dashboard. */}
-        <main>{children}</main>
+        <PlanProvider>
+          <main>{children}</main>
+        </PlanProvider>
       </body>
     </html>
   );

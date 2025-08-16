@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { UpsellBanner } from '../../src/components/UpsellBanner';
+import { PlanBadge } from '../../src/components/PlanBadge';
+import { usePlan } from '../../src/contexts/PlanContext';
 import Link from 'next/link';
 import { 
   FiSettings, FiPlus, FiGlobe, FiEdit2, FiEye, FiTrash2, FiLogOut,
@@ -14,6 +17,7 @@ import { toast } from 'react-hot-toast';
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
+  const { plan } = usePlan();
   const { user, loading: loadingUser } = useFirebaseAuthUser();
   const router = useRouter();
   const { sites, loading: loadingSites, refreshSites } = useUserSitesFirestore(user?.uid || "");
@@ -123,6 +127,8 @@ export default function DashboardPage() {
 
   return (
     <div className={`${styles.dashboard} ${isDarkMode ? styles.darkMode : ''}`}>
+      <PlanBadge />
+      {(plan === 'free' || plan === 'basic') && <UpsellBanner />}
       <header className={styles.header}>
         <div className={styles.headerContainer}>
           <div className={styles.brand}>
