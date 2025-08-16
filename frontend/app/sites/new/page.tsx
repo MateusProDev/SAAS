@@ -195,6 +195,23 @@ export default function NewSitePage() {
       
       // ✅ CRIAR SITE NA NOVA ESTRUTURA
       const docRef = await addDoc(userSiteRef, siteData);
+
+      // ✅ Atualizar published_sites ou lista global imediatamente após criar
+      try {
+        const db = getFirestore();
+        const publishedSitesRef = collection(db, 'published_sites');
+        await addDoc(publishedSitesRef, {
+          siteId: docRef.id,
+          userId: user.uid,
+          title: siteData.title,
+          template: siteData.template,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          published: false
+        });
+      } catch (err) {
+        console.error('Erro ao atualizar published_sites:', err);
+      }
       
       console.log('✅ [NEW SITE] Site criado na nova estrutura:', {
         siteId: docRef.id,
