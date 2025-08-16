@@ -475,14 +475,13 @@ export function PortfolioTemplate({ site }: PortfolioTemplateProps) {
                 💬 Contratar
               </a>
             )}
-            {/* Ícones das redes sociais no menu mobile */}
             {isMenuOpen && (
               <div style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 gap: '28px',
-                marginTop: '32px',
+                marginTop: '18px',
                 marginBottom: '24px',
                 flexWrap: 'wrap',
                 padding: '12px 0',

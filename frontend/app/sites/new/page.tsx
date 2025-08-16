@@ -205,11 +205,7 @@ export default function NewSitePage() {
       if (refreshSites) await refreshSites();
       
       // ✅ REDIRECIONAR PARA O EDITOR ADEQUADO
-      if (template === 'portfolio') {
-        router.push(`/sites/${docRef.id}/edit`);
-      } else {
-        router.push(`/sites/${docRef.id}/edit`);
-      }
+      router.push(`/sites/${docRef.id}/portfolio`);
       
     } catch (err: any) {
       console.error('❌ [NEW SITE] Erro ao criar site:', err);
