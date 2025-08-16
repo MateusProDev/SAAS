@@ -9,7 +9,7 @@ export async function POST(req) {
   if (plan === 'basic') price = 29.9;
   if (plan === 'pro') price = 99.9;
 
-  const preference = {
+  const preference = { 
     items: [
       {
         title: `Plano ${plan.toUpperCase()} - SaaS` ,
