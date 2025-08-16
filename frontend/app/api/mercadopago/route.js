@@ -1,6 +1,6 @@
-import mercadopago from 'mercadopago';
 
-mercadopago.configurations.setAccessToken(process.env.MERCADOPAGO_ACCESS_TOKEN);
+import { MercadoPagoConfig } from 'mercadopago';
+const mp = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN });
 
 export async function POST(req) {
   const body = await req.json();
@@ -32,9 +32,9 @@ export async function POST(req) {
   };
 
   try {
-    const response = await mercadopago.preferences.create(preference);
-    const pixInfo = response.body.point_of_interaction?.transaction_data?.qr_code || null;
-    return new Response(JSON.stringify({ id: response.body.id, pix_qr: pixInfo }), { status: 200 });
+  const response = await mp.preference.create(preference);
+  const pixInfo = response.point_of_interaction?.transaction_data?.qr_code || null;
+  return new Response(JSON.stringify({ id: response.id, pix_qr: pixInfo }), { status: 200 });
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
