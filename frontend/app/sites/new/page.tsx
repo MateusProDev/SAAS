@@ -42,7 +42,7 @@ export default function NewSitePage() {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         userId: user.uid,
-        published: false
+        published: true
       };
       
       // ✅ SE FOR PORTFÓLIO, CRIAR ESTRUTURA COMPLETA
@@ -228,7 +228,7 @@ export default function NewSitePage() {
           name: siteData.name,
           template: siteData.template,
           active: true,
-          published: false,
+          published: true,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
           publishedAt: null,
