@@ -1,3 +1,77 @@
+# SAAS - Plataforma de Criação de Portfólios Profissionais
+
+Este projeto é uma plataforma SaaS moderna para criação, edição e publicação de portfólios profissionais, voltada para qualquer área (devs, médicos, advogados, designers, etc). O sistema é construído com Next.js, React, Firebase e Vercel, com foco em UI/UX premium, responsividade e facilidade de uso.
+
+## Estrutura de Pastas
+
+- **frontend/**  
+  Aplicação principal Next.js. Contém todo o código do frontend, estilos, páginas, componentes e hooks.
+  - **app/**  
+    Estrutura de rotas e páginas do Next.js 13+.
+    - **dashboard/**  
+      Página principal do usuário, com cards dos sites criados, botão destacado "+ Novo site", alternância de tema (dark/light), status dos sites (rascunho/ativo), e ações rápidas.
+    - **edit-site/**  
+      Editor completo para qualquer template, incluindo portfólio.
+    - **preview/**  
+      Visualização pública dos sites criados.
+    - **sites/**  
+      Listagem de todos os sites do usuário, criação de novo site, rotas dinâmicas por ID.
+    - **login/**, **register/**  
+      Autenticação de usuários.
+    - **public/**  
+      Visualização pública por slug.
+    - **globals.css**, **custom-improvements.css**, **reset.css**  
+      Estilos globais e resets.
+  - **src/**  
+    Código fonte dos componentes, hooks, templates e utilitários.
+    - **components/**  
+      Componentes reutilizáveis: editor de portfólio, formulário de contato, carrossel, badges de plano, etc.
+    - **hooks/**  
+      Hooks customizados para autenticação, dados do portfólio, integração com Firestore, etc.
+    - **templates/**  
+      Templates prontos para diferentes tipos de site (portfólio, comercial, agência, etc).
+    - **contexts/**  
+      Contextos globais (ex: plano do usuário).
+    - **utils/**  
+      Funções utilitárias e helpers.
+  - **public/**  
+    Arquivos estáticos, ícones, manifestos, imagens.
+  - **.next/**  
+    Arquivos de build do Next.js (gerados automaticamente).
+  - **package.json**, **tsconfig.json**, **next.config.js**  
+    Configurações do projeto.
+
+## Principais Funcionalidades
+
+- Criação de portfólios profissionais com templates modernos e responsivos.
+- Editor visual completo para personalização de dados, temas, seções e projetos.
+- Dashboard com cards de sites, status, ações rápidas e botão destacado "+ Novo site".
+- Alternância de tema (dark/light) com ícone de sol/lua.
+- Visualização pública por slug ou ID.
+- Formulário de contato estilizado e seguro.
+- Autenticação de usuários.
+- Sincronização automática dos dados com Firestore (users, published_sites, slugs).
+- Suporte a múltiplos templates e áreas profissionais.
+- UI/UX premium, animações suaves, microinterações e acessibilidade.
+
+## Como rodar localmente
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## Deploy
+
+O deploy é feito automaticamente via Vercel, conectado ao GitHub.  
+Para publicar manualmente, faça push para a branch principal.
+
+## Observações
+
+- O projeto já está pronto para produção, com responsividade, acessibilidade e performance otimizadas.
+- Para personalizar templates, edite os arquivos em `src/templates/`.
+- Para adicionar integrações, utilize os hooks em `src/hooks/`.
 # SaaS Website Builder
 
 Um gerador de sites comerciais estáticos usando React, Firebase, Node.js e Vercel.
