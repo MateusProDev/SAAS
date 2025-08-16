@@ -26,8 +26,22 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
   const [step, setStep] = useState(0);
   const [method, setMethod] = useState<'pix' | 'card' | null>(null);
 
-    const handleNext = () => setStep(s => s + 1);
-    const handleBack = () => setStep(s => s - 1);
+    const handleNext = () => {
+      // Validação dos campos antes de avançar
+      if (step === 1) {
+        if (!name.trim() || !email.trim() || !cpf.trim()) {
+          setError('Preencha todos os campos obrigatórios.');
+          return;
+        }
+      }
+      setError(null);
+      setStep(s => s + 1);
+    };
+
+    const handleBack = () => {
+      setError(null);
+      setStep(s => s - 1);
+    };
 
     const handleMethodSelect = (m: 'pix' | 'card') => {
       setMethod(m);
@@ -35,6 +49,11 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
     };
 
     const handlePayment = async () => {
+      // Validação final antes de enviar
+      if (!name.trim() || !email.trim() || !cpf.trim()) {
+        setError('Preencha todos os campos obrigatórios.');
+        return;
+      }
       setLoading(true);
       setError(null);
       setPixQr(null);
@@ -43,7 +62,7 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
         const res = await fetch('/api/mercadopago', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ plan, userId, name, email, cpf, method })
+          body: JSON.stringify({ plan, userId, name: name.trim(), email: email.trim(), cpf: cpf.trim(), method })
         });
         const data = await res.json();
         window.mercadoPagoDebug = data;
