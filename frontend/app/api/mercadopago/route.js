@@ -54,11 +54,11 @@ export async function POST(req) {
     const pixInfo = response.point_of_interaction?.transaction_data?.qr_code || null;
     if (!response.id) {
       console.error('[MercadoPago] Falha ao criar preferência:', response);
-      return new Response(JSON.stringify({ error: 'Falha ao criar preferência Mercado Pago' }), { status: 500 });
+      return new Response(JSON.stringify({ id: null, pix_qr: null, message: 'Não foi possível criar a preferência. Tente novamente mais tarde.' }), { status: 200 });
     }
     return new Response(JSON.stringify({ id: response.id, pix_qr: pixInfo }), { status: 200 });
   } catch (err) {
     console.error('[MercadoPago] Erro na integração:', err);
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    return new Response(JSON.stringify({ id: null, pix_qr: null, message: 'Ocorreu um erro ao processar o pagamento. Tente novamente mais tarde.' }), { status: 200 });
   }
 }

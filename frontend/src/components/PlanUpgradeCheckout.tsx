@@ -38,12 +38,12 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ plan, userId, name, email, cpf, method })
         });
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(`Erro ao processar pagamento: ${res.status} - ${errText}`);
-        }
         const data = await res.json();
-        if (!data.id) throw new Error('Erro ao criar preferência Mercado Pago');
+        if (!data.id) {
+          setError(data.message || 'Não foi possível processar o pagamento. Tente novamente mais tarde.');
+          setLoading(false);
+          return;
+        }
         if (method === 'pix' && data.pix_qr) {
           setPixQr(data.pix_qr);
           handleNext();
@@ -64,7 +64,7 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
         }
         setLoading(false);
       } catch (err: any) {
-        setError(err.message);
+        setError('Não foi possível processar o pagamento. Tente novamente mais tarde.');
         setLoading(false);
       }
     };
