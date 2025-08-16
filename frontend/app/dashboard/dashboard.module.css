@@ -516,24 +516,3 @@
   }
 }
 
-/* Toast Styles */
-:global(.Toastify__toast) {
-  font-family: 'Inter', sans-serif;
-  border-radius: var(--radius) !important;
-}
-
-:global(.Toastify__toast--success) {
-  background-color: var(--success) !important;
-}
-
-:global(.Toastify__toast--error) {
-  background-color: var(--danger) !important;
-}
-
-:global(.Toastify__toast--info) {
-  background-color: var(--info) !important;
-}
-
-:global(.Toastify__toast--warning) {
-  background-color: var(--warning) !important;
-}

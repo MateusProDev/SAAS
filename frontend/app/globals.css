@@ -1,3 +1,24 @@
+/* Toastify Global Styles */
+.Toastify__toast {
+  font-family: 'Inter', sans-serif;
+  border-radius: 12px !important;
+}
+
+.Toastify__toast--success {
+  background-color: #10b981 !important;
+}
+
+.Toastify__toast--error {
+  background-color: #ef4444 !important;
+}
+
+.Toastify__toast--info {
+  background-color: #3b82f6 !important;
+}
+
+.Toastify__toast--warning {
+  background-color: #f59e0b !important;
+}
 :root {
   --background: #ffffff;
   --foreground: #171717;
