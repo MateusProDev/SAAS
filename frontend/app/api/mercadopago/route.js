@@ -3,6 +3,12 @@ import { MercadoPagoConfig } from 'mercadopago';
 export async function POST(req) {
   console.log('--- [DEBUG] MercadoPago POST /api/mercadopago ---');
   console.log('Access Token:', process.env.MERCADOPAGO_ACCESS_TOKEN);
+  console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
+  console.log('Preference Back URLs:', {
+    success: `${process.env.NEXT_PUBLIC_API_URL}/api/mercadopago/success?userId=${body?.userId}&plan=${body?.plan}`,
+    failure: `${process.env.NEXT_PUBLIC_API_URL}/upgrade`,
+    pending: `${process.env.NEXT_PUBLIC_API_URL}/upgrade`
+  });
   const body = await req.json();
   console.log('Body recebido:', body);
   const { plan, userId, name, email, cpf, method } = body;
@@ -51,16 +57,32 @@ export async function POST(req) {
   try {
     const mp = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN });
     console.log('Instância MercadoPagoConfig criada');
-    const response = await mp.preference.create(preference);
-    console.log('Resposta da API Mercado Pago:', response);
-    const pixInfo = response.point_of_interaction?.transaction_data?.qr_code || null;
-    if (!response.id) {
-      console.error('[MercadoPago] Falha ao criar preferência:', response);
-      return new Response(JSON.stringify({ id: null, pix_qr: null, message: '[DEBUG] Falha ao criar preferência', debug: response }), { status: 200 });
+    try {
+      const response = await mp.preference.create(preference);
+      console.log('Resposta da API Mercado Pago:', response);
+      const pixInfo = response.point_of_interaction?.transaction_data?.qr_code || null;
+      if (!response.id) {
+        console.error('[MercadoPago] Falha ao criar preferência:', response);
+        return new Response(JSON.stringify({ id: null, pix_qr: null, message: '[DEBUG] Falha ao criar preferência', debug: response }), { status: 200 });
+      }
+      return new Response(JSON.stringify({ id: response.id, pix_qr: pixInfo, debug: response }), { status: 200 });
+    } catch (mpErr) {
+      // Retorna o erro detalhado no corpo da resposta para análise direta
+      let debugInfo = {};
+      if (mpErr && typeof mpErr === 'object') {
+        debugInfo = {
+          message: mpErr.message,
+          cause: mpErr.cause,
+          response: mpErr.response,
+          stack: mpErr.stack
+        };
+      } else {
+        debugInfo = { error: mpErr };
+      }
+      return new Response(JSON.stringify({ id: null, pix_qr: null, message: '[DEBUG] Erro detalhado Mercado Pago', debug: debugInfo }), { status: 200 });
     }
-    return new Response(JSON.stringify({ id: response.id, pix_qr: pixInfo, debug: response }), { status: 200 });
   } catch (err) {
-    console.error('[MercadoPago] Erro na integração:', err);
-    return new Response(JSON.stringify({ id: null, pix_qr: null, message: '[DEBUG] Erro na integração', debug: err }), { status: 200 });
+    console.error('[MercadoPago] Erro na integração geral:', err);
+    return new Response(JSON.stringify({ id: null, pix_qr: null, message: '[DEBUG] Erro na integração geral', debug: err }), { status: 200 });
   }
 }
