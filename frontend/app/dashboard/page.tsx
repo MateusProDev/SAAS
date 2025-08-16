@@ -102,16 +102,23 @@ export default function DashboardPage() {
     }
   }
 
-  // Função para gerar status aleatório (simulação)
-  const getRandomStatus = () => {
-    const statuses = [
-      { type: 'published', label: 'Publicado', icon: <FiCheckCircle />, color: 'success' },
-      { type: 'draft', label: 'Rascunho', icon: <FiClock />, color: 'warning' },
-      { type: 'error', label: 'Erro', icon: <FiAlertCircle />, color: 'danger' },
-      { type: 'pending', label: 'Processando', icon: <FiUpload />, color: 'info' },
-      { type: 'active', label: 'Ativo', icon: <FiActivity />, color: 'primary' }
-    ];
-    return statuses[Math.floor(Math.random() * statuses.length)];
+  // Função para obter status real do site
+  const getSiteStatus = (site: any) => {
+    if (site.published) {
+      return {
+        type: 'active',
+        label: 'Ativo',
+        icon: <FiActivity />,
+        color: 'primary'
+      };
+    } else {
+      return {
+        type: 'draft',
+        label: 'Rascunho',
+        icon: <FiClock />,
+        color: 'warning'
+      };
+    }
   };
 
   return (
@@ -191,7 +198,7 @@ export default function DashboardPage() {
           {!loadingUser && !loadingSites && sites.length > 0 && (
             <div className={styles.sitesGrid}>
               {sites.map((site, index) => {
-                const status = getRandomStatus();
+                const status = getSiteStatus(site);
                 return (
                   <div 
                     key={site.id} 

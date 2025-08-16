@@ -43,7 +43,7 @@ export default function NewSitePage() {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         userId: user.uid,
-        published: true
+  published: false
       };
       
       // ✅ SE FOR PORTFÓLIO, CRIAR ESTRUTURA COMPLETA
