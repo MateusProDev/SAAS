@@ -1,21 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    
-    // Só adiciona rewrite se a URL da API estiver definida
-    if (!apiUrl || apiUrl === 'undefined') {
-      console.warn('NEXT_PUBLIC_API_URL não definida, pulando rewrites');
-      return [];
-    }
-    
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${apiUrl}/:path*`,
-      },
-    ];
-  },
+  // Rewrites removidos para evitar conflito com rotas de API do Next.js
   
   // Headers para assets estáticos
   async headers() {
