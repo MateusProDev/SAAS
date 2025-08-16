@@ -21,12 +21,19 @@ export default function LoginPage() {
       // Importação dinâmica para evitar problemas de SSG
       const { signInWithEmailAndPassword } = await import('firebase/auth');
       const { auth } = await import('../../src/utils/firebase');
-      
       if (!auth) {
         throw new Error('Firebase não inicializado');
       }
-      
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      // Garante que o documento do usuário existe no Firestore
+      const { getFirestore, doc, getDoc, setDoc } = await import('firebase/firestore');
+      const db = getFirestore();
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      if (!snap.exists()) {
+        await setDoc(userRef, { plan: 'free', createdAt: Date.now() });
+      }
       router.replace('/dashboard');
     } catch (err: any) {
       console.error('Erro de login:', err);

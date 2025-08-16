@@ -18,6 +18,10 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, userId })
       });
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Erro ao processar pagamento: ${res.status} - ${errText}`);
+      }
       const data = await res.json();
       if (!data.id) throw new Error('Erro ao criar preferência Mercado Pago');
       if (data.pix_qr) {
