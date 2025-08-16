@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRefreshSites } from '../../../src/hooks/useRefreshSitesContext';
 import { useRouter } from 'next/navigation';
 import { getFirestore, collection, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import '../../../src/utils/firebase';
 import styles from './new-site.module.css';
@@ -204,24 +205,43 @@ export default function NewSitePage() {
         slug = 'site-' + Math.random().toString(36).slice(-6);
       }
       siteData.slug = slug;
-      // Remover siteId antes do addDoc
-      // siteData.siteId = undefined; // NÃO DEFINIR
       siteData.active = true;
       siteData.views = 0;
       siteData.name = title || '';
       siteData.template = template || 'comercial';
+      siteData.published = true;
+
+      // Defaults para theme se for portfólio
+      if (siteData.template === 'portfolio') {
+        const defaultTheme = {
+          primaryColor: '#667eea',
+          secondaryColor: '#764ba2',
+          backgroundColor: '#f8f9fa',
+          textColor: '#222',
+          headingColor: '#111',
+          buttonTextColor: '#fff',
+          fontFamily: 'Inter, sans-serif',
+          layout: 'default',
+        };
+        if (!siteData.portfolioData) siteData.portfolioData = {};
+        if (!siteData.portfolioData.theme) siteData.portfolioData.theme = {};
+        siteData.portfolioData.theme = {
+          ...defaultTheme,
+          ...siteData.portfolioData.theme
+        };
+      }
 
       // ✅ CRIAR SITE NA NOVA ESTRUTURA
       const docRef = await addDoc(userSiteRef, siteData);
-      // Adicionar siteId depois
       await updateDoc(docRef, { siteId: docRef.id });
       siteData.siteId = docRef.id;
 
-      // ✅ Atualizar published_sites ou lista global imediatamente após criar
+      // Sincronizar published_sites
       try {
         const db = getFirestore();
-        const publishedSitesRef = collection(db, 'published_sites');
-        await addDoc(publishedSitesRef, {
+        const publishedDocRef = doc(db, 'published_sites', docRef.id);
+        await setDoc(publishedDocRef, {
+          ...siteData,
           siteId: docRef.id,
           userId: user.uid,
           slug,
@@ -233,14 +253,13 @@ export default function NewSitePage() {
           updatedAt: serverTimestamp(),
           publishedAt: null,
           content: '',
-          views: 0,
-          ...siteData // inclui portfolioData, etc
+          views: 0
         });
-        // Atualizar slugs
-        const slugsRef = collection(db, 'slugs');
-        await addDoc(slugsRef, { userId: user.uid, siteId: docRef.id, slug });
+        // Sincronizar slugs
+        const slugDocRef = doc(db, 'slugs', slug);
+        await setDoc(slugDocRef, { userId: user.uid, siteId: docRef.id, slug });
       } catch (err) {
-        console.error('Erro ao atualizar published_sites/slugs:', err);
+        console.error('Erro ao sincronizar published_sites/slugs:', err);
       }
       
       console.log('✅ [NEW SITE] Site criado na nova estrutura:', {
