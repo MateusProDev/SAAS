@@ -201,7 +201,8 @@ export default function NewSitePage() {
         slug = 'site-' + Math.random().toString(36).slice(-6);
       }
       siteData.slug = slug;
-      siteData.siteId = undefined; // será preenchido após addDoc
+      // Remover siteId antes do addDoc
+      // siteData.siteId = undefined; // NÃO DEFINIR
       siteData.active = true;
       siteData.views = 0;
       siteData.name = title || '';
@@ -209,9 +210,9 @@ export default function NewSitePage() {
 
       // ✅ CRIAR SITE NA NOVA ESTRUTURA
       const docRef = await addDoc(userSiteRef, siteData);
-      siteData.siteId = docRef.id;
-      // Atualiza o site com o siteId
+      // Adicionar siteId depois
       await updateDoc(docRef, { siteId: docRef.id });
+      siteData.siteId = docRef.id;
 
       // ✅ Atualizar published_sites ou lista global imediatamente após criar
       try {
