@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRefreshSites } from '../../../src/hooks/useRefreshSitesContext';
 import { useRouter } from 'next/navigation';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import '../../../src/utils/firebase';
 import styles from './new-site.module.css';
@@ -193,8 +193,25 @@ export default function NewSitePage() {
         };
       }
       
+      // Gerar slug único
+      let slug = '';
+      if (title) {
+        slug = title.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Math.random().toString(36).slice(-6);
+      } else {
+        slug = 'site-' + Math.random().toString(36).slice(-6);
+      }
+      siteData.slug = slug;
+      siteData.siteId = undefined; // será preenchido após addDoc
+      siteData.active = true;
+      siteData.views = 0;
+      siteData.name = title || '';
+      siteData.template = template || 'comercial';
+
       // ✅ CRIAR SITE NA NOVA ESTRUTURA
       const docRef = await addDoc(userSiteRef, siteData);
+      siteData.siteId = docRef.id;
+      // Atualiza o site com o siteId
+      await updateDoc(docRef, { siteId: docRef.id });
 
       // ✅ Atualizar published_sites ou lista global imediatamente após criar
       try {
@@ -203,14 +220,23 @@ export default function NewSitePage() {
         await addDoc(publishedSitesRef, {
           siteId: docRef.id,
           userId: user.uid,
-          title: siteData.title,
+          slug,
+          name: siteData.name,
           template: siteData.template,
+          active: true,
+          published: false,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
-          published: false
+          publishedAt: null,
+          content: '',
+          views: 0,
+          ...siteData // inclui portfolioData, etc
         });
+        // Atualizar slugs
+        const slugsRef = collection(db, 'slugs');
+        await addDoc(slugsRef, { userId: user.uid, siteId: docRef.id, slug });
       } catch (err) {
-        console.error('Erro ao atualizar published_sites:', err);
+        console.error('Erro ao atualizar published_sites/slugs:', err);
       }
       
       console.log('✅ [NEW SITE] Site criado na nova estrutura:', {
