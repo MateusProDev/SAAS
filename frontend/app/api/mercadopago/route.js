@@ -1,10 +1,19 @@
+import { MercadoPagoConfig } from 'mercadopago';
 
 export async function POST(req) {
+  console.log('[MercadoPago] Iniciando POST /api/mercadopago');
+  console.log('[MercadoPago] Access Token:', process.env.MERCADOPAGO_ACCESS_TOKEN ? 'OK' : 'NÃO DEFINIDO');
   const body = await req.json();
+  console.log('[MercadoPago] Body recebido:', body);
   const { plan, userId } = body;
   let price = 0;
   if (plan === 'basic') price = 29.9;
   if (plan === 'pro') price = 99.9;
+
+  if (!plan || !userId) {
+    console.error('[MercadoPago] Parâmetros ausentes:', { plan, userId });
+    return new Response(JSON.stringify({ error: 'Parâmetros ausentes' }), { status: 400 });
+  }
 
   const preference = { 
     items: [
@@ -28,11 +37,20 @@ export async function POST(req) {
     metadata: { userId, plan },
   };
 
+  console.log('[MercadoPago] Preference criada:', preference);
+
   try {
-  const response = await new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN }).preference.create(preference);
-  const pixInfo = response.point_of_interaction?.transaction_data?.qr_code || null;
-  return new Response(JSON.stringify({ id: response.id, pix_qr: pixInfo }), { status: 200 });
+    const mp = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN });
+    const response = await mp.preference.create(preference);
+    console.log('[MercadoPago] Resposta da API:', response);
+    const pixInfo = response.point_of_interaction?.transaction_data?.qr_code || null;
+    if (!response.id) {
+      console.error('[MercadoPago] Falha ao criar preferência:', response);
+      return new Response(JSON.stringify({ error: 'Falha ao criar preferência Mercado Pago' }), { status: 500 });
+    }
+    return new Response(JSON.stringify({ id: response.id, pix_qr: pixInfo }), { status: 200 });
   } catch (err) {
+    console.error('[MercadoPago] Erro na integração:', err);
     return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 }
