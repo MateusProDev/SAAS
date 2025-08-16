@@ -193,11 +193,14 @@ export default function NewSitePage() {
         };
       }
       
-      // Gerar slug único
+      // Gerar slug único e sempre válido
       let slug = '';
-      if (title) {
+      if (title && typeof title === 'string' && title.trim() !== '') {
         slug = title.toString().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Math.random().toString(36).slice(-6);
       } else {
+        slug = 'site-' + Math.random().toString(36).slice(-6);
+      }
+      if (!slug || slug === 'undefined') {
         slug = 'site-' + Math.random().toString(36).slice(-6);
       }
       siteData.slug = slug;
