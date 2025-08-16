@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
-import { Box, Button, Dialog, Typography, Alert } from '@mui/material';
+import React, { useState, useContext } from 'react';
+import { Box, Button, Dialog, Typography } from '@mui/material';
 import PlanUpgradeFlow from './PlanUpgradeFlow';
+import { AuthContext } from '../context/AuthContext';
 
 const OfficialCheckout = ({
   plan = 'free',
   valor = 0,
-  metodoPagamento = 'pix',
-  userId = '',
-  name = '',
-  email = '',
-  cpf = ''
+  metodoPagamento = 'pix'
 }) => {
   const [open, setOpen] = useState(false);
+  const { user } = useContext(AuthContext);
+
+  // Garante que todos os dados do usuário estejam presentes
+  const userId = user?.uid || '';
+  const name = user?.displayName || user?.nome || '';
+  const email = user?.email || '';
+  const cpf = user?.cpf || '';
 
   return (
     <Box
@@ -34,6 +38,7 @@ const OfficialCheckout = ({
         size="large"
         onClick={() => setOpen(true)}
         sx={{ px: 4, py: 2, borderRadius: 2 }}
+        disabled={!userId || !name || !email || !cpf}
       >
         Iniciar Checkout
       </Button>
