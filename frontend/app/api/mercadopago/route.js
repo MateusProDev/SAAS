@@ -5,13 +5,13 @@ export async function POST(req) {
   console.log('[MercadoPago] Access Token:', process.env.MERCADOPAGO_ACCESS_TOKEN ? 'OK' : 'NÃO DEFINIDO');
   const body = await req.json();
   console.log('[MercadoPago] Body recebido:', body);
-  const { plan, userId } = body;
+  const { plan, userId, name, email, cpf } = body;
   let price = 0;
   if (plan === 'basic') price = 29.9;
   if (plan === 'pro') price = 99.9;
 
-  if (!plan || !userId) {
-    console.error('[MercadoPago] Parâmetros ausentes:', { plan, userId });
+  if (!plan || !userId || !name || !email || !cpf) {
+    console.error('[MercadoPago] Parâmetros ausentes:', { plan, userId, name, email, cpf });
     return new Response(JSON.stringify({ error: 'Parâmetros ausentes' }), { status: 400 });
   }
 
@@ -24,6 +24,14 @@ export async function POST(req) {
         currency_id: 'BRL',
       },
     ],
+    payer: {
+      name,
+      email,
+      identification: {
+        type: 'CPF',
+        number: cpf
+      }
+    },
     payment_methods: {
       excluded_payment_types: [],
       default_payment_method_id: 'pix',
