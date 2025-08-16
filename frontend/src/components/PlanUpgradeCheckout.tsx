@@ -1,4 +1,11 @@
 
+// Extend Window interface for mercadoPagoDebug
+declare global {
+  interface Window {
+    mercadoPagoDebug?: any;
+  }
+}
+
 import React, { useState } from 'react';
 import { usePlan } from '../contexts/PlanContext';
 
@@ -39,8 +46,9 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
           body: JSON.stringify({ plan, userId, name, email, cpf, method })
         });
         const data = await res.json();
+        window.mercadoPagoDebug = data;
         if (!data.id) {
-          setError(data.message || 'Não foi possível processar o pagamento. Tente novamente mais tarde.');
+          setError((data.message ? data.message : 'Não foi possível processar o pagamento.') + (data.debug ? '\nDebug: ' + JSON.stringify(data.debug, null, 2) : ''));
           setLoading(false);
           return;
         }
