@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   FiSettings, FiPlus, FiGlobe, FiEdit2, FiEye, FiTrash2, FiLogOut,
-  FiCheckCircle, FiClock, FiAlertCircle, FiUpload, FiActivity 
+  FiCheckCircle, FiClock, FiAlertCircle, FiUpload, FiActivity, FiSun, FiMoon 
 } from 'react-icons/fi';
 import { useUserSitesFirestore } from '../../src/hooks/useUserSitesFirestore';
 import { useFirebaseAuthUser } from '../../src/hooks/useFirebaseAuthUser';
@@ -21,12 +21,32 @@ export default function DashboardPage() {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Alterna manualmente o modo
+  const toggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+    if (!isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
   // Detecta o modo de cor do sistema
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     setIsDarkMode(mediaQuery.matches);
-    
-    const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    if (mediaQuery.matches) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    const handler = (e: MediaQueryListEvent) => {
+      setIsDarkMode(e.matches);
+      if (e.matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    };
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
@@ -190,7 +210,6 @@ export default function DashboardPage() {
                           : site.description || 'Sem descrição'}
                       </p>
                     </div>
-                    
                     <div className={styles.cardFooter}>
                       <div className={styles.actions}>
                         <Link 
@@ -200,7 +219,6 @@ export default function DashboardPage() {
                           <FiGlobe />
                           <span>Visualizar</span>
                         </Link>
-                        
                         <Link 
                           href={getEditRoute(site.id, site.template)} 
                           className={`${styles.actionButton} ${styles.editButton}`}
@@ -208,7 +226,6 @@ export default function DashboardPage() {
                           <FiEdit2 />
                           <span>Editar</span>
                         </Link>
-                        
                         <button
                           onClick={() => handleDelete(site.id)}
                           disabled={deleting === site.id}

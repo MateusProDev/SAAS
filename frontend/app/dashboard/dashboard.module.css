@@ -1,3 +1,21 @@
+/* Botão de alternância de tema (sol/lua) */
+.toggleThemeButton {
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toggleThemeButton:hover {
+  background: var(--gray-light);
+  color: var(--secondary);
+}
 /* dashboard.module.css */
 
 /* Base Styles */
