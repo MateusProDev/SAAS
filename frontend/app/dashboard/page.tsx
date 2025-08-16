@@ -1,9 +1,8 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaCog } from 'react-icons/fa';
+import { FiSettings, FiPlus, FiGlobe, FiEdit2, FiEye, FiTrash2, FiLogOut } from 'react-icons/fi';
 import { useUserSitesFirestore } from '../../src/hooks/useUserSitesFirestore';
 import { useFirebaseAuthUser } from '../../src/hooks/useFirebaseAuthUser';
 import { deleteSite } from '../../src/hooks/deleteSite';
@@ -17,7 +16,6 @@ export default function DashboardPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [logoutLoading, setLogoutLoading] = useState(false);
 
-  // Função para determinar a rota de edição baseada no template
   const getEditRoute = (siteId: string, template: string) => {
     switch (template) {
       case 'portfolio':
@@ -30,7 +28,6 @@ export default function DashboardPage() {
     }
   };
 
-  // Protege a rota: se não autenticado e não carregando, redireciona para login
   useEffect(() => {
     if (!loadingUser && !user) {
       router.replace('/login');
@@ -61,92 +58,125 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className={styles['dashboard-root']}>
-      <header className={styles['dashboard-header']}>
-        <div className={styles['dashboard-header-content']}>
-          <div className={styles['dashboard-logo-section']}>
-            <FaCog style={{ fontSize: 40, color: '#6366f1' }} />
-            <div className={styles['dashboard-title-group']}>
-              <h1>Dashboard MabelSoft</h1>
-              <p>Gerencie seus sites com facilidade e estilo</p>
+    <div className={styles.dashboard}>
+      <header className={styles.header}>
+        <div className={styles.headerContainer}>
+          <div className={styles.brand}>
+            <FiSettings className={styles.logoIcon} />
+            <div className={styles.brandText}>
+              <h1>MabelSoft Dashboard</h1>
+              <p>Gerencie seus sites com facilidade</p>
             </div>
           </div>
-          <div className={styles['dashboard-user-section']}>
+          
+          <div className={styles.userActions}>
             {user && (
-              <div className={styles['dashboard-user-info']}>
-                <div className={styles['dashboard-user-avatar']}>
+              <div className={styles.userProfile}>
+                <div className={styles.avatar}>
                   {user.displayName ? user.displayName[0] : (user.email ? user.email[0] : '?')}
                 </div>
-                <div className={styles['dashboard-user-name']}>
+                <span className={styles.userName}>
                   {user.displayName || user.email}
-                </div>
+                </span>
               </div>
             )}
-            {/* Botão de novo site */}
-            <Link href="/sites/new" className={styles['dashboard-site-btn']}>
-              + Novo site
+            
+            <button 
+              onClick={handleLogout} 
+              disabled={logoutLoading}
+              className={styles.logoutButton}
+            >
+              <FiLogOut />
+              <span>{logoutLoading ? 'Saindo...' : 'Sair'}</span>
+            </button>
+            
+            <Link href="/sites/new" className={styles.primaryButton}>
+              <FiPlus />
+              <span>Criar site</span>
             </Link>
           </div>
         </div>
       </header>
-      <main>
-        {(loadingUser || loadingSites) && (
-          <div className={styles['dashboard-loading']}>
-            ⏳ Carregando sites...
+
+      <main className={styles.mainContent}>
+        <div className={styles.contentContainer}>
+          <div className={styles.pageHeader}>
+            <h2>Meus Sites</h2>
+            <p>Gerencie todos os seus sites em um só lugar</p>
           </div>
-        )}
-        {!loadingUser && !loadingSites && sites.length === 0 && (
-          <div className={styles['dashboard-empty']}>
-            Nenhum site criado ainda. Comece criando seu primeiro site!
-          </div>
-        )}
-        {!loadingUser && !loadingSites && sites.length > 0 && (
-          <div className={styles['dashboard-sites-grid']}>
-            {sites.map(site => (
-              <div key={site.id} className={styles['dashboard-site-card']}>
-                <div className={styles['dashboard-site-info']}>
-                  <h3>{site.name || site.title || site.id}</h3>
-                  <p className="description">
-                    {site.description && site.description.length > 100 
-                      ? `${site.description.substring(0, 100)}...` 
-                      : site.description || 'Sem descrição'}
-                  </p>
-                  <p className="template">Template: <b>{site.template}</b></p>
-                </div>
-                <div className={styles['dashboard-site-actions']}>
-                  <Link 
-                    href={`/sites/${site.id}`} 
-                    className={`${styles['dashboard-site-btn']} ${styles['dashboard-site-btn-view']}`}
-                  >
-                    🌐 Ver Site
-                  </Link>
-                  <Link 
-                    href={getEditRoute(site.id, site.template)} 
-                    className={`${styles['dashboard-site-btn']} ${styles['dashboard-site-btn-edit']}`}
-                  >
-                    ✏️ Editar
-                  </Link>
-                  <Link 
-                    href={`/sites/${site.id}`} 
-                    className={`${styles['dashboard-site-btn']} ${styles['dashboard-site-btn-preview']}`}
-                  >
-                    👁️ Preview
-                  </Link>
-                  <button 
-                    onClick={() => handleDelete(site.id)} 
-                    disabled={deleting === site.id} 
-                    className={`${styles['dashboard-site-btn']} ${styles['dashboard-site-btn-delete']}`}
-                  >
-                    {deleting === site.id ? 'Excluindo...' : 'Excluir'}
-                  </button>
-                </div>
+
+          {(loadingUser || loadingSites) && (
+            <div className={styles.loadingState}>
+              <div className={styles.spinner}></div>
+              <p>Carregando seus sites...</p>
+            </div>
+          )}
+
+          {!loadingUser && !loadingSites && sites.length === 0 && (
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIllustration}>
+                <FiGlobe size={48} />
               </div>
-            ))}
-          </div>
-        )}
+              <h3>Nenhum site criado ainda</h3>
+              <p>Comece criando seu primeiro site para aparecer aqui</p>
+              <Link href="/sites/new" className={styles.primaryButton}>
+                <FiPlus />
+                <span>Criar primeiro site</span>
+              </Link>
+            </div>
+          )}
+
+          {!loadingUser && !loadingSites && sites.length > 0 && (
+            <div className={styles.sitesGrid}>
+              {sites.map((site) => (
+                <div key={site.id} className={styles.siteCard}>
+                  <div className={styles.cardHeader}>
+                    <h3>{site.name || site.title || site.id}</h3>
+                    <span className={styles.templateBadge}>{site.template}</span>
+                  </div>
+                  
+                  <div className={styles.cardBody}>
+                    <p className={styles.siteDescription}>
+                      {site.description && site.description.length > 120 
+                        ? `${site.description.substring(0, 120)}...` 
+                        : site.description || 'Sem descrição'}
+                    </p>
+                  </div>
+                  
+                  <div className={styles.cardFooter}>
+                    <div className={styles.actions}>
+                      <Link 
+                        href={`/sites/${site.id}`} 
+                        className={`${styles.actionButton} ${styles.viewButton}`}
+                      >
+                        <FiGlobe />
+                        <span>Visualizar</span>
+                      </Link>
+                      
+                      <Link 
+                        href={getEditRoute(site.id, site.template)} 
+                        className={`${styles.actionButton} ${styles.editButton}`}
+                      >
+                        <FiEdit2 />
+                        <span>Editar</span>
+                      </Link>
+                      
+                      <button
+                        onClick={() => handleDelete(site.id)}
+                        disabled={deleting === site.id}
+                        className={`${styles.actionButton} ${styles.deleteButton}`}
+                      >
+                        <FiTrash2 />
+                        <span>{deleting === site.id ? 'Excluindo...' : 'Excluir'}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
 }
-
-
