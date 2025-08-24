@@ -25,6 +25,7 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
   const [cpf, setCpf] = useState('');
   const [step, setStep] = useState(0);
   const [method, setMethod] = useState<'pix' | 'card' | null>(null);
+  const [selectedPlan] = useState(plan);
 
     const handleNext = () => {
       // Validação dos campos antes de avançar
@@ -43,17 +44,33 @@ export const PlanUpgradeCheckout: React.FC<{ plan: 'basic' | 'pro' }> = ({ plan 
       setStep(s => s - 1);
     };
 
-    const handleMethodSelect = (m: 'pix' | 'card') => {
-      setMethod(m);
+    const handleMethodSelect = (selectedMethod: 'pix' | 'card') => {
+      setMethod(selectedMethod);
       handleNext();
     };
 
     const handlePayment = async () => {
+      // Buscar userId do contexto de autenticação
+      const userIdFromContext = (window as any).user?.uid || '';
+      if (!userIdFromContext) {
+        setError("Usuário não autenticado. Faça login para continuar.");
+        return;
+      }
+
       // Validação final antes de enviar
       if (!name.trim() || !email.trim() || !cpf.trim()) {
         setError('Preencha todos os campos obrigatórios.');
         return;
       }
+
+      const paymentData = {
+        plan: selectedPlan,
+        userId: userIdFromContext,
+        name: name.trim(),
+        email: email.trim(),
+        cpf: cpf.trim(),
+        method
+      };
       setLoading(true);
       setError(null);
       setPixQr(null);
