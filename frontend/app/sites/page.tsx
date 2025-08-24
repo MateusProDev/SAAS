@@ -47,7 +47,9 @@ export default function SitesPage() {
               <div key={site.id} className={styles['site-card']}>
                 <div className={styles['site-card-header']}>
                   <h2 className={styles['site-card-title']}>
-                    🌐 {site.name || site.title}
+                    <Link href={`/sites/${site.slug || site.id}`} className={styles['site-link']}>
+                      🌐 {site.name || site.title}
+                    </Link>
                   </h2>
                   <p className={styles['site-card-description']}>
                     {site.description}

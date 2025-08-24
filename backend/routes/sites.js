@@ -73,11 +73,16 @@ router.get('/:siteId', verifyToken, async (req, res) => {
   }
 });
 
+const { generateUniqueSlug } = require('../utils/slugs');
+
 // POST /api/sites - Criar novo site
 router.post('/', verifyToken, async (req, res) => {
   try {
-    let { name, template, slug } = req.body;
-    console.log('🔍 [DEBUG] Dados recebidos para criar site:', { name, template, slug });
+    let { name, template } = req.body;
+    console.log('🔍 [DEBUG] Dados recebidos para criar site:', { name, template });
+
+    // Gerar slug único baseado no nome do site
+    const slug = await generateUniqueSlug(name, admin.firestore());
 
     // Buscar perfil do usuário para saber o plano e limite
     let userDoc = await admin.firestore()

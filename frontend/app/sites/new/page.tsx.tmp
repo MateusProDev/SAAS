@@ -97,9 +97,7 @@ export default function NewSitePage() {
         createdAt: serverTimestamp()
       });
 
-      if (refreshSites) {
-        await refreshSites();
-      }
+      await refreshSites();
       router.push('/dashboard');
     } catch (error: any) {
       console.error('Error creating site:', error);
