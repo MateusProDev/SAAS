@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from "react";
 import { PlanBadge } from '../../../src/components/PlanBadge';
-import { UpsellBanner } from '../../../src/components/UpsellBanner';
+// Removed UpsellBanner import
 import { usePlan } from '../../../src/contexts/PlanContext';
 import { fetchPublicSiteBySlug } from '../../../src/utils/fetchPublicSite';
 import { useParams } from "next/navigation";
@@ -130,7 +130,7 @@ export default function SiteDetailPage() {
   return (
     <div>
       <PlanBadge />
-      {!canUseCustomDomain && <UpsellBanner />}
+      {/* Removed upsell banner */}
       {/* Renderização do template */}
       {site.template === "barbearia" && <BarbeariaTemplate site={site} />}
       {site.template === "comercial" && <ComercialTemplate site={site} />}
@@ -139,11 +139,7 @@ export default function SiteDetailPage() {
       {/* Exemplo de recurso premium bloqueado */}
       <div style={{marginTop:32}}>
         <h3>Domínio personalizado</h3>
-        {canUseCustomDomain ? (
-          <div style={{color:'#10b981'}}>Você pode configurar seu domínio personalizado aqui.</div>
-        ) : (
-          <div style={{color:'#ef4444'}}>Recurso disponível apenas para plano PRO. <UpsellBanner /></div>
-        )}
+        <div style={{color:'#10b981'}}>Configure um domínio personalizado para seu site.</div>
       </div>
     </div>
   );

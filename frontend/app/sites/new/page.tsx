@@ -40,7 +40,7 @@ export default function NewSitePage() {
       const siteCount = snapshot.size;
       if ((plan === 'free' || plan === 'basic') && siteCount >= 1) {
         setLoading(false);
-        setError('Seu plano permite apenas 1 site. Faça upgrade para o PRO para criar mais sites.');
+        setError('Você atingiu o limite de sites para seu plano atual.');
         return;
       }
 

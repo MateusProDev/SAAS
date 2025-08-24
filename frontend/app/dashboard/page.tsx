@@ -127,8 +127,6 @@ export default function DashboardPage() {
 
   return (
     <div className={`${styles.dashboard} ${isDarkMode ? styles.darkMode : ''}`}>
-      <PlanBadge />
-      {(plan === 'free' || plan === 'basic') && <UpsellBanner />}
       <header className={styles.header}>
         <div className={styles.headerContainer}>
           <div className={styles.brand}>

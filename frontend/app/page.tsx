@@ -218,7 +218,7 @@ export default function Home() {
             </div>
             <div className={styles["home-template-card"]}>
               <h3><span className={styles["icon-left"]}><FaRocket /></span>Pro</h3>
-              <p>Até 10 sites, domínio personalizado, templates premium, analytics, suporte prioritário.</p>
+              <p>Até 10 sites, domínio personalizado, templates exclusivos, analytics e suporte prioritário.</p>
             </div>
             <div className={styles["home-template-card"]}>
               <h3><span className={styles["icon-left"]}><FaRegStar /></span>Agência</h3>
@@ -247,7 +247,7 @@ export default function Home() {
               </div>
               <div className={styles["home-benefit-card"]}>
                 <span className={styles["icon-benefit"]}><MdOutlineSupportAgent /></span>
-                <h4>Suporte Premium</h4>
+                <h4>Suporte Prioritário</h4>
                 <p>Equipe pronta para ajudar por chat, email e WhatsApp.</p>
               </div>
               <div className={styles["home-benefit-card"]}>
